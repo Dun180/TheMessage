@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.26" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PEProtocol\PEProtocol.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="IOCPNet">
+      <HintPath>..\..\Libs\IOCPNet.dll</HintPath>
+    </Reference>
+    <Reference Include="PEUtils">
+      <HintPath>..\..\Libs\PEUtils.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

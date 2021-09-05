@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>D:\forlearning\UnityProject\TheMessage\TheMessageClient\Assets\Scripts\Libs\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="IOCPNet">
+      <HintPath>..\..\Libs\IOCPNet.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
