@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using PENet;
 using PEProtocol;
 
 public class CacheSvc
@@ -173,11 +174,11 @@ public class CacheSvc
         pack.token.SendMsg(msg);
     }
 
-
+    //加入房间
     public void JoinRoom(int roomID,ServerToken token)
     {
-        idRoomDic.TryGetValue(roomID, out MessageRoom messageRoom);
-        onLineTokenDic.TryGetValue(token, out PlayerData playerData);
+        idRoomDic.TryGetValue(roomID, out MessageRoom messageRoom);//获得想要加入的房间
+        onLineTokenDic.TryGetValue(token, out PlayerData playerData);//获得加入者的数据
 
         MessagePlayer player = new MessagePlayer
         {
@@ -185,28 +186,75 @@ public class CacheSvc
             id = playerData.id,
             name = playerData.name,
             iconIndex = playerData.iconIndex,
+            posIndex = messageRoom.roomNumber
         };
         messageRoom.AddMessagePlayer(player, messageRoom.roomNumber);
 
+        //将加入房间推送给房间中的所有人
+
+
         GameMsg msg = new GameMsg
         {
-            cmd = CMD.ResponseJoinRoomMsg,
-            roomMsg = new RoomMsg[1]
-{
-                new RoomMsg{
+            cmd = CMD.PushJoinRoomMsg,
+            detailRoomMsg =new DetailRoomMsg{
                     roomID = roomID,
                     roomOwner = messageRoom.roomOwner,
                     roomNumber = messageRoom.roomNumber,
                     playerArr = messageRoom.matchPlayerArr
                 }
-}
+
         };
 
-        for(int i = 0; i < messageRoom.roomNumber; i++)
-        {
-            messageRoom.playerArr[i].token.SendMsg(msg);
-        }
+        SendMsgAll(messageRoom, msg);
 
         
     }
+
+    public bool IsInRoom(ServerToken token)
+    {
+        if (!tokenRoomDic.TryGetValue(token, out int room))
+        {
+            return false;
+        }
+        return true;
+    }
+
+
+
+    public void RequestReady(MsgPack pack)
+    {
+        
+        tokenRoomDic.TryGetValue(pack.token, out int roomID);
+        idRoomDic.TryGetValue(roomID, out MessageRoom messageRoom);
+        PlayerData playerData = GetPlayerDataByToken(pack.token);
+        messageRoom.GameReady(playerData.id);
+        int mPosIndex = messageRoom.GameReady(playerData.id);
+        if (mPosIndex >= 0)
+        {
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushReady,
+                pushReady = new PushReady { posIndex = mPosIndex }
+            };
+            SendMsgAll(messageRoom, msg);
+        }
+    }
+
+    //TOOL METHONDS
+    //群发消息
+    void SendMsgAll(MessageRoom messageRoom,GameMsg msg)
+    {
+        //将消息序列化成二进制后直接发送序列化后的数据，因发送的消息相同，可减少序列化的次数，提升性能
+        //本来每次发送都要序列化一次，先序列化再发送便只需序列化一次
+        byte[] data = IOCPTool.PackLenInfo(IOCPTool.Serialize(msg));
+        for (int i = 0; i < messageRoom.playerArr.Length; i++)
+        {
+            if (messageRoom.playerArr[i] != null)
+            {
+                messageRoom.playerArr[i].token.SendMsg(data);
+            }
+        }
+    }
+
+    
 }

@@ -83,11 +83,8 @@ public class NetSvc
             case CMD.ReqLogin:
                 LoginSys.Instance.ReqLogin(pack);
                 break;
-            case CMD.ReqMatch:
-                MatchSys.Instance.ReqMatch(pack);
-                break;
             case CMD.RequestAddRoom:
-                MatchSys.Instance.RequestAddRoom(pack);
+                MatchSys.Instance.RequestAddRoom(pack);//添加房间请求
                 break;
             case CMD.RequestRoomMsg:
                 CacheSvc.Instance.RequestRoomMsg(pack);
@@ -96,7 +93,7 @@ public class NetSvc
                 MatchSys.Instance.RequestJoinRoom(pack);
                 break;
             case CMD.RequestReady:
-                MatchSys.Instance.RequestReady(pack);
+                CacheSvc.Instance.RequestReady(pack);
                 break;
             case CMD.RequestGameStart:
                 MatchSys.Instance.RequestGameStart(pack);

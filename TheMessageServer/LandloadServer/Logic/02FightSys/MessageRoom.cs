@@ -14,7 +14,7 @@ public class MessageRoom
     public string roomOwner = null;
     public MatchPlayerData[] matchPlayerArr = null;
 
-    public int roomNumber = 0;
+    public int roomNumber { private set; get; }
 
 
     public MessageRoom(int roomID,string roomOwner)
@@ -24,10 +24,10 @@ public class MessageRoom
         playerArr = new MessagePlayer[5];
         roomState = RoomState.Matching;
         matchPlayerArr = new MatchPlayerData[5];
-        
+        roomNumber = 0;
     }
 
-
+    //添加玩家
     public void AddMessagePlayer(MessagePlayer messagePlayer, int posIndex)
     {
         playerArr[posIndex] = messagePlayer;
@@ -68,6 +68,24 @@ public class MessageRoom
         }
 
     }
+
+    public int GameReady(int id)
+    {
+        int posIndex = -1;
+        for (int i = 0;i< matchPlayerArr.Length; i++)
+        {
+            if(matchPlayerArr[i]!= null) {
+                if (id == matchPlayerArr[i].id)
+                {
+                    matchPlayerArr[i].isReady = true;
+                    posIndex = i;
+                }
+            }
+
+        }
+        return posIndex;
+    }
+
 
     //TOOL METHONDS
     public MessagePlayer[] GetMessagePlayers()

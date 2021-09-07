@@ -1,2 +1,22 @@
-[L]# 03:53:40-789  ThreadID:1 >> Landlord Server Start ...
-[L]# 03:53:41-465  ThreadID:1 >> Server Start...
+[L]# 01:12:43-566  ThreadID:1 >> Landlord Server Start ...
+[L]# 01:12:44-351  ThreadID:1 >> Server Start...
+[L]# 01:12:50-460  ThreadID:8 >> Client Online
+[L]# 01:12:50-461  ThreadID:8 >> Client Online,Allocate TokenID:999
+[L]# 01:12:50-518  ThreadID:1 >> Assign TokenID:999
+[L]# 01:12:53-590  ThreadID:8 >> Client Online
+[L]# 01:12:53-591  ThreadID:8 >> Client Online,Allocate TokenID:998
+[L]# 01:12:53-607  ThreadID:1 >> Assign TokenID:998
+[L]# 01:12:53-718  ThreadID:8 >> RcvPack CMD:ReqLogin
+[L]# 01:12:53-785  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 01:12:54-487  ThreadID:8 >> RcvPack CMD:RequestAddRoom
+[L]# 01:12:56-956  ThreadID:7 >> RcvPack CMD:ReqLogin
+[L]# 01:12:57-052  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
+[L]# 01:12:58-998  ThreadID:8 >> RcvPack CMD:RequestJoinRoomMsg
+[L]# 01:12:59-036  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 01:13:00-905  ThreadID:8 >> RcvPack CMD:RequestReady
+[L]# 01:13:02-467  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 01:13:03-991  ThreadID:8 >> RcvPack CMD:RequestReady
+[W]# 01:13:05-632  ThreadID:8 >> Token:998 Close:Success
+[L]# 01:13:05-688  ThreadID:1 >> Token:998 client offline.
+[W]# 01:13:06-527  ThreadID:8 >> Token:999 Close:Success
+[L]# 01:13:06-551  ThreadID:1 >> Token:999 client offline.

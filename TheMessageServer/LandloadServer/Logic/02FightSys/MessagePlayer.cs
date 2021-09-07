@@ -14,6 +14,6 @@ public class MessagePlayer
 
 
     public int posIndex;//位置索引号
-    public int iconIndex;
+    public int iconIndex;//头像图片索引
 }
 

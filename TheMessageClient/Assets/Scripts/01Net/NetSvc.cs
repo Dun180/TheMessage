@@ -52,20 +52,21 @@ public class NetSvc : MonoBehaviour
             case CMD.RspLogin:
                 LoginSys.Instance.RspLogin(msg);
                 break;
-            case CMD.RspMatch:
-                LobbySys.Instance.RspMatch(msg);
-                break;
+/*
             case CMD.PshMatch:
                 FightSys.Instance.PshMatch(msg.pshMatch);
-                break;
+                break;*/
             case CMD.ResponseAddRoom:
                 LobbySys.Instance.ResponseAddRoom(msg);
                 break;
             case CMD.ResponseRoomMsg:
                 LobbySys.Instance.RefreshRoom(msg);
                 break;
-            case CMD.ResponseJoinRoomMsg:
-                LobbySys.Instance.ResponseJoinRoomMsg(msg);
+            case CMD.PushJoinRoomMsg:
+                LobbySys.Instance.PushJoinRoomMsg(msg);
+                break;
+            case CMD.PushReady:
+                LobbySys.Instance.PushReady(msg);
                 break;
             case CMD.None:
                 break;

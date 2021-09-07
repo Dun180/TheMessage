@@ -31,3 +31,4 @@ D:\forlearning\UnityProject\TheMessage\TheMessageClient\Assets\Scripts\Libs\netc
 D:\forlearning\UnityProject\TheMessage\TheMessageClient\Assets\Scripts\Libs\netcoreapp3.1\PEProtocol.dll
 D:\forlearning\UnityProject\TheMessage\TheMessageClient\Assets\Scripts\Libs\netcoreapp3.1\PEProtocol.pdb
 D:\forlearning\UnityProject\TheMessage\TheMessageServer\PEProtocol\obj\Debug\netcoreapp3.1\PEProtocol.csproj.CopyComplete
+D:\forlearning\UnityProject\TheMessage\TheMessageServer\PEProtocol\obj\Debug\netcoreapp3.1\PEProtocol.csprojAssemblyReference.cache

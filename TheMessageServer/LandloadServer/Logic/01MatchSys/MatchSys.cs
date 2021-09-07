@@ -23,7 +23,6 @@ public class MatchSys
     private CacheSvc cacheSvc;
     private int PosIndex = 0;
     private int RoomID = 0;
-    private PokerRoom matchingRoom = null;
     private MessageRoom messageRoom = null;
     public void Init()
     {
@@ -36,62 +35,8 @@ public class MatchSys
 
     }
 
-    public void ReqMatch(MsgPack pack)
-    {
-        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
-        GameMsg msg = new GameMsg
-        {
-            cmd = CMD.RspMatch
-        };
-        
-        if(playerData == null)
-        {
-            this.Error("OnlineTokenDic Data Error.");
-            msg.err = ErrorCode.ServerDataError;
-            pack.token.SendMsg(msg);
-            return;
-        }
-
-        PokerPlayer player = new PokerPlayer
-        {
-            token = pack.token,
-            id = playerData.id,
-            name = playerData.name,
-            coin = playerData.coin
-        };
-
-        player.posIndex = PosIndex;
-        player.iconIndex = PosIndex;
-        if (PosIndex == 0)
-        {
-            matchingRoom = new PokerRoom(GetUniqueRoomID());
-            matchingRoom.AddPokerPlayer(player, PosIndex);
-        }
-        else
-        {
-            matchingRoom.AddPokerPlayer(player, PosIndex);
-        }
-        ++PosIndex;
-        if(matchingRoom.roomState == RoomState.Matching && PosIndex > 2)
-        {
-            //房间已满
-            matchingRoom.roomState = RoomState.Matched;
-            FightSys.Instance.AddFightRoom(matchingRoom);
-            ResetMatchingRoom();
-
-        }
 
 
-        pack.token.SendMsg(msg);
-
-    }
-
-    void ResetMatchingRoom()
-    {
-        matchingRoom = null;
-        PosIndex = 0;
-        RoomID = 0;
-    }
 
     private int GetUniqueRoomID()
     {
@@ -104,52 +49,66 @@ public class MatchSys
 
     public void RequestAddRoom(MsgPack pack)
     {
-        int messageRoomID = GetUniqueRoomID();
-        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
-        if (playerData == null)
+        if (cacheSvc.IsInRoom(pack.token))//判断是否已在房间中
         {
-            GameMsg errMsg = new GameMsg {err = ErrorCode.ServerDataError};
+            GameMsg errMsg = new GameMsg { cmd = CMD.ResponseAddRoom,err = ErrorCode.AlreadyInRoomError };
+            
+            pack.token.SendMsg(errMsg);
+            return;
+        }
+        int messageRoomID = GetUniqueRoomID();//获得房间ID
+        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);//通过token获得创建者的信息
+        if (playerData == null)//创建者信息为空时返回错误
+        {
+            GameMsg errMsg = new GameMsg { cmd = CMD.ResponseAddRoom, err = ErrorCode.ServerDataError};
             this.Error("OnlineTokenDic Data Error.");
             pack.token.SendMsg(errMsg);
             return;
         }
-        messageRoom = new MessageRoom(messageRoomID, playerData.name);
 
-        MessagePlayer player = new MessagePlayer
+        messageRoom = new MessageRoom(messageRoomID, playerData.name);//通过roomId和创建者名字创建房间？为什么要用名字 用id更好吧
+
+        MessagePlayer player = new MessagePlayer    //创建玩家信息
         {
             token = pack.token,
             id = playerData.id,
             name = playerData.name,
             iconIndex = playerData.iconIndex,
+            posIndex = 0,
         };
-        cacheSvc.AddTokenRoomDic(pack.token,messageRoomID);
-        messageRoom.AddMessagePlayer(player, 0);
+        cacheSvc.AddTokenRoomDic(pack.token,messageRoomID);//不知道有什么用= = 
+        messageRoom.AddMessagePlayer(player, 0);//在房间中添加玩家，并设置索引号
         GameMsg msg = new GameMsg
         {
             cmd = CMD.ResponseAddRoom,
-            roomMsg = new RoomMsg[1]
+            detailRoomMsg = new DetailRoomMsg
             {
-                new RoomMsg{
-                    roomID = messageRoomID,
-                    roomOwner = playerData.name,
-                    roomNumber = 1,
-                    playerArr = messageRoom.matchPlayerArr
-                }
+                roomID = messageRoomID,
+                roomOwner = messageRoom.roomOwner,
+                roomNumber = messageRoom.roomNumber,
+                playerArr = messageRoom.matchPlayerArr
             }
         };
         
 
 
 
-        cacheSvc.AddIDRoomDic(messageRoom);
+        cacheSvc.AddIDRoomDic(messageRoom);//将已创建的房间存到cacheSvc中
 
-        pack.token.SendMsg(msg);
+        pack.token.SendMsg(msg);//将响应传回
         messageRoom = null;
     }
 
 
     public void RequestJoinRoom(MsgPack pack)
     {
+        if (cacheSvc.IsInRoom(pack.token))//判断是否已在房间中
+        {
+            GameMsg errMsg = new GameMsg { cmd = CMD.ResponseAddRoom, err = ErrorCode.AlreadyInRoomError };
+            
+            pack.token.SendMsg(errMsg);
+            return;
+        }
         int roomID = pack.msg.roomID;
         ServerToken token = pack.token;
         cacheSvc.JoinRoom(roomID, token);
@@ -157,12 +116,7 @@ public class MatchSys
 
     }
 
-    public void RequestReady(MsgPack pack)
-    {
-        int roomID = cacheSvc.GetRoomIDByToken(pack.token);
-        cacheSvc.GetIDRoomDic().TryGetValue(roomID, out MessageRoom messageRoom);
 
-    }
 
     public void RequestGameStart(MsgPack pack)
     {

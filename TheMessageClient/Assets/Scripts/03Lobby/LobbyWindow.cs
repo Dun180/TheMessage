@@ -153,7 +153,7 @@ public class LobbyWindow : WindowRoot
         room[roomID].SetActive(active);
     }
 
-    public void ShowRoomDetails(RoomMsg msg,bool isOwner)
+    public void ShowRoomDetails(DetailRoomMsg msg,bool isOwner)
     {
         string path = "ResImages/Lobby/icon_";
         roomInfo.SetActive(true);
@@ -180,4 +180,8 @@ public class LobbyWindow : WindowRoot
         }
     }
 
+    public void ShowReady(int posIndex)
+    {
+        playerReady[posIndex].gameObject.SetActive(true);
+    }
 }

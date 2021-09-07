@@ -61,15 +61,20 @@ public class LobbySys : MonoBehaviour
         {
             TipsWindow.AddTips("数据异常，请稍后重试");
             return;
+        }else if(msg.err == ErrorCode.AlreadyInRoomError)
+        {
+            TipsWindow.AddTips("您已在房间中，请退出重试");
+            return;
         }
-        int roomID = msg.roomMsg[0].roomID;
+        int roomID = msg.detailRoomMsg.roomID;
         lobbyWindow.room[roomID].SetActive(true);
 
-        lobbyWindow.SetRoomName(roomID, msg.roomMsg[0].roomOwner);
-        lobbyWindow.ShowRoomDetails(msg.roomMsg[0], true);
+        lobbyWindow.SetRoomName(roomID, msg.detailRoomMsg.roomOwner);
+        lobbyWindow.ShowRoomDetails(msg.detailRoomMsg, true);
 
     }
 
+    //刷新房间
     public void RefreshRoom(GameMsg msg)
     {
         for(int i = 0; i < msg.roomMsg.Length; i++)
@@ -80,15 +85,21 @@ public class LobbySys : MonoBehaviour
         }
     }
 
-    public void ResponseJoinRoomMsg(GameMsg msg)
+    //处理推送的加入房间请求
+    public void PushJoinRoomMsg(GameMsg msg)
     {
         bool isOwner = false;
-        if (msg.roomMsg[0].roomOwner.Equals(playerData.name))
+        if (msg.detailRoomMsg.roomOwner.Equals(playerData.name))
         {
             isOwner = true;
         }
        
-        lobbyWindow.ShowRoomDetails(msg.roomMsg[0], isOwner);
+        lobbyWindow.ShowRoomDetails(msg.detailRoomMsg, isOwner);
         netSvc.SendMsg(new GameMsg { cmd = CMD.RequestRoomMsg });
+    }
+
+    public void PushReady(GameMsg msg)
+    {
+        lobbyWindow.ShowReady(msg.pushReady.posIndex);
     }
 }

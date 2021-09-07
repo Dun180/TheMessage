@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{FD51514A-0AA2-F2FD-A173-E225CDB2CBA0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -71,9 +72,9 @@
     <Compile Include="Assets\Scripts\00Common\WindowRoot.cs" />
   </ItemGroup>
   <ItemGroup>
-     <None Include="Assets\Scripts\Libs\netcoreapp3.1\IOCPNet.dll" />
-     <None Include="Assets\Scripts\Libs\netcoreapp3.1\PEProtocol.dll" />
-     <None Include="Assets\Scripts\Libs\netcoreapp3.1\PEUtils.dll" />
+    <None Include="Assets\Scripts\Libs\netcoreapp3.1\IOCPNet.dll" />
+    <None Include="Assets\Scripts\Libs\netcoreapp3.1\PEProtocol.dll" />
+    <None Include="Assets\Scripts\Libs\netcoreapp3.1\PEUtils.dll" />
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2020.3.7f1c1\Editor\Data\Managed\UnityEngine\UnityEngine.dll</HintPath>
     </Reference>

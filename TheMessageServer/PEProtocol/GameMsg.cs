@@ -15,6 +15,8 @@ namespace PEProtocol
 
         public PshMatch pshMatch;
         public RoomMsg[] roomMsg;
+        public DetailRoomMsg detailRoomMsg;
+        public PushReady pushReady;
         public int roomID;
     }
     [Serializable]
@@ -57,6 +59,13 @@ namespace PEProtocol
         public int roomID;
         public string roomOwner;
         public int roomNumber;
+    }
+    [Serializable]
+    public class DetailRoomMsg
+    {
+        public int roomID;
+        public string roomOwner;
+        public int roomNumber;
 
         public MatchPlayerData[] playerArr;
     }
@@ -72,39 +81,45 @@ namespace PEProtocol
 
         public bool isReady;
     }
+    [Serializable]
+    public class PushReady
+    {
+        public int posIndex;
+    }
     public enum ErrorCode
     {
         None,
         AcctIsOnline,
         WrongPass,
         ServerDataError,
+        AlreadyInRoomError
     }
     public enum CMD
     {
         None = 0,
 
-        ReqLogin = 1,
-        RspLogin = 2,
+        ReqLogin ,
+        RspLogin ,
 
-        ReqMatch = 3,
-        RspMatch = 4,
-        PshMatch = 5,
+        ReqMatch ,
+        RspMatch ,
+        PshMatch ,
 
-        RequestAddRoom = 6,
-        ResponseAddRoom = 7,
+        RequestAddRoom ,
+        ResponseAddRoom ,
 
-        RequestRoomMsg = 8,
-        ResponseRoomMsg = 9,
+        RequestRoomMsg ,
+        ResponseRoomMsg ,
 
-        RequestJoinRoomMsg = 10,
-        ResponseJoinRoomMsg = 11,
+        RequestJoinRoomMsg ,
+        PushJoinRoomMsg ,
 
-        RequestReady = 12,
-        ResponseReady = 13,
+        RequestReady ,
+        PushReady ,
 
-        RequestGameStart = 14,
+        RequestGameStart ,
 
-        OnConnected = 100,
-        OnDisConnected = 101,
+        OnConnected ,
+        OnDisConnected ,
     }
 }
