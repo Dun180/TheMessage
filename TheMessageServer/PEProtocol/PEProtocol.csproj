@@ -10,7 +10,10 @@
 
   <ItemGroup>
     <Reference Include="IOCPNet">
-      <HintPath>..\..\Libs\IOCPNet.dll</HintPath>
+      <HintPath>..\..\..\Libs\IOCPNet.dll</HintPath>
+    </Reference>
+    <Reference Include="PEUtils">
+      <HintPath>..\..\..\Libs\PEUtils.dll</HintPath>
     </Reference>
   </ItemGroup>
 

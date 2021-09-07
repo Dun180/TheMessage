@@ -1,23 +1,2 @@
-[L]# 03:37:42-011  ThreadID:1 >> Landlord Server Start ...
-[L]# 03:37:42-747  ThreadID:1 >> Server Start...
-[L]# 03:37:47-646  ThreadID:8 >> Client Online
-[L]# 03:37:47-647  ThreadID:8 >> Client Online,Allocate TokenID:999
-[L]# 03:37:47-675  ThreadID:1 >> Assign TokenID:999
-[L]# 03:37:49-275  ThreadID:9 >> RcvPack CMD:ReqLogin
-[L]# 03:37:49-331  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:50-234  ThreadID:8 >> RcvPack CMD:RequestAddRoom
-[L]# 03:37:51-434  ThreadID:9 >> RcvPack CMD:RequestJoinRoomMsg
-[L]# 03:37:51-463  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:51-463  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:51-698  ThreadID:9 >> RcvPack CMD:RequestJoinRoomMsg
-[L]# 03:37:51-712  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:51-715  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:51-715  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:51-858  ThreadID:9 >> RcvPack CMD:RequestJoinRoomMsg
-[L]# 03:37:51-895  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:51-895  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:51-896  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:51-896  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
-[L]# 03:37:52-380  ThreadID:8 >> RcvPack CMD:RequestGameStart
-[W]# 03:37:57-201  ThreadID:9 >> Token:999 Close:Success
-[L]# 03:37:57-264  ThreadID:1 >> Token:999 client offline.
+[L]# 03:53:40-789  ThreadID:1 >> Landlord Server Start ...
+[L]# 03:53:41-465  ThreadID:1 >> Server Start...

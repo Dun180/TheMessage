@@ -75,4 +75,6 @@ public class FightSys : MonoBehaviour
 
         infoWindow.RefreshWindow();
     }
+
+
 }

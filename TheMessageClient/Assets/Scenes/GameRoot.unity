@@ -1517,6 +1517,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LobbyWindow
       objectReference: {fileID: 0}
+    - target: {fileID: 7544650306364663388, guid: 3e1cee838ba6d6a40aaee9cf822d3f99, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7544650306364663391, guid: 3e1cee838ba6d6a40aaee9cf822d3f99, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <Reference Include="IOCPNet">
-      <HintPath>..\..\Libs\IOCPNet.dll</HintPath>
+      <HintPath>..\..\..\Libs\IOCPNet.dll</HintPath>
     </Reference>
     <Reference Include="PEUtils">
       <HintPath>..\..\Libs\PEUtils.dll</HintPath>
