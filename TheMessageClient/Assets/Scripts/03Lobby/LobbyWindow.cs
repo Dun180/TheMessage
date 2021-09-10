@@ -24,7 +24,10 @@ public class LobbyWindow : WindowRoot
     public Image[] playerHeadPortrait;
     public Image[] playerReady;
     public Button btnStart;
+    public Button btnExit;
 
+    public Text txtReady;
+    public Text txtExit;
 
     private AudioSvc audioSvc;
     private NetSvc netSvc;
@@ -65,7 +68,7 @@ public class LobbyWindow : WindowRoot
     }
     public void ClickMatchBtn(){
         audioSvc.PlayUIAudio(Constants.NormalClick);
-        lobbySys.ReqMatch();
+        
     }
     public void ClickSetBtn(){
         audioSvc.PlayUIAudio(Constants.NormalClick);
@@ -128,14 +131,34 @@ public class LobbyWindow : WindowRoot
 
     public void ClickReady()
     {
-        audioSvc.PlayUIAudio(Constants.NormalClick);
-        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestReady });
+        switch (lobbySys.playerState)
+        {
+            case PlayerState.RoomOwner:
+                audioSvc.PlayUIAudio(Constants.NormalClick);
+                netSvc.SendMsg(new GameMsg { cmd = CMD.RequestGameStart });
+                break;
+            case PlayerState.Ready:
+                audioSvc.PlayUIAudio(Constants.NormalClick);
+                netSvc.SendMsg(new GameMsg { cmd = CMD.RequestUnReady });
+                lobbySys.playerState = PlayerState.UnReady;
+                break;
+            case PlayerState.UnReady:
+                audioSvc.PlayUIAudio(Constants.NormalClick);
+                netSvc.SendMsg(new GameMsg { cmd = CMD.RequestReady });
+                lobbySys.playerState = PlayerState.Ready;
+                break;
+            case PlayerState.None:
+                break;
+            default:
+                break;
+        }
+
     }
 
-    public void ClickGameStart()
+    public void ClickExitRoom()
     {
         audioSvc.PlayUIAudio(Constants.NormalClick);
-        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestGameStart});
+        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestExitRoom });
     }
 
     public void SetRoomName(int roomID,string name)
@@ -153,13 +176,20 @@ public class LobbyWindow : WindowRoot
         room[roomID].SetActive(active);
     }
 
-    public void ShowRoomDetails(DetailRoomMsg msg,bool isOwner)
+    public void ShowRoomDetails(DetailRoomMsg msg)
     {
         string path = "ResImages/Lobby/icon_";
         roomInfo.SetActive(true);
-        if (!isOwner)
+        if (lobbySys.playerState == PlayerState.RoomOwner)
         {
-            btnStart.gameObject.SetActive(false);
+            SetText(txtReady, "开始");
+        }
+        else if(lobbySys.playerState == PlayerState.UnReady)
+        {
+            SetText(txtReady, "准备");
+        }else if(lobbySys.playerState == PlayerState.Ready)
+        {
+            SetText(txtReady, "取消准备");
         }
         for(int i = 0; i < msg.playerArr.Length; i++)
         {
@@ -169,19 +199,33 @@ public class LobbyWindow : WindowRoot
                 SetText(playerName[i], msg.playerArr[i].name);
                 playerName[i].gameObject.SetActive(true);
                 SetSprite(playerHeadPortrait[i], path + msg.playerArr[i].iconIndex);
-                playerReady[i].gameObject.SetActive(false);
+                playerReady[i].gameObject.SetActive(msg.playerArr[i].isReady);
 
             }
             else
             {
                 playerName[i].gameObject.SetActive(false);
                 playerReady[i].gameObject.SetActive(false);
+                SetSprite(playerHeadPortrait[i], path + "-1");
             }
         }
     }
 
-    public void ShowReady(int posIndex)
+    public void ShowReady(int posIndex,bool isReady)
     {
-        playerReady[posIndex].gameObject.SetActive(true);
+        playerReady[posIndex].gameObject.SetActive(isReady);
+        if (lobbySys.playerState == PlayerState.Ready)
+        {
+            SetText(txtReady, "取消准备");
+        }else if(lobbySys.playerState == PlayerState.UnReady)
+        {
+            SetText(txtReady, "准备");
+        }
+    }
+
+    public void ExitRoom()
+    {
+
+        roomInfo.SetActive(false);
     }
 }

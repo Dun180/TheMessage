@@ -104,8 +104,8 @@ public class DBSvc
                     diamond = 50,
                     win = 0,
                     lose = 0,
-                    winlast = 0
-
+                    winlast = 0,
+                    iconIndex = 0
                 };
                 int _id = InsertNewAcctData(acct, pass, playerData);
                 playerData.id = _id;
@@ -119,7 +119,7 @@ public class DBSvc
     {
         int id = -1;
         try{
-            MySqlCommand cmd = new MySqlCommand("insert into account set acct =@acct,pass=@pass,name=@name,lv=@lv,exp=@exp,coin=@coin,diamond=@diamond,win=@win,lose=@lose,winlast=@winlast",conn);
+            MySqlCommand cmd = new MySqlCommand("insert into account set acct =@acct,pass=@pass,name=@name,lv=@lv,exp=@exp,coin=@coin,diamond=@diamond,win=@win,lose=@lose,winlast=@winlast,icon_index=@icon_index",conn);
 
             cmd.Parameters.AddWithValue("acct", acct);
             cmd.Parameters.AddWithValue("pass", pass);
@@ -131,6 +131,7 @@ public class DBSvc
             cmd.Parameters.AddWithValue("win", playerData.win);
             cmd.Parameters.AddWithValue("lose", playerData.lose);
             cmd.Parameters.AddWithValue("winlast", playerData.winlast);
+            cmd.Parameters.AddWithValue("icon_index", playerData.iconIndex);
 
             cmd.ExecuteNonQuery();
             id = (int)cmd.LastInsertedId;

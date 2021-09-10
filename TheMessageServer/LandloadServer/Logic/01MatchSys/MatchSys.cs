@@ -38,14 +38,7 @@ public class MatchSys
 
 
 
-    private int GetUniqueRoomID()
-    {
-        if(RoomID == int.MaxValue)
-        {
-            RoomID = 0;
-        }
-        return RoomID++;
-    }
+
 
     public void RequestAddRoom(MsgPack pack)
     {
@@ -56,7 +49,15 @@ public class MatchSys
             pack.token.SendMsg(errMsg);
             return;
         }
-        int messageRoomID = GetUniqueRoomID();//获得房间ID
+        int messageRoomID = cacheSvc.GetUniqueRoomID();//获得房间ID
+
+        if(messageRoomID == -1)
+        {
+            GameMsg errMsg = new GameMsg { cmd = CMD.ResponseAddRoom, err = ErrorCode.FullRoomCount };
+            pack.token.SendMsg(errMsg);
+            return;
+        }
+
         PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);//通过token获得创建者的信息
         if (playerData == null)//创建者信息为空时返回错误
         {
@@ -66,7 +67,7 @@ public class MatchSys
             return;
         }
 
-        messageRoom = new MessageRoom(messageRoomID, playerData.name);//通过roomId和创建者名字创建房间？为什么要用名字 用id更好吧
+        messageRoom = new MessageRoom(messageRoomID, playerData.name,playerData.id);//通过roomId和创建者名字创建房间？为什么要用名字 用id更好吧
 
         MessagePlayer player = new MessagePlayer    //创建玩家信息
         {
@@ -112,14 +113,11 @@ public class MatchSys
         int roomID = pack.msg.roomID;
         ServerToken token = pack.token;
         cacheSvc.JoinRoom(roomID, token);
-        cacheSvc.AddTokenRoomDic(pack.token, roomID);
+        
 
     }
 
 
 
-    public void RequestGameStart(MsgPack pack)
-    {
 
-    }
 }

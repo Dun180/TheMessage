@@ -78,7 +78,9 @@ public class NetSvc
                 break;
             case CMD.OnDisConnected:
                 this.ColorLog(PEUtils.LogColor.Yellow, "Token:{0} client offline.", pack.token.tokenID);
+                CacheSvc.Instance.RequestExitRoom(pack);
                 LoginSys.Instance.ClearOfflineData(pack.token);
+                
                 break;
             case CMD.ReqLogin:
                 LoginSys.Instance.ReqLogin(pack);
@@ -95,8 +97,14 @@ public class NetSvc
             case CMD.RequestReady:
                 CacheSvc.Instance.RequestReady(pack);
                 break;
+            case CMD.RequestUnReady:
+                CacheSvc.Instance.RequestUnReady(pack);
+                break;
+            case CMD.RequestExitRoom:
+                CacheSvc.Instance.RequestExitRoom(pack);
+                break;
             case CMD.RequestGameStart:
-                MatchSys.Instance.RequestGameStart(pack);
+                CacheSvc.Instance.RequestGameStart(pack);
                 break;
             case CMD.None:
                 break;

@@ -85,6 +85,7 @@ namespace PEProtocol
     public class PushReady
     {
         public int posIndex;
+        public bool isReady;
     }
     public enum ErrorCode
     {
@@ -92,7 +93,10 @@ namespace PEProtocol
         AcctIsOnline,
         WrongPass,
         ServerDataError,
-        AlreadyInRoomError
+        AlreadyInRoomError,
+        NotAllReady,
+        FullRoom,//房间内人数已满
+        FullRoomCount//房间的数量已满
     }
     public enum CMD
     {
@@ -115,9 +119,15 @@ namespace PEProtocol
         PushJoinRoomMsg ,
 
         RequestReady ,
+        RequestUnReady,
         PushReady ,
+        
+        RequestExitRoom,
+        PushExitRoom,
+        ResponseExitRoom,
 
         RequestGameStart ,
+        PushGameStart,
 
         OnConnected ,
         OnDisConnected ,

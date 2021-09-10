@@ -63,10 +63,19 @@ public class NetSvc : MonoBehaviour
                 LobbySys.Instance.RefreshRoom(msg);
                 break;
             case CMD.PushJoinRoomMsg:
-                LobbySys.Instance.PushJoinRoomMsg(msg);
+                LobbySys.Instance.PushJoinRoom(msg);
                 break;
             case CMD.PushReady:
                 LobbySys.Instance.PushReady(msg);
+                break;
+            case CMD.PushExitRoom:
+                LobbySys.Instance.PushExitRoom(msg);
+                break;
+            case CMD.ResponseExitRoom:
+                LobbySys.Instance.ResponseExitRoom();
+                break;
+            case CMD.PushGameStart:
+                LobbySys.Instance.PushGameStart(msg);
                 break;
             case CMD.None:
                 break;

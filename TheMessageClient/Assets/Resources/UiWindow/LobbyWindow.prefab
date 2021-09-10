@@ -792,7 +792,7 @@ GameObject:
   - component: {fileID: 121140582}
   - component: {fileID: 121140581}
   m_Layer: 0
-  m_Name: btnStart
+  m_Name: btnExit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -902,7 +902,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1495720235}
         m_TargetAssemblyTypeName: LobbyWindow, Assembly-CSharp
-        m_MethodName: ClickGameStart
+        m_MethodName: ClickExitRoom
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4821,7 +4821,7 @@ GameObject:
   - component: {fileID: 1483312408}
   - component: {fileID: 1483312407}
   m_Layer: 0
-  m_Name: txtStart
+  m_Name: txtExit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4887,7 +4887,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5F00\u59CB"
+  m_Text: "\u9000\u51FA\n"
 --- !u!1 &1501154294
 GameObject:
   m_ObjectHideFlags: 0
@@ -6856,3 +6856,6 @@ MonoBehaviour:
   - {fileID: 1345598448}
   - {fileID: 409123839}
   btnStart: {fileID: 121140581}
+  btnExit: {fileID: 121140581}
+  txtReady: {fileID: 876047352}
+  txtExit: {fileID: 1483312407}
