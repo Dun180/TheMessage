@@ -77,6 +77,9 @@ public class NetSvc : MonoBehaviour
             case CMD.PushGameStart:
                 LobbySys.Instance.PushGameStart(msg);
                 break;
+            case CMD.ResponseRefreshMessage:
+                FightSys.Instance.ResponseRefreshMessage(msg);
+                break;
             case CMD.None:
                 break;
             default:

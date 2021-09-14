@@ -60,6 +60,7 @@
     <Compile Include="Assets\Scripts\00Common\AudioSvc.cs" />
     <Compile Include="Assets\Scripts\01Net\NetSvc.cs" />
     <Compile Include="Assets\Scripts\00Common\TipsWindow.cs" />
+    <Compile Include="Assets\Scripts\04Fight\MessageWindow.cs" />
     <Compile Include="Assets\Scripts\00Common\Constants.cs" />
     <Compile Include="Assets\Scripts\04Fight\InfoWindow.cs" />
     <Compile Include="Assets\Scripts\03Lobby\LobbyWindow.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="Assets\Scripts\03Lobby\LobbySys.cs" />
     <Compile Include="Assets\Scripts\02Login\LoginSys.cs" />
     <Compile Include="Assets\Scripts\00Common\WindowRoot.cs" />
-    <Compile Include="Assets\Scripts\04Fight\MessageWindow.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Scripts\Libs\netcoreapp3.1\IOCPNet.dll" />

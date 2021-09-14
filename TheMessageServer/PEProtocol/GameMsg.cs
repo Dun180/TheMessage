@@ -17,6 +17,7 @@ namespace PEProtocol
         public RoomMsg[] roomMsg;
         public DetailRoomMsg detailRoomMsg;
         public PushReady pushReady;
+        public ResponseRefreshMessage responseRefreshMessage;
         public int roomID;
     }
     [Serializable]
@@ -76,16 +77,32 @@ namespace PEProtocol
         public string name;
 
 
-        public int posIndex;
-        public int iconIndex;
+        public int posIndex;//位置索引
+        public int iconIndex;//头像索引
 
         public bool isReady;
+
+
+        public int cards;//手牌数
+        public int redNum;//红情报数
+        public int blueNum;//蓝情报数
+        public int blackNum;//黑情报数
+
+        public int charIndex;//人物对应索引
+        public String charName;//人物名字
     }
     [Serializable]
     public class PushReady
     {
         public int posIndex;
         public bool isReady;
+    }
+    [Serializable]
+    public class ResponseRefreshMessage
+    {
+        public int selfPosIndex;
+
+        public MatchPlayerData[] playerArr;
     }
     public enum ErrorCode
     {
@@ -102,9 +119,12 @@ namespace PEProtocol
     {
         None = 0,
 
+        //登录
         ReqLogin ,
         RspLogin ,
 
+
+        //匹配
         ReqMatch ,
         RspMatch ,
         PshMatch ,
@@ -129,6 +149,14 @@ namespace PEProtocol
         RequestGameStart ,
         PushGameStart,
 
+        //游戏
+
+        RequestRefreshMessage,
+        ResponseRefreshMessage,
+
+
+
+        //其他
         OnConnected ,
         OnDisConnected ,
     }

@@ -84,33 +84,33 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 2088}
     - Class: 114
-      Script: {instanceID: 2460}
+      Script: {instanceID: 2136}
     - Class: 114
-      Script: {instanceID: 2606}
+      Script: {instanceID: 2462}
     - Class: 114
-      Script: {instanceID: 2746}
+      Script: {instanceID: 2608}
     - Class: 114
-      Script: {instanceID: 2778}
+      Script: {instanceID: 2748}
     - Class: 114
-      Script: {instanceID: 2828}
+      Script: {instanceID: 2780}
     - Class: 114
       Script: {instanceID: 2830}
     - Class: 114
-      Script: {instanceID: 2992}
+      Script: {instanceID: 2832}
     - Class: 114
-      Script: {instanceID: 3094}
+      Script: {instanceID: 2994}
     - Class: 114
-      Script: {instanceID: 3178}
+      Script: {instanceID: 3096}
     - Class: 114
-      Script: {instanceID: 3362}
+      Script: {instanceID: 3180}
     - Class: 114
-      Script: {instanceID: 3608}
+      Script: {instanceID: 3364}
     - Class: 114
-      Script: {instanceID: 3798}
+      Script: {instanceID: 3610}
     - Class: 114
-      Script: {instanceID: 3824}
+      Script: {instanceID: 3800}
     - Class: 114
-      Script: {instanceID: 21894}
+      Script: {instanceID: 3826}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -254,6 +254,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Text
+  - hash:
+      serializedVersion: 2
+      Hash: de4cb9ef1519057389038f883aa3ed8c
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: MessageWindow
   - hash:
       serializedVersion: 2
       Hash: f1d735cc1a21c3704ab52568f4fbfcf8
@@ -710,12 +716,6 @@ ScriptsOnlyBuild:
     assemblyName: Unity.2D.IK.Runtime.dll
     namespaceName: UnityEngine.U2D.IK
     className: FabrikSolver2D
-  - hash:
-      serializedVersion: 2
-      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: MessageWindow
   platform: 19
   scenePathNames:
   - Assets/Scenes/GameRoot.unity

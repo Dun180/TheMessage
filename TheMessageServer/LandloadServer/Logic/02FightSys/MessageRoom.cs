@@ -49,24 +49,14 @@ public class MessageRoom
     }
     public void ExitMessagePlayer(int id)
     {
-        int posIndex = -1;
-        for (int i = 0; i < matchPlayerArr.Length; i++)
-        {
-            if (matchPlayerArr[i] != null)
-            {
-                if (id == matchPlayerArr[i].id)
-                {
-                    matchPlayerArr[i] = null;
-                    playerArr[i] = null;
-                    posIndex = i;
-                    roomNumber--;
-                    
-                }
-            }
-
-        }
+        int posIndex = GetIndex(id);
         if (posIndex >= 0)
         {
+            matchPlayerArr[posIndex] = null;
+            playerArr[posIndex] = null;
+
+            roomNumber--;
+
             for (int i = posIndex+1; i < matchPlayerArr.Length; i++)
             {
                 matchPlayerArr[i-1] = matchPlayerArr[i];
@@ -151,10 +141,53 @@ public class MessageRoom
         }
     }
 
-    //TOOL METHONDS
-    public MessagePlayer[] GetMessagePlayers()
+    //游戏开始房间初始化
+    public void GameStart()
     {
-        return playerArr;
+        //改变房间状态
+        roomState = RoomState.Matching;
+        //初始化玩家状态
+        for(int i = 0; i < playerArr.Length; i++)
+        {
+            playerArr[i].InitMatch();
+        }
+
+
+
+    }
+
+    public void UpdateMatchData()
+    {
+        for(int i = 0; i < playerArr.Length; i++)
+        {
+            matchPlayerArr[i].cards = playerArr[i].cards.Count;
+            matchPlayerArr[i].redNum = playerArr[i].redNum;
+            matchPlayerArr[i].blueNum = playerArr[i].blueNum;
+            matchPlayerArr[i].blackNum = playerArr[i].blackNum;
+            matchPlayerArr[i].charIndex = playerArr[i].charIndex;
+            matchPlayerArr[i].charName = playerArr[i].charName;
+        }
+    }
+    //TOOL METHONDS
+    public int GetIndex(int id)
+    {
+        int posIndex = -1;
+        for (int i = 0; i < matchPlayerArr.Length; i++)
+        {
+            if (matchPlayerArr[i] != null)
+            {
+                if (id == matchPlayerArr[i].id)
+                {
+                    
+                    posIndex = i;
+                    break;
+
+                }
+            }
+
+        }
+
+        return posIndex;
     }
 
     
@@ -164,12 +197,6 @@ public class MessageRoom
 public enum RoomState
 {
     None,
-    Created,
     Matching,
-    Matched,
-    CallLord,
-    RobLord,
-    AddTimes,
-    OutPokers,
     End
 }

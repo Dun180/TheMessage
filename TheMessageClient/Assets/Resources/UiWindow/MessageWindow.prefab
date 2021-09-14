@@ -1156,7 +1156,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 497, y: 102}
+  m_AnchoredPosition: {x: -845, y: 164}
   m_SizeDelta: {x: 233.8839, y: 376.1958}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &459332718
@@ -1543,7 +1543,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -387, y: 351}
+  m_AnchoredPosition: {x: 56, y: 349}
   m_SizeDelta: {x: 233.8839, y: 376.1958}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &586712930
@@ -1585,7 +1585,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 51, y: 351}
+  m_AnchoredPosition: {x: -400, y: 349}
   m_SizeDelta: {x: 233.8839, y: 376.1958}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &612493879
@@ -3703,7 +3703,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -845, y: 158}
+  m_AnchoredPosition: {x: 497, y: 56}
   m_SizeDelta: {x: 233.8839, y: 376.1958}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1407516791
@@ -5685,6 +5685,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4196942906650064725}
+  - component: {fileID: 388600506}
   m_Layer: 0
   m_Name: MessageWindow
   m_TagString: Untagged
@@ -5701,7 +5702,7 @@ RectTransform:
   m_GameObject: {fileID: 7538238266894122225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.69444436, y: 0.69444436, z: 0.69444436}
   m_Children:
   - {fileID: 3821431560559763235}
   - {fileID: 5373183390180494763}
@@ -5715,3 +5716,58 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &388600506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7538238266894122225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a6f3a57c558c494b83b07a80c3540f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charImg:
+  - {fileID: 980863180}
+  - {fileID: 470817286}
+  - {fileID: 1164603397}
+  - {fileID: 705339766}
+  - {fileID: 699670066}
+  charName:
+  - {fileID: 889229854}
+  - {fileID: 1704308171}
+  - {fileID: 147938020}
+  - {fileID: 1919142212}
+  - {fileID: 722506501}
+  playerName:
+  - {fileID: 1671628541}
+  - {fileID: 1663619206}
+  - {fileID: 909045188}
+  - {fileID: 1129837126}
+  - {fileID: 849449673}
+  cardsNum:
+  - {fileID: 289288719}
+  - {fileID: 893483000}
+  - {fileID: 1654663976}
+  - {fileID: 741575851}
+  - {fileID: 647620788}
+  redNum:
+  - {fileID: 335096222}
+  - {fileID: 2025014134}
+  - {fileID: 1822047619}
+  - {fileID: 34429993}
+  - {fileID: 1908633691}
+  blueNum:
+  - {fileID: 1407516793}
+  - {fileID: 1986408631}
+  - {fileID: 550621779}
+  - {fileID: 1649051810}
+  - {fileID: 1387805809}
+  blackNum:
+  - {fileID: 956069155}
+  - {fileID: 18919007}
+  - {fileID: 1631350737}
+  - {fileID: 26645745}
+  - {fileID: 518551284}
+  selfIndex: 0

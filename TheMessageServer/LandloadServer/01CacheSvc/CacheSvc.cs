@@ -311,7 +311,7 @@ public class CacheSvc
             //若为房主退出房间
 
             //将所有玩家移出tokenRoomDic
-            MessagePlayer[] messagePlayers =  messageRoom.GetMessagePlayers();
+            MessagePlayer[] messagePlayers =  messageRoom.playerArr;
             for(int i = 0; i < messagePlayers.Length; i++)
             {
                 if (messagePlayers[i] != null) {
@@ -365,12 +365,33 @@ public class CacheSvc
         if (messageRoom.AllReady())
         {
             SendMsgAll(messageRoom, msg);
+            messageRoom.GameStart();
         }
         else
         {
             msg.err = ErrorCode.NotAllReady;
             pack.token.SendMsg(msg);
         }
+    }
+
+    //刷新游戏房间数据
+    //需要传回房间中所有人的游戏公开信息
+    public void RequestRefreshMessage(MsgPack pack)
+    {
+        tokenRoomDic.TryGetValue(pack.token, out int roomID);
+        idRoomDic.TryGetValue(roomID, out MessageRoom messageRoom);
+        PlayerData playerData = GetPlayerDataByToken(pack.token);
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.ResponseRefreshMessage,
+            responseRefreshMessage = new ResponseRefreshMessage
+            {
+                selfPosIndex = messageRoom.GetIndex(playerData.id),
+                playerArr = messageRoom.matchPlayerArr
+            }
+        };
+        pack.token.SendMsg(msg);
+
     }
 
 

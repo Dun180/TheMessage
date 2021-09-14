@@ -156,6 +156,7 @@ public class LobbySys : MonoBehaviour
         TipsWindow.AddTips("游戏开始");
         lobbyWindow.SetWindowState(false);
         fightSys.EnterMessage();
+        fightSys.RequestRefreshMessage();
 
     }
 }

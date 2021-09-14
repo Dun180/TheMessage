@@ -42,5 +42,16 @@ public class FightSys : MonoBehaviour
         messageWindow.SetWindowState();
     }
 
+    //请求刷新房间信息
+    public void RequestRefreshMessage()
+    {
+        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestRefreshMessage });
+    }
+
+    //刷新房间信息
+    public void ResponseRefreshMessage(GameMsg msg)
+    {
+        messageWindow.RefreshMessage(msg.responseRefreshMessage.selfPosIndex, msg.responseRefreshMessage.playerArr);
+    }
 
 }

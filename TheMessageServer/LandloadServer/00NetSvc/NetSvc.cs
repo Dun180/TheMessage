@@ -82,9 +82,11 @@ public class NetSvc
                 LoginSys.Instance.ClearOfflineData(pack.token);
                 
                 break;
+            //登录请求
             case CMD.ReqLogin:
                 LoginSys.Instance.ReqLogin(pack);
                 break;
+            //匹配请求
             case CMD.RequestAddRoom:
                 MatchSys.Instance.RequestAddRoom(pack);//添加房间请求
                 break;
@@ -105,6 +107,10 @@ public class NetSvc
                 break;
             case CMD.RequestGameStart:
                 CacheSvc.Instance.RequestGameStart(pack);
+                break;
+            //游戏请求
+            case CMD.RequestRefreshMessage:
+                CacheSvc.Instance.RequestRefreshMessage(pack);
                 break;
             case CMD.None:
                 break;
