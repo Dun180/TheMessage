@@ -30,6 +30,8 @@ public class MessagePlayer
     public int charIndex;//人物对应索引
     public string charName;//人物名字
 
+    public PlayerState playerState;
+
     public void InitMatch()
     {
         redNum = 0;
@@ -39,11 +41,25 @@ public class MessagePlayer
         charName = null;
         cards.Clear();
         messages.Clear();
+        playerState = PlayerState.None;
     }
 
     public void AddCard(Card card)
     {
         cards.Add(card);
     }
+}
+
+public enum PlayerState
+{
+    None = 0,
+    Free,//自由态
+    Locking,//锁定
+    Transfer,//调离
+    Intercept,//截获
+    Receive //接收
+
+
+
 }
 

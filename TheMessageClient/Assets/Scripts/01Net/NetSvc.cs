@@ -80,6 +80,9 @@ public class NetSvc : MonoBehaviour
             case CMD.ResponseRefreshMessage:
                 FightSys.Instance.ResponseRefreshMessage(msg);
                 break;
+            case CMD.PushChar:
+                FightSys.Instance.PushChar(msg);
+                break;
             case CMD.None:
                 break;
             default:

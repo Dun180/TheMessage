@@ -54,4 +54,8 @@ public class FightSys : MonoBehaviour
         messageWindow.RefreshMessage(msg.responseRefreshMessage.selfPosIndex, msg.responseRefreshMessage.playerArr);
     }
 
+    public void PushChar(GameMsg msg)
+    {
+        messageWindow.SelectChar(msg.pushChar);
+    }
 }

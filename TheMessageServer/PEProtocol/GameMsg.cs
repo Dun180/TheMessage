@@ -13,12 +13,15 @@ namespace PEProtocol
         public ReqLogin reqLogin;
         public RspLogin rspLogin;
 
+        public RequestJoinRoomMsg requestJoinRoomMsg;
+
         public PshMatch pshMatch;
         public RoomMsg[] roomMsg;
         public DetailRoomMsg detailRoomMsg;
         public PushReady pushReady;
         public ResponseRefreshMessage responseRefreshMessage;
-        public int roomID;
+        public PushChar pushChar;
+        
     }
     [Serializable]
     public class ReqLogin
@@ -92,6 +95,11 @@ namespace PEProtocol
         public String charName;//人物名字
     }
     [Serializable]
+    public class RequestJoinRoomMsg
+    {
+        public int roomID;
+    }
+    [Serializable]
     public class PushReady
     {
         public int posIndex;
@@ -103,6 +111,14 @@ namespace PEProtocol
         public int selfPosIndex;
 
         public MatchPlayerData[] playerArr;
+    }
+
+    [Serializable]
+    public class PushChar
+    {
+        public int char_1;
+        public int char_2;
+        public int char_3;
     }
     public enum ErrorCode
     {
@@ -154,8 +170,8 @@ namespace PEProtocol
         RequestRefreshMessage,
         ResponseRefreshMessage,
 
-
-
+        PushChar,//推送角色牌索引
+        RequestSelectChar,//将选择的角色信息发送给服务器
         //其他
         OnConnected ,
         OnDisConnected ,

@@ -70,8 +70,10 @@
     <Compile Include="Assets\Scripts\03Lobby\LobbySys.cs" />
     <Compile Include="Assets\Scripts\02Login\LoginSys.cs" />
     <Compile Include="Assets\Scripts\00Common\WindowRoot.cs" />
+    <Compile Include="Assets\Scripts\00Common\PETimer.cs" />
   </ItemGroup>
   <ItemGroup>
+     <None Include="Assets\Shader\SpritesOutline.shader" />
      <None Include="Assets\Scripts\Libs\netcoreapp3.1\IOCPNet.dll" />
      <None Include="Assets\Scripts\Libs\netcoreapp3.1\PEProtocol.dll" />
      <None Include="Assets\Scripts\Libs\netcoreapp3.1\PEUtils.dll" />

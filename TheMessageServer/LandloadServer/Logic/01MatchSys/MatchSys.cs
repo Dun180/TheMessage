@@ -110,7 +110,7 @@ public class MatchSys
             pack.token.SendMsg(errMsg);
             return;
         }
-        int roomID = pack.msg.roomID;
+        int roomID = pack.msg.requestJoinRoomMsg.roomID;
         ServerToken token = pack.token;
         cacheSvc.JoinRoom(roomID, token);
         

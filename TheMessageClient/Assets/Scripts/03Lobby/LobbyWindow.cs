@@ -97,35 +97,48 @@ public class LobbyWindow : WindowRoot
     public void ClickJoinRoomBtn0()
     {
         audioSvc.PlayUIAudio(Constants.NormalClick);
-        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestJoinRoomMsg,roomID = 0 });
-        
+        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestJoinRoomMsg, 
+            requestJoinRoomMsg = new RequestJoinRoomMsg { roomID = 0 } });
     }
 
     public void ClickJoinRoomBtn1()
     {
         audioSvc.PlayUIAudio(Constants.NormalClick);
-        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestJoinRoomMsg, roomID = 1 });
+        netSvc.SendMsg(new GameMsg
+        {
+            cmd = CMD.RequestJoinRoomMsg,
+            requestJoinRoomMsg = new RequestJoinRoomMsg { roomID = 1 }
+        });
 
     }
 
     public void ClickJoinRoomBtn2()
     {
         audioSvc.PlayUIAudio(Constants.NormalClick);
-        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestJoinRoomMsg, roomID = 2 });
+        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestJoinRoomMsg, 
+            requestJoinRoomMsg = new RequestJoinRoomMsg { roomID = 2 } });
 
     }
 
     public void ClickJoinRoomBtn3()
     {
         audioSvc.PlayUIAudio(Constants.NormalClick);
-        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestJoinRoomMsg, roomID = 3 });
+        netSvc.SendMsg(new GameMsg
+        {
+            cmd = CMD.RequestJoinRoomMsg,
+            requestJoinRoomMsg = new RequestJoinRoomMsg { roomID = 3 }
+        });
 
     }
 
     public void ClickJoinRoomBtn4()
     {
         audioSvc.PlayUIAudio(Constants.NormalClick);
-        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestJoinRoomMsg, roomID = 4 });
+        netSvc.SendMsg(new GameMsg
+        {
+            cmd = CMD.RequestJoinRoomMsg,
+            requestJoinRoomMsg = new RequestJoinRoomMsg { roomID = 4 }
+        });
 
     }
 

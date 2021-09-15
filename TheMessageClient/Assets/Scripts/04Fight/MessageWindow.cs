@@ -2,6 +2,7 @@
 
 
 using PEProtocol;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,12 +20,21 @@ public class MessageWindow : WindowRoot
     public Text[] blueNum;
     public Text[] blackNum;
 
+    public Image selectionBox;
+    public Image char_1;
+    public Image char_2;
+    public Image char_3;
+
+    public Material outLineMaterial;
+
+    public Text txtTimer;
 
     private AudioSvc audioSvc;
     private NetSvc netSvc;
 
     private int selfIndex;
-
+    private int charIndex;
+    private int[] charList;
 
     public override void InitWindow()
     {
@@ -32,7 +42,11 @@ public class MessageWindow : WindowRoot
         audioSvc = AudioSvc.Instance;
         netSvc = NetSvc.Instance;
 
+        SetActive(selectionBox, false);
+
         selfIndex = -1;
+        charIndex = -1;
+        charList = new int[3];
 
     }
 
@@ -60,6 +74,119 @@ public class MessageWindow : WindowRoot
         }
 
     }
+
+    public void SelectChar(PushChar pushChar)
+    {
+        this.Log(pushChar.char_1.ToString() + "+"+pushChar.char_2.ToString() + "+" + pushChar.char_3.ToString());
+        selectionBox.gameObject.SetActive(true);
+        string path = "ResImages/Char/Char_";
+        charList[0] = pushChar.char_1;
+        charList[1] = pushChar.char_2;
+        charList[2] = pushChar.char_3;
+        SetSprite(char_1, path + pushChar.char_1.ToString());
+        SetSprite(char_2, path + pushChar.char_2.ToString());
+        SetSprite(char_3, path + pushChar.char_3.ToString());
+
+        
+        
+    }
+
+    public void ClickChar1Btn()
+    {
+        audioSvc.PlayUIAudio(Constants.NormalClick);
+
+        if (charIndex != charList[0])
+        {
+            charIndex = charList[0];
+            char_1.material = outLineMaterial;
+            char_2.material = null;
+            char_3.material = null;
+        }
+        else
+        {
+            charIndex = -1;
+            char_1.material = null;
+        }
+
+    }
+
+    public void ClickChar2Btn()
+    {
+        audioSvc.PlayUIAudio(Constants.NormalClick);
+
+        if (charIndex != charList[1])
+        {
+            charIndex = charList[1];
+            char_1.material = null;
+            char_2.material = outLineMaterial;
+            char_3.material = null;
+        }
+        else
+        {
+            charIndex = -1;
+            char_2.material = null;
+        }
+
+    }
+
+    public void ClickChar3Btn()
+    {
+        audioSvc.PlayUIAudio(Constants.NormalClick);
+
+        if (charIndex != charList[2])
+        {
+            charIndex = charList[2];
+            char_1.material = null;
+            char_2.material = null;
+            char_3.material = outLineMaterial;
+        }
+        else
+        {
+            charIndex = -1;
+            char_3.material = null;
+        }
+
+    }
+
+    public void ClickConfirmCharBtn()
+    {
+        audioSvc.PlayUIAudio(Constants.NormalClick);
+        if (charIndex < 0)
+        {
+            TipsWindow.AddTips("请选择人物");
+        }
+        else
+        {
+
+        }
+    }
+
+
+
+
+
+/*
+    //倒计时设置
+    public void SetClockCallBack(int countTime, Action callback)
+    {
+        SetText(txtTimer, countTime);
+
+        PETimerTask pTask = new PETimerTask
+        {
+            rateTime = 1,
+            rateCB = () =>
+            {
+                countTime -= 1;
+                SetText(txtTimer, countTime);
+
+            },
+            endTime = countTime,
+            endCB = callback
+        };
+        PETimer pt = (PETimer)GetOrAddComponent<PETimer>(btnGroupTrans.gameObject);
+        pt.AddTimerTask(pTask);
+
+    }*/
 
 
     // Start is called before the first frame update

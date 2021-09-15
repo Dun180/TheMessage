@@ -54,4 +54,16 @@ public class WindowRoot : MonoBehaviour
     {
         return Resources.Load(path, typeof(T)) as T;
     }
+
+    //组件挂载函数
+    protected Component GetOrAddComponent<T>(GameObject go) where T : Component
+    {
+        T cpt = go.GetComponent<T>();
+        if (cpt == null)
+        {
+            cpt = go.AddComponent<T>();
+        }
+        return cpt;
+    }
+
 }

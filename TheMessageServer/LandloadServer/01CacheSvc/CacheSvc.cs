@@ -303,7 +303,7 @@ public class CacheSvc
         idRoomDic.TryGetValue(roomID, out MessageRoom messageRoom);
         PlayerData playerData = GetPlayerDataByToken(pack.token);
 
-        
+        if (messageRoom == null) return;
 
         //需要根据退出房间的人是否为房主来判断，若为房主，则所有人一起退出，若不是，则一人退出
         if(messageRoom.roomOwnerID == playerData.id)
@@ -365,7 +365,8 @@ public class CacheSvc
         if (messageRoom.AllReady())
         {
             SendMsgAll(messageRoom, msg);
-            messageRoom.GameStart();
+            FightSys.Instance.GameStart(messageRoom);
+            
         }
         else
         {
@@ -380,6 +381,10 @@ public class CacheSvc
     {
         tokenRoomDic.TryGetValue(pack.token, out int roomID);
         idRoomDic.TryGetValue(roomID, out MessageRoom messageRoom);
+        if (messageRoom == null)
+        {
+            return;
+        }
         PlayerData playerData = GetPlayerDataByToken(pack.token);
         GameMsg msg = new GameMsg
         {

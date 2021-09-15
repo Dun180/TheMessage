@@ -256,7 +256,7 @@ ScriptsOnlyBuild:
     className: Text
   - hash:
       serializedVersion: 2
-      Hash: de4cb9ef1519057389038f883aa3ed8c
+      Hash: ee7a95ad2899ff177e7cf8006282ee53
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MessageWindow
