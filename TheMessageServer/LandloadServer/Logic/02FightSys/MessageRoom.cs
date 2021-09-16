@@ -18,6 +18,8 @@ public class MessageRoom
     public int roomNumber { private set; get; }
 
     private int readyNumber;//准备的人数
+    private int charCount;//已选择角色的人数
+
     public MessageRoom(int roomID,string roomOwner,int roomOwnerID)
     {
         RoomID = roomID;
@@ -28,6 +30,7 @@ public class MessageRoom
         matchPlayerArr = new MatchPlayerData[5];
         roomNumber = 0;
         readyNumber = 0;
+        charCount = 0;
     }
 
     //添加玩家
@@ -190,7 +193,25 @@ public class MessageRoom
         return posIndex;
     }
 
-    
+    public bool SetPlayerChar(int id, int index, string name)
+    {
+        bool flag = false;
+        int playerIndex = GetIndex(id);
+        playerArr[playerIndex].charIndex = index;
+        playerArr[playerIndex].charName = name;
+
+
+        charCount++;
+
+
+        if (charCount == playerArr.Length)
+        {
+            flag = true;
+        }
+
+        return flag;
+    }
+
     
 }
 

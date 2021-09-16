@@ -21,7 +21,8 @@ namespace PEProtocol
         public PushReady pushReady;
         public ResponseRefreshMessage responseRefreshMessage;
         public PushChar pushChar;
-        
+        public RequestSelectChar requestSelectChar;
+        public PushSelectChar pushSelectChar;
     }
     [Serializable]
     public class ReqLogin
@@ -120,6 +121,17 @@ namespace PEProtocol
         public int char_2;
         public int char_3;
     }
+
+    [Serializable]
+    public class RequestSelectChar
+    {
+        public int charIndex;
+    }
+    [Serializable]
+    public class PushSelectChar
+    {
+        public MatchPlayerData[] playerArr;
+    }
     public enum ErrorCode
     {
         None,
@@ -172,6 +184,7 @@ namespace PEProtocol
 
         PushChar,//推送角色牌索引
         RequestSelectChar,//将选择的角色信息发送给服务器
+        PushSelectChar,
         //其他
         OnConnected ,
         OnDisConnected ,

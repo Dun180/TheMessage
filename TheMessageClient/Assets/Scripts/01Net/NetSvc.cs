@@ -83,6 +83,9 @@ public class NetSvc : MonoBehaviour
             case CMD.PushChar:
                 FightSys.Instance.PushChar(msg);
                 break;
+            case CMD.PushSelectChar:
+                FightSys.Instance.PushSelectChar(msg);
+                break;
             case CMD.None:
                 break;
             default:

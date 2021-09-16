@@ -32,7 +32,7 @@ public class MessageWindow : WindowRoot
     private AudioSvc audioSvc;
     private NetSvc netSvc;
 
-    private int selfIndex;
+    public int selfIndex { private set; get; }
     private int charIndex;
     private int[] charList;
 
@@ -65,8 +65,10 @@ public class MessageWindow : WindowRoot
             {
                 flag -= matchplayer.Length;
             }
+
             SetSprite(charImg[i], path + matchplayer[flag].charIndex);
             SetText(playerName[i], matchplayer[flag].name);
+            SetText(charName[i], matchplayer[flag].charName);
             SetText(cards[i], matchplayer[flag].cards);
             SetText(redNum[i], matchplayer[flag].redNum);
             SetText(blueNum[i], matchplayer[flag].blueNum);
@@ -158,6 +160,14 @@ public class MessageWindow : WindowRoot
         else
         {
 
+            selectionBox.gameObject.SetActive(false);
+
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.RequestSelectChar,
+                requestSelectChar = new RequestSelectChar { charIndex = this.charIndex }
+            };
+            netSvc.SendMsg(msg);
         }
     }
 
@@ -165,7 +175,6 @@ public class MessageWindow : WindowRoot
 
 
 
-/*
     //µπº∆ ±…Ë÷√
     public void SetClockCallBack(int countTime, Action callback)
     {
@@ -183,10 +192,10 @@ public class MessageWindow : WindowRoot
             endTime = countTime,
             endCB = callback
         };
-        PETimer pt = (PETimer)GetOrAddComponent<PETimer>(btnGroupTrans.gameObject);
+        PETimer pt = (PETimer)GetOrAddComponent<PETimer>(txtTimer.gameObject);
         pt.AddTimerTask(pTask);
 
-    }*/
+    }
 
 
     // Start is called before the first frame update

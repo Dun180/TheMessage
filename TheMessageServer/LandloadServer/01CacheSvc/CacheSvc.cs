@@ -27,6 +27,36 @@ public class CacheSvc
 
     private Dictionary<ServerToken, int> tokenRoomDic = new Dictionary<ServerToken, int>();
     private Dictionary<int, MessageRoom> idRoomDic = new Dictionary<int, MessageRoom>();
+
+    private Dictionary<int, string> indexCharDic = new Dictionary<int, string>() 
+    {
+        {0,"默认角色" },
+        {1,"老鬼" },
+        {2,"老枪" },
+        {3,"老金" },
+        {4,"蝮蛇" },
+        {5,"钢铁特工" },
+        {6,"戴笠" },
+        {7,"怪盗九九" },
+        {8,"小马哥" },
+        {9,"职业杀手" },
+        {10,"贝雷帽" },
+        {11,"黄雀" },
+        {12,"峨眉峰" },
+        {13,"柒佰" },
+        {14,"闪灵" },
+        {15,"译电员" },
+        {16,"福尔摩斯" },
+        {17,"礼服蒙面人" },
+        {18,"刀锋" },
+        {19,"情报处长" },
+        {20,"黑玫瑰" },
+        {21,"致命香水" },
+        {22,"黑玫瑰" },
+        {23,"浮萍" },
+        {24,"六姐" },
+        {25,"大美女" },
+    };
     public void Init()
     {
         dBSvc = DBSvc.Instance;
@@ -397,6 +427,36 @@ public class CacheSvc
         };
         pack.token.SendMsg(msg);
 
+    }
+
+    public void RequestSelectChar(MsgPack pack)
+    {
+        tokenRoomDic.TryGetValue(pack.token, out int roomID);
+        idRoomDic.TryGetValue(roomID, out MessageRoom messageRoom);
+        if (messageRoom == null)
+        {
+            return;
+        }
+        PlayerData playerData = GetPlayerDataByToken(pack.token);
+        indexCharDic.TryGetValue(pack.msg.requestSelectChar.charIndex, out string name);
+
+        bool flag = messageRoom.SetPlayerChar(playerData.id, pack.msg.requestSelectChar.charIndex, name);
+
+
+        if (flag)
+        {
+            messageRoom.UpdateMatchData();
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushSelectChar,
+                pushSelectChar = new PushSelectChar
+                {
+                    playerArr = messageRoom.matchPlayerArr
+                }
+            };
+
+            SendMsgAll(messageRoom, msg);
+        }
     }
 
 

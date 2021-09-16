@@ -112,6 +112,9 @@ public class NetSvc
             case CMD.RequestRefreshMessage:
                 CacheSvc.Instance.RequestRefreshMessage(pack);
                 break;
+            case CMD.RequestSelectChar:
+                CacheSvc.Instance.RequestSelectChar(pack);
+                break;
             case CMD.None:
                 break;
             default:

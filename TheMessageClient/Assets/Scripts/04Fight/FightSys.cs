@@ -58,4 +58,10 @@ public class FightSys : MonoBehaviour
     {
         messageWindow.SelectChar(msg.pushChar);
     }
+
+    public void PushSelectChar(GameMsg msg)
+    {
+        messageWindow.RefreshMessage(messageWindow.selfIndex, msg.pushSelectChar.playerArr);
+
+    }
 }
