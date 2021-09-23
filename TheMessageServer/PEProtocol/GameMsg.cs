@@ -1,6 +1,7 @@
 ﻿//逻辑业务协议
 using PENet;
 using System;
+using System.Collections.Generic;
 
 namespace PEProtocol
 {
@@ -23,6 +24,8 @@ namespace PEProtocol
         public PushChar pushChar;
         public RequestSelectChar requestSelectChar;
         public PushSelectChar pushSelectChar;
+        public PushIdentityInfo pushIdentityInfo;
+        public PushCard pushCard;
     }
     [Serializable]
     public class ReqLogin
@@ -132,6 +135,18 @@ namespace PEProtocol
     {
         public MatchPlayerData[] playerArr;
     }
+
+    [Serializable]
+    public class PushIdentityInfo
+    {
+        public int identity;
+    }
+
+    [Serializable]
+    public class PushCard
+    {
+        public List<Card> cardList;
+    }
     public enum ErrorCode
     {
         None,
@@ -185,6 +200,10 @@ namespace PEProtocol
         PushChar,//推送角色牌索引
         RequestSelectChar,//将选择的角色信息发送给服务器
         PushSelectChar,
+
+        PushIdentityInfo,//推送玩家身份信息
+
+        PushCard,//推送手牌
         //其他
         OnConnected ,
         OnDisConnected ,

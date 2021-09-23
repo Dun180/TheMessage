@@ -15,6 +15,8 @@ public class MessageRoom
     public int roomOwnerID;
     public MatchPlayerData[] matchPlayerArr = null;
 
+    List<Card> cardList = new List<Card>();
+    List<Card> tempCardList = new List<Card>();//创建一个临时牌库用来存放打乱前的牌
     public int roomNumber { private set; get; }
 
     private int readyNumber;//准备的人数
@@ -163,7 +165,7 @@ public class MessageRoom
     {
         for(int i = 0; i < playerArr.Length; i++)
         {
-            matchPlayerArr[i].cards = playerArr[i].cards.Count;
+            matchPlayerArr[i].cards = playerArr[i].cardList.Count;
             matchPlayerArr[i].redNum = playerArr[i].redNum;
             matchPlayerArr[i].blueNum = playerArr[i].blueNum;
             matchPlayerArr[i].blackNum = playerArr[i].blackNum;
@@ -212,7 +214,170 @@ public class MessageRoom
         return flag;
     }
 
+
+    public void RandomIdentity()
+    {
+        List<int> list = new List<int>();
+        Random rand = new Random();
+        int k = 0;
+        do
+        {
+            k = rand.Next(1, 6);
+            if (!list.Contains(k))
+                list.Add(k);
+        }
+        while (list.Count < 5);
+
+        for(int i = 0; i < playerArr.Length; i++)
+        {
+            playerArr[i].SetIdentity(list[i]);
+        }
+    }
+
+    //创建牌
+    public void CreatRandomCard()
+    {
+        
+
+        
+
+        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Gambling, 2);//2 黑直达博弈
+        CreatCard(CardColor.Black, CardType.TextMessage, CardFunction.Swap, 2);//2 黑文本调包
+        CreatCard(CardColor.Red, CardType.TextMessage, CardFunction.Swap, 2);//2 红文本调包
+        CreatCard(CardColor.RedBlack, CardType.TextMessage, CardFunction.Swap, 1);//1 红黑文本掉包
+        CreatCard(CardColor.Blue, CardType.TextMessage, CardFunction.Swap, 2);//2 蓝文本掉包
+        CreatCard(CardColor.BlueBlack, CardType.TextMessage, CardFunction.Swap, 1);//1 蓝黑文本调包
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.TigerMountain, 2);//2 黑密电调虎
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.TigerMountain, 4);//4 红密电调虎
+        CreatCard(CardColor.RedBlack, CardType.RestrictedMessage, CardFunction.TigerMountain, 2);//2 红黑密电调虎
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.TigerMountain, 4);//4 蓝密电调虎
+        CreatCard(CardColor.BlueBlack, CardType.RestrictedMessage, CardFunction.TigerMountain, 2);//2 蓝黑密电调虎
+        CreatCard(CardColor.Black, CardType.TextMessage, CardFunction.PublicDocument, 1);//1 黑文本公开文档 
+        CreatCard(CardColor.Red, CardType.TextMessage, CardFunction.PublicDocument, 1);//1 红文本公开文档
+        CreatCard(CardColor.Blue, CardType.TextMessage, CardFunction.PublicDocument, 1);//1 蓝文本公开文档
+        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Intercept, 5);//5 黑直达截获
+        CreatCard(CardColor.Red, CardType.NonstopMessage, CardFunction.Intercept, 2);//2 红直达截获
+        CreatCard(CardColor.RedBlack, CardType.NonstopMessage, CardFunction.Intercept, 1);//1 红黑直达截获
+        CreatCard(CardColor.Blue, CardType.NonstopMessage, CardFunction.Intercept, 2);//2 蓝直达截获
+        CreatCard(CardColor.BlueBlack, CardType.NonstopMessage, CardFunction.Intercept, 1);//1 蓝黑直达截获
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.Decipher, 2);//2 黑密电破译
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.Decipher, 2);//2 红密电破译
+        CreatCard(CardColor.RedBlack, CardType.RestrictedMessage, CardFunction.Decipher, 1);//1 红黑密电破译
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.Decipher, 2);//2 蓝密电破译
+        CreatCard(CardColor.BlueBlack, CardType.RestrictedMessage, CardFunction.Decipher, 1);//1 蓝黑密电破译
+        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Balance, 2);//2 黑直达权衡
+        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Burn, 3);//3 黑直达烧毁
+        CreatCard(CardColor.Red, CardType.NonstopMessage, CardFunction.Burn, 2);//2 红直达烧毁
+        CreatCard(CardColor.Blue, CardType.NonstopMessage, CardFunction.Burn, 2);//2 蓝直达烧毁
+        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Penetrate, 5);//5 黑直达识破
+        CreatCard(CardColor.Red, CardType.NonstopMessage, CardFunction.Penetrate, 2);//2 红直达识破
+        CreatCard(CardColor.RedBlack, CardType.NonstopMessage, CardFunction.Penetrate, 1);//1 红黑直达识破
+        CreatCard(CardColor.Blue, CardType.NonstopMessage, CardFunction.Penetrate, 2);//2 蓝直达识破
+        CreatCard(CardColor.BlueBlack, CardType.NonstopMessage, CardFunction.Penetrate, 1);//1 蓝黑直达识破
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.ProbingSoySauce_1, 1);//1 黑密电试探酱油+1
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.ProbingSoySauce_0, 1);//1 黑密电试探酱油-1
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.ProbingSoySauce_1, 1);//1 红密电试探酱油+1
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.ProbingSoySauce_0, 1);//1 红密电试探酱油-1
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.ProbingSoySauce_1, 1);//1 蓝密电试探酱油+1
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.ProbingSoySauce_0, 1);//1 蓝密电试探酱油-1
+
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.ProbingMilitary_1, 1);//1 黑密电试探军情+1
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.ProbingMilitary_0, 1);//1 黑密电试探军情-1
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.ProbingMilitary_1, 1);//1 红密电试探军情+1
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.ProbingMilitary_0, 1);//1 红密电试探军情-1
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.ProbingMilitary_1, 1);//1 蓝密电试探军情+1
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.ProbingMilitary_0, 1);//1 蓝密电试探军情-1
+
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.ProbingLurker_1, 1);//1 黑密电试探潜伏+1
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.ProbingLurker_0, 1);//1 黑密电试探潜伏-1
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.ProbingLurker_1, 1);//1 红密电试探潜伏+1
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.ProbingLurker_0, 1);//1 红密电试探潜伏-1
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.ProbingLurker_1, 1);//1 蓝密电试探潜伏+1
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.ProbingLurker_0, 1);//1 蓝密电试探潜伏-1
+
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.Locking, 6);//6 红密电锁定
+        CreatCard(CardColor.RedBlack, CardType.RestrictedMessage, CardFunction.Locking, 3);//3 红黑密电锁定
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.Locking, 6);//6 蓝密电锁定
+        CreatCard(CardColor.BlueBlack, CardType.RestrictedMessage, CardFunction.Locking, 3);//3 蓝黑锁定密电
+        CreatCard(CardColor.Black, CardType.RestrictedMessage, CardFunction.Reinforce, 2);//2 黑密电增援
+        CreatCard(CardColor.Red, CardType.RestrictedMessage, CardFunction.Reinforce, 1);//1 红密电增援
+        CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.Reinforce, 1);//1 蓝密电增援
+        CreatCard(CardColor.Red, CardType.TextMessage, CardFunction.RealOrFalse, 1);//1 红文本真伪莫辨
+        CreatCard(CardColor.Blue, CardType.TextMessage, CardFunction.RealOrFalse, 1);//1 蓝文本真伪莫辨
+        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Transfer, 1);//1 黒直达转移
+        CreatCard(CardColor.Red, CardType.NonstopMessage, CardFunction.Transfer, 2);//2 红直达转移
+        CreatCard(CardColor.Blue, CardType.NonstopMessage, CardFunction.Transfer, 2);//2 蓝直达转移
+
+        //打乱牌序
+        cardList.Clear();
+        Random rand = new Random();
+        for (int i = 0; i < tempCardList.Count; i++)
+        {
+            int index = rand.Next(0, cardList.Count + 1);
+            cardList.Insert(index, tempCardList[i]);
+        }
+
+    }
+
+    public void CreatCard(CardColor mColor, CardType mType, CardFunction mFunction,int count)
+    {
+        Card card = new Card
+        {
+            color = mColor,
+            type = mType,
+            function = mFunction
+        };
+        for(int i = 0; i < count; i++)
+        {
+            tempCardList.Add(card);
+        }
+    }
+
+    //将牌分发给每个玩家
+    public void DispenseCardToPlayer()
+    {
+        //清空玩家手里的牌
+
+        for(int i = 0; i < playerArr.Length; i++)
+        {
+            playerArr[i].cardList.Clear();
+        }
+
+
+
+        //分发手牌和底牌，牌库已打乱，所以直接按顺序发
+
+        for(int i = 0; i < playerArr.Length; i++)
+        {
+            for(int j = 0;j < 4; j++)
+            {
+                playerArr[i].AddCard(cardList[0]);
+                cardList.RemoveAt(0);
+            }
+        }
+
+        
+
+        //推送所有牌的信息给客户端
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushCard,
+            pushCard = new PushCard{}
+        };
+        for (int i = 0; i < playerArr.Length; i++)
+        {
+
+            msg.pushCard.cardList = playerArr[i].cardList;
+
+            playerArr[i].token.SendMsg(msg);//发到对应的客户端
+
+        }
+
+    }
+
     
+
+
 }
 
 public enum RoomState

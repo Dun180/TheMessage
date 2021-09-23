@@ -63,6 +63,11 @@ public class PETimer : MonoBehaviour
                 NormalCounter(delta);
             }
         }
+        else
+        {
+            OnDisable();
+
+        }
     }
 
     void DelayCounter(float delta)

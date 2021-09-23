@@ -71,6 +71,8 @@
     <Compile Include="Assets\Scripts\03Lobby\LobbySys.cs" />
     <Compile Include="Assets\Scripts\02Login\LoginSys.cs" />
     <Compile Include="Assets\Scripts\00Common\WindowRoot.cs" />
+    <Compile Include="Assets\Scripts\04Fight\CardEntity.cs" />
+    <Compile Include="Assets\Scripts\00Common\RectPosTween.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Shader\SpritesOutline.shader" />

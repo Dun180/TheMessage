@@ -389,6 +389,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1781984851}
     m_Modifications:
+    - target: {fileID: 388600506, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
+      propertyPath: selfCard
+      value: 
+      objectReference: {fileID: 388600505}
+    - target: {fileID: 388600506, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
+      propertyPath: ClockTimer
+      value: 
+      objectReference: {fileID: 1511114840}
+    - target: {fileID: 388600506, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
+      propertyPath: selfCardTrans
+      value: 
+      objectReference: {fileID: 388600505}
     - target: {fileID: 4196942906650064725, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -473,14 +485,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4962815841735153371, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -708
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962815841735153371, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -89
-      objectReference: {fileID: 0}
     - target: {fileID: 7538238266894122225, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
       propertyPath: m_Name
       value: MessageWindow
@@ -490,6 +494,11 @@ PrefabInstance:
 --- !u!224 &388600504 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4196942906650064725, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
+  m_PrefabInstance: {fileID: 388600503}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &388600505 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7346789695354267409, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
   m_PrefabInstance: {fileID: 388600503}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &388600506 stripped
@@ -859,6 +868,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1cb0bd2a16855041811ab2903800abe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1511114840 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4648900471044966493, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
+  m_PrefabInstance: {fileID: 388600503}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!224 &1512018787 stripped

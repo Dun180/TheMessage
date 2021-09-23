@@ -445,6 +445,8 @@ public class CacheSvc
 
         if (flag)
         {
+
+            //推送玩家选择的角色信息
             messageRoom.UpdateMatchData();
             GameMsg msg = new GameMsg
             {
@@ -456,9 +458,34 @@ public class CacheSvc
             };
 
             SendMsgAll(messageRoom, msg);
+
+            //随机发放身份
+            PushIdentityAndCardInfo(messageRoom);
+
+
         }
     }
 
+    //随机发放身份
+    public void PushIdentityAndCardInfo(MessageRoom messageRoom)
+    {
+        messageRoom.RandomIdentity();
+        for(int i = 0; i < messageRoom.playerArr.Length; i++)
+        {
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushIdentityInfo,
+                pushIdentityInfo = new PushIdentityInfo { identity = (int)messageRoom.playerArr[i].playerIdentity}          
+            };
+
+            messageRoom.playerArr[i].token.SendMsg(msg);
+        }
+        
+        //创建牌并分发牌
+        messageRoom.CreatRandomCard();
+        messageRoom.DispenseCardToPlayer();
+
+    }
 
     //TOOL METHONDS
     //群发消息

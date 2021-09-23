@@ -1,86 +1,90 @@
-[L]# 08:53:42-660  ThreadID:1 >> Landlord Server Start ...
-[L]# 08:53:43-403  ThreadID:1 >> Server Start...
-[L]# 08:53:48-538  ThreadID:7 >> Client Online
-[L]# 08:53:48-539  ThreadID:7 >> Client Online,Allocate TokenID:999
-[L]# 08:53:48-575  ThreadID:1 >> Assign TokenID:999
-[L]# 08:54:02-554  ThreadID:7 >> RcvPack CMD:ReqLogin
-[L]# 08:54:02-646  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:02-791  ThreadID:7 >> Client Online
-[L]# 08:54:02-792  ThreadID:7 >> Client Online,Allocate TokenID:998
-[L]# 08:54:02-797  ThreadID:1 >> Assign TokenID:998
-[L]# 08:54:03-532  ThreadID:7 >> RcvPack CMD:RequestAddRoom
-[L]# 08:54:03-548  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:06-060  ThreadID:7 >> RcvPack CMD:ReqLogin
-[L]# 08:54:06-166  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:06-962  ThreadID:7 >> RcvPack CMD:RequestJoinRoomMsg
-[L]# 08:54:06-990  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:07-458  ThreadID:7 >> RcvPack CMD:RequestReady
-[L]# 08:54:12-350  ThreadID:7 >> Client Online
-[L]# 08:54:12-351  ThreadID:7 >> Client Online,Allocate TokenID:997
-[L]# 08:54:12-402  ThreadID:1 >> Assign TokenID:997
-[L]# 08:54:13-827  ThreadID:7 >> RcvPack CMD:ReqLogin
-[L]# 08:54:13-923  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:14-910  ThreadID:8 >> RcvPack CMD:RequestJoinRoomMsg
-[L]# 08:54:14-945  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:15-515  ThreadID:8 >> RcvPack CMD:RequestReady
-[L]# 08:54:19-774  ThreadID:7 >> Client Online
-[L]# 08:54:19-774  ThreadID:7 >> Client Online,Allocate TokenID:996
-[L]# 08:54:19-818  ThreadID:1 >> Assign TokenID:996
-[L]# 08:54:21-081  ThreadID:7 >> RcvPack CMD:ReqLogin
-[L]# 08:54:21-138  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:21-874  ThreadID:7 >> RcvPack CMD:RequestJoinRoomMsg
-[L]# 08:54:21-904  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:22-458  ThreadID:7 >> RcvPack CMD:RequestReady
-[L]# 08:54:26-450  ThreadID:7 >> Client Online
-[L]# 08:54:26-450  ThreadID:7 >> Client Online,Allocate TokenID:995
-[L]# 08:54:26-507  ThreadID:1 >> Assign TokenID:995
-[L]# 08:54:27-859  ThreadID:7 >> RcvPack CMD:ReqLogin
-[L]# 08:54:27-955  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:28-553  ThreadID:7 >> RcvPack CMD:RequestJoinRoomMsg
-[L]# 08:54:28-601  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:29-059  ThreadID:7 >> RcvPack CMD:RequestReady
-[L]# 08:54:29-658  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:29-658  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:29-660  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:29-662  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:30-670  ThreadID:7 >> RcvPack CMD:RequestGameStart
-[L]# 08:54:30-694  ThreadID:1 >> ReadyNumber:4
-[L]# 08:54:30-699  ThreadID:7 >> RcvPack CMD:RequestRefreshMessage
-[L]# 08:54:34-963  ThreadID:7 >> RcvPack CMD:RequestSelectChar
-[L]# 08:54:35-006  ThreadID:1 >> charCount:1
-[L]# 08:54:35-006  ThreadID:1 >> playerArr.Length:5
-[L]# 08:54:36-089  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:36-103  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:36-103  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:36-108  ThreadID:7 >> RcvPack CMD:RequestRefreshMessage
-[L]# 08:54:36-907  ThreadID:7 >> RcvPack CMD:RequestSelectChar
-[L]# 08:54:36-925  ThreadID:1 >> charCount:2
-[L]# 08:54:36-925  ThreadID:1 >> playerArr.Length:5
-[L]# 08:54:37-895  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:37-896  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:37-899  ThreadID:7 >> RcvPack CMD:RequestRefreshMessage
-[L]# 08:54:38-930  ThreadID:7 >> RcvPack CMD:RequestSelectChar
-[L]# 08:54:38-966  ThreadID:1 >> charCount:3
-[L]# 08:54:38-966  ThreadID:1 >> playerArr.Length:5
-[L]# 08:54:39-896  ThreadID:7 >> RcvPack CMD:RequestRoomMsg
-[L]# 08:54:39-897  ThreadID:7 >> RcvPack CMD:RequestRefreshMessage
-[L]# 08:54:40-994  ThreadID:7 >> RcvPack CMD:RequestSelectChar
-[L]# 08:54:41-012  ThreadID:1 >> charCount:4
-[L]# 08:54:41-012  ThreadID:1 >> playerArr.Length:5
-[L]# 08:54:42-176  ThreadID:7 >> RcvPack CMD:RequestRefreshMessage
-[L]# 08:54:44-041  ThreadID:7 >> RcvPack CMD:RequestSelectChar
-[L]# 08:54:44-081  ThreadID:1 >> charCount:5
-[L]# 08:54:44-081  ThreadID:1 >> playerArr.Length:5
-[W]# 08:55:03-274  ThreadID:7 >> Token:999 Close:Success
-[L]# 08:55:03-314  ThreadID:1 >> Token:999 client offline.
-[W]# 08:55:03-317  ThreadID:1 >> Connection is break.cannot send net msg.
-[W]# 08:55:05-911  ThreadID:8 >> Token:998 Close:Success
-[L]# 08:55:05-966  ThreadID:1 >> Token:998 client offline.
-[W]# 08:55:06-699  ThreadID:8 >> Token:997 Close:Success
-[L]# 08:55:06-712  ThreadID:1 >> Token:997 client offline.
-[L]# 08:55:07-392  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
-[W]# 08:55:09-011  ThreadID:8 >> Token:996 Close:Success
-[L]# 08:55:09-049  ThreadID:1 >> Token:996 client offline.
-[L]# 08:55:09-798  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
-[W]# 08:55:10-723  ThreadID:8 >> Token:995 Close:Success
-[L]# 08:55:10-764  ThreadID:1 >> Token:995 client offline.
+[L]# 02:25:31-216  ThreadID:1 >> Landlord Server Start ...
+[L]# 02:25:32-337  ThreadID:1 >> Server Start...
+[L]# 02:25:37-578  ThreadID:9 >> Client Online
+[L]# 02:25:37-579  ThreadID:9 >> Client Online,Allocate TokenID:999
+[L]# 02:25:37-629  ThreadID:1 >> Assign TokenID:999
+[L]# 02:25:40-842  ThreadID:9 >> Client Online
+[L]# 02:25:40-843  ThreadID:9 >> Client Online,Allocate TokenID:998
+[L]# 02:25:40-876  ThreadID:1 >> Assign TokenID:998
+[L]# 02:25:45-958  ThreadID:8 >> RcvPack CMD:ReqLogin
+[L]# 02:25:46-069  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:25:52-987  ThreadID:8 >> RcvPack CMD:RequestAddRoom
+[L]# 02:25:53-056  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:25:57-901  ThreadID:9 >> RcvPack CMD:ReqLogin
+[L]# 02:25:58-026  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:25:59-160  ThreadID:8 >> RcvPack CMD:RequestJoinRoomMsg
+[L]# 02:25:59-211  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:25:59-235  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:00-416  ThreadID:9 >> RcvPack CMD:RequestReady
+[L]# 02:26:06-886  ThreadID:9 >> Client Online
+[L]# 02:26:06-887  ThreadID:9 >> Client Online,Allocate TokenID:997
+[L]# 02:26:06-951  ThreadID:1 >> Assign TokenID:997
+[L]# 02:26:10-720  ThreadID:8 >> RcvPack CMD:ReqLogin
+[L]# 02:26:10-817  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:11-728  ThreadID:8 >> RcvPack CMD:RequestJoinRoomMsg
+[L]# 02:26:11-755  ThreadID:8 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:11-756  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:11-768  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:12-303  ThreadID:9 >> RcvPack CMD:RequestReady
+[L]# 02:26:20-134  ThreadID:9 >> Client Online
+[L]# 02:26:20-134  ThreadID:9 >> Client Online,Allocate TokenID:996
+[L]# 02:26:20-197  ThreadID:1 >> Assign TokenID:996
+[L]# 02:26:23-598  ThreadID:9 >> RcvPack CMD:ReqLogin
+[L]# 02:26:24-999  ThreadID:9 >> RcvPack CMD:ReqLogin
+[L]# 02:26:30-660  ThreadID:9 >> RcvPack CMD:ReqLogin
+[L]# 02:26:30-722  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:31-568  ThreadID:9 >> RcvPack CMD:RequestJoinRoomMsg
+[L]# 02:26:31-589  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:31-595  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:31-607  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:31-613  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:32-425  ThreadID:11 >> RcvPack CMD:RequestReady
+[L]# 02:26:39-012  ThreadID:9 >> Client Online
+[L]# 02:26:39-012  ThreadID:9 >> Client Online,Allocate TokenID:995
+[L]# 02:26:39-062  ThreadID:1 >> Assign TokenID:995
+[L]# 02:26:44-452  ThreadID:12 >> RcvPack CMD:ReqLogin
+[L]# 02:26:44-559  ThreadID:12 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:45-401  ThreadID:12 >> RcvPack CMD:RequestJoinRoomMsg
+[L]# 02:26:45-442  ThreadID:12 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:45-448  ThreadID:9 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:45-449  ThreadID:12 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:45-449  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:45-460  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:26:46-294  ThreadID:11 >> RcvPack CMD:RequestReady
+[L]# 02:26:48-228  ThreadID:9 >> RcvPack CMD:RequestGameStart
+[L]# 02:26:48-230  ThreadID:1 >> ReadyNumber:4
+[L]# 02:26:48-247  ThreadID:9 >> RcvPack CMD:RequestRefreshMessage
+[L]# 02:26:48-247  ThreadID:12 >> RcvPack CMD:RequestRefreshMessage
+[L]# 02:26:48-248  ThreadID:11 >> RcvPack CMD:RequestRefreshMessage
+[L]# 02:26:48-249  ThreadID:9 >> RcvPack CMD:RequestRefreshMessage
+[L]# 02:26:48-278  ThreadID:13 >> RcvPack CMD:RequestRefreshMessage
+[L]# 02:26:50-122  ThreadID:13 >> RcvPack CMD:RequestSelectChar
+[L]# 02:26:52-790  ThreadID:11 >> RcvPack CMD:RequestSelectChar
+[L]# 02:26:54-938  ThreadID:11 >> RcvPack CMD:RequestSelectChar
+[L]# 02:26:56-674  ThreadID:11 >> RcvPack CMD:RequestSelectChar
+[L]# 02:26:58-657  ThreadID:11 >> RcvPack CMD:RequestSelectChar
+[W]# 02:27:04-382  ThreadID:11 >> Token:997 Close:Success
+[L]# 02:27:04-415  ThreadID:1 >> Token:997 client offline.
+[W]# 02:27:04-418  ThreadID:1 >> Connection is break.cannot send net msg.
+[L]# 02:27:04-420  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:27:04-421  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:27:04-422  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:27:04-436  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[W]# 02:27:08-370  ThreadID:11 >> Token:996 Close:Success
+[L]# 02:27:08-404  ThreadID:1 >> Token:996 client offline.
+[W]# 02:27:08-406  ThreadID:1 >> Connection is break.cannot send net msg.
+[L]# 02:27:08-407  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:27:08-409  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[L]# 02:27:08-436  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[W]# 02:27:09-430  ThreadID:11 >> Token:995 Close:Success
+[L]# 02:27:09-462  ThreadID:1 >> Token:995 client offline.
+[L]# 02:27:09-465  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[W]# 02:27:09-464  ThreadID:1 >> Connection is break.cannot send net msg.
+[L]# 02:27:09-469  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[W]# 02:27:10-407  ThreadID:8 >> Token:998 Close:Success
+[L]# 02:27:10-446  ThreadID:1 >> Token:998 client offline.
+[W]# 02:27:10-448  ThreadID:1 >> Connection is break.cannot send net msg.
+[L]# 02:27:10-468  ThreadID:11 >> RcvPack CMD:RequestRoomMsg
+[W]# 02:27:11-413  ThreadID:11 >> Token:999 Close:Success
+[L]# 02:27:11-440  ThreadID:1 >> Token:999 client offline.
+[W]# 02:27:11-442  ThreadID:1 >> Connection is break.cannot send net msg.

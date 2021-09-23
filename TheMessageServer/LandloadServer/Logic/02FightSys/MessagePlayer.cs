@@ -18,7 +18,7 @@ public class MessagePlayer
     public int iconIndex;//头像图片索引
 
 
-    public List<Card> cards = new List<Card>();//手牌
+    public List<Card> cardList = new List<Card>();//手牌
 
 
     public List<Card> messages = new List<Card>();//所持情报
@@ -31,6 +31,7 @@ public class MessagePlayer
     public string charName;//人物名字
 
     public PlayerState playerState;
+    public PlayerIdentity playerIdentity;
 
     public void InitMatch()
     {
@@ -39,14 +40,40 @@ public class MessagePlayer
         blackNum = 0;
         charIndex = 0;
         charName = null;
-        cards.Clear();
+        cardList.Clear();
         messages.Clear();
         playerState = PlayerState.None;
+        playerIdentity = PlayerIdentity.None;
     }
 
     public void AddCard(Card card)
     {
-        cards.Add(card);
+        cardList.Add(card);
+    }
+
+
+    public void SetIdentity(int index)
+    {
+        switch (index)
+        {
+            case 1:
+                playerIdentity = PlayerIdentity.Lurker;
+                break;
+            case 2:
+                playerIdentity = PlayerIdentity.Lurker;
+                break;
+            case 3:
+                playerIdentity = PlayerIdentity.Military;
+                break;
+            case 4:
+                playerIdentity = PlayerIdentity.Military;
+                break;
+            case 5:
+                playerIdentity = PlayerIdentity.SoySauce;
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -59,7 +86,13 @@ public enum PlayerState
     Intercept,//截获
     Receive //接收
 
+}
 
-
+public enum PlayerIdentity
+{
+    None = 0,
+    Lurker,//潜伏
+    Military,//军情
+    SoySauce //酱油
 }
 

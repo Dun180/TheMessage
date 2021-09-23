@@ -64,4 +64,35 @@ public class FightSys : MonoBehaviour
         messageWindow.RefreshMessage(messageWindow.selfIndex, msg.pushSelectChar.playerArr);
 
     }
+
+    public void PushIdentityInfo(GameMsg msg)
+    {
+
+        
+        int identity = msg.pushIdentityInfo.identity;
+
+        switch (identity)
+        {
+            case 1:
+                TipsWindow.AddTips("您的身份为：潜伏");
+                messageWindow.SetIdentity("潜");
+                break;
+            case 2:
+                TipsWindow.AddTips("您的身份为：军情");
+                messageWindow.SetIdentity("军");
+                break;
+            case 3:
+                TipsWindow.AddTips("您的身份为：酱油");
+                messageWindow.SetIdentity("酱");
+                break;
+            default:
+                break;
+
+        }
+    }
+
+    public void PushCard(GameMsg msg)
+    {
+        messageWindow.ShowSelfCard(msg.pushCard.cardList);
+    }
 }
