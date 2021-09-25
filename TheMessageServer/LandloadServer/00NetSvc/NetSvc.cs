@@ -78,7 +78,7 @@ public class NetSvc
                 break;
             case CMD.OnDisConnected:
                 this.ColorLog(PEUtils.LogColor.Yellow, "Token:{0} client offline.", pack.token.tokenID);
-                CacheSvc.Instance.RequestExitRoom(pack);
+                MatchSys.Instance.RequestExitRoom(pack);
                 LoginSys.Instance.ClearOfflineData(pack.token);
                 
                 break;
@@ -91,29 +91,29 @@ public class NetSvc
                 MatchSys.Instance.RequestAddRoom(pack);//添加房间请求
                 break;
             case CMD.RequestRoomMsg:
-                CacheSvc.Instance.RequestRoomMsg(pack);
+                MatchSys.Instance.RequestRoomMsg(pack);
                 break;
             case CMD.RequestJoinRoomMsg:
                 MatchSys.Instance.RequestJoinRoom(pack);
                 break;
             case CMD.RequestReady:
-                CacheSvc.Instance.RequestReady(pack);
+                MatchSys.Instance.RequestReady(pack);
                 break;
             case CMD.RequestUnReady:
-                CacheSvc.Instance.RequestUnReady(pack);
+                MatchSys.Instance.RequestUnReady(pack);
                 break;
             case CMD.RequestExitRoom:
-                CacheSvc.Instance.RequestExitRoom(pack);
+                MatchSys.Instance.RequestExitRoom(pack);
                 break;
             case CMD.RequestGameStart:
-                CacheSvc.Instance.RequestGameStart(pack);
+                MatchSys.Instance.RequestGameStart(pack);
                 break;
             //游戏请求
             case CMD.RequestRefreshMessage:
-                CacheSvc.Instance.RequestRefreshMessage(pack);
+                FightSys.Instance.RequestRefreshMessage(pack);
                 break;
             case CMD.RequestSelectChar:
-                CacheSvc.Instance.RequestSelectChar(pack);
+                FightSys.Instance.RequestSelectChar(pack);
                 break;
             case CMD.None:
                 break;

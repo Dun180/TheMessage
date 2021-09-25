@@ -81,7 +81,7 @@ public class MessageWindow : WindowRoot
 
 
         //创建新的牌
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 4; i++)
         {
             GameObject go = Instantiate(cardObj);
             RectTransform rectTrans = go.GetComponent<RectTransform>();

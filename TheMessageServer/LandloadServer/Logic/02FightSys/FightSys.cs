@@ -37,6 +37,28 @@ public class FightSys
         DistributionRole(messageRoom);
     }
 
+    //刷新游戏房间数据,需要传回房间中所有人的游戏公开信息
+    public void RequestRefreshMessage(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
+        if (messageRoom == null)
+        {
+            return;
+        }
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.ResponseRefreshMessage,
+            responseRefreshMessage = new ResponseRefreshMessage
+            {
+                selfPosIndex = messageRoom.GetIndex(playerData.id),
+                playerArr = messageRoom.matchPlayerArr
+            }
+        };
+        pack.token.SendMsg(msg);
+
+    }
+
     //分发角色牌
     public void DistributionRole(MessageRoom messageRoom)
     {
@@ -73,6 +95,64 @@ public class FightSys
 
 
     }
+
+    public void RequestSelectChar(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
+        if (messageRoom == null)
+        {
+            return;
+        }
+        string name = cacheSvc.GetCharNameByIndex(pack.msg.requestSelectChar.charIndex);
+        bool flag = messageRoom.SetPlayerChar(playerData.id, pack.msg.requestSelectChar.charIndex, name);
+
+
+        if (flag)
+        {
+
+            //推送玩家选择的角色信息
+            messageRoom.UpdateMatchData();
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushSelectChar,
+                pushSelectChar = new PushSelectChar
+                {
+                    playerArr = messageRoom.matchPlayerArr
+                }
+            };
+
+            cacheSvc.SendMsgAll(messageRoom, msg);
+
+            //随机发放身份
+            PushIdentityAndCardInfo(messageRoom);
+
+
+        }
+
+
+    }
+    //随机发放身份
+    public void PushIdentityAndCardInfo(MessageRoom messageRoom)
+    {
+        messageRoom.RandomIdentity();
+        for (int i = 0; i < messageRoom.playerArr.Length; i++)
+        {
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushIdentityInfo,
+                pushIdentityInfo = new PushIdentityInfo { identity = (int)messageRoom.playerArr[i].playerIdentity }
+            };
+
+            messageRoom.playerArr[i].token.SendMsg(msg);
+        }
+
+        //创建牌并分发牌
+        messageRoom.CreatRandomCard();
+        messageRoom.DispenseCardToPlayer();
+        messageRoom.RoundStart();
+    }
+
 
 }
 

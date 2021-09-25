@@ -11,6 +11,7 @@ public class MessageRoom
     public int RoomID { private set; get; }
     public MessagePlayer[] playerArr = null;
     public RoomState roomState = RoomState.None;
+    public RoundStage roundStage = RoundStage.None;
     public string roomOwner = null;
     public int roomOwnerID;
     public MatchPlayerData[] matchPlayerArr = null;
@@ -21,6 +22,9 @@ public class MessageRoom
 
     private int readyNumber;//准备的人数
     private int charCount;//已选择角色的人数
+
+    private int roundPlayerIndex;//正在进行回合的玩家索引
+
 
     public MessageRoom(int roomID,string roomOwner,int roomOwnerID)
     {
@@ -33,6 +37,7 @@ public class MessageRoom
         roomNumber = 0;
         readyNumber = 0;
         charCount = 0;
+        roundPlayerIndex = 0;
     }
 
     //添加玩家
@@ -52,6 +57,7 @@ public class MessageRoom
         roomNumber++;
         SyncRoomInfo();
     }
+    //玩家退出房间
     public void ExitMessagePlayer(int id)
     {
         int posIndex = GetIndex(id);
@@ -133,6 +139,7 @@ public class MessageRoom
         }
         return posIndex;
     }
+    //判断玩家是否全部准备
     public bool AllReady()
     {
         this.ColorLog(PEUtils.LogColor.Yellow, "ReadyNumber:{0}", readyNumber);
@@ -161,6 +168,7 @@ public class MessageRoom
 
     }
 
+    //更新数据
     public void UpdateMatchData()
     {
         for(int i = 0; i < playerArr.Length; i++)
@@ -214,7 +222,7 @@ public class MessageRoom
         return flag;
     }
 
-
+    //随机生成身份
     public void RandomIdentity()
     {
         List<int> list = new List<int>();
@@ -375,8 +383,23 @@ public class MessageRoom
 
     }
 
-    
 
+    //回合开始阶段
+    public void RoundStart()
+    {
+        //TODO
+
+        roundStage = RoundStage.RoundStart;
+
+
+
+    }
+    
+    //抽牌阶段
+    public void DrawPhase()
+    {
+
+    }
 
 }
 
@@ -385,4 +408,17 @@ public enum RoomState
     None,
     Matching,
     End
+}
+
+public enum RoundStage
+{
+    None,
+    RoundStart,//回合开始阶段
+    DrawPhase,//抽牌阶段
+    PlayStage,//出牌阶段
+    MessageTransfer,//情报传递阶段
+    TransferSection,//传递小节
+    ArriveSection,//到达小节
+    AcceptSection,//接受小节
+    RoundEnd //回合结束阶段
 }
