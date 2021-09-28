@@ -92,6 +92,9 @@ public class NetSvc : MonoBehaviour
             case CMD.PushCard:
                 FightSys.Instance.PushCard(msg);
                 break;
+            case CMD.PushDrawCard:
+                FightSys.Instance.PushDrawCard(msg);
+                break;
             case CMD.None:
                 break;
             default:

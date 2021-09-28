@@ -26,6 +26,7 @@ namespace PEProtocol
         public PushSelectChar pushSelectChar;
         public PushIdentityInfo pushIdentityInfo;
         public PushCard pushCard;
+        public PushDrawCard pushDrawCard;
     }
     [Serializable]
     public class ReqLogin
@@ -147,6 +148,12 @@ namespace PEProtocol
     {
         public List<Card> cardList;
     }
+    [Serializable]
+    public class PushDrawCard
+    {
+        public List<Card> cardList;
+        public int index;
+    }
     public enum ErrorCode
     {
         None,
@@ -204,6 +211,7 @@ namespace PEProtocol
         PushIdentityInfo,//推送玩家身份信息
 
         PushCard,//推送手牌
+        PushDrawCard,//推送抽卡
         //其他
         OnConnected ,
         OnDisConnected ,

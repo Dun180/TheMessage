@@ -2,6 +2,7 @@
 
 
 
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 public class WindowRoot : MonoBehaviour
@@ -64,6 +65,24 @@ public class WindowRoot : MonoBehaviour
             cpt = go.AddComponent<T>();
         }
         return cpt;
+    }
+
+
+    //触控事件封装
+    protected void OnEnter(GameObject go, Action<GameObject> callback)
+    {
+        PEListener listener = (PEListener)GetOrAddComponent<PEListener>(go);
+        listener.onEnter = callback;
+    }
+    protected void OnClickDown(GameObject go, Action<GameObject> callback)
+    {
+        PEListener listener = (PEListener)GetOrAddComponent<PEListener>(go);
+        listener.onClickDown = callback;
+    }
+    protected void OnClickUp(GameObject go, Action<GameObject> callback)
+    {
+        PEListener listener = (PEListener)GetOrAddComponent<PEListener>(go);
+        listener.onClickUp = callback;
     }
 
 }

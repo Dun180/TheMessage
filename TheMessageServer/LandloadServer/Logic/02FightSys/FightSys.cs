@@ -46,6 +46,7 @@ public class FightSys
         {
             return;
         }
+        messageRoom.UpdateMatchData();
         GameMsg msg = new GameMsg
         {
             cmd = CMD.ResponseRefreshMessage,
@@ -150,7 +151,7 @@ public class FightSys
         //创建牌并分发牌
         messageRoom.CreatRandomCard();
         messageRoom.DispenseCardToPlayer();
-        messageRoom.RoundStart();
+        messageRoom.RoundStart();//回合开始
     }
 
 

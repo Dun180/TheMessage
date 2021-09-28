@@ -391,17 +391,101 @@ public class MessageRoom
 
         roundStage = RoundStage.RoundStart;
 
-
+        DrawPhase();
 
     }
     
     //抽牌阶段
     public void DrawPhase()
     {
+        List<Card> tempCardList = new List<Card>();
+        int drawCardCount = 2;
+        for(int i = 0; i < drawCardCount; i++)
+        {
+            playerArr[roundPlayerIndex].AddCard(cardList[0]);
+            tempCardList.Add(cardList[0]);
+            cardList.RemoveAt(0);
+        }
+
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushDrawCard,
+            pushDrawCard = new PushDrawCard
+            {
+                cardList = tempCardList,
+                index = roundPlayerIndex
+            }
+        };
+
+        CacheSvc.Instance.SendMsgAll(this, msg);
+
+
 
     }
 
+    //出牌阶段
+    public void PlayerStage()
+    {
+        //TODO
+
+        roundStage = RoundStage.PlayStage;
+
+    }
+
+    //情报传递阶段
+    public void MessageTransfer()
+    {
+        //TODO
+
+        roundStage = RoundStage.MessageTransfer;
+
+    }
+
+    //传递小节
+    public void TransferSection()
+    {
+        //TODO
+
+        roundStage = RoundStage.TransferSection;
+
+    }
+
+    //到达小节
+    public void ArriveSection()
+    {
+        //TODO
+
+        roundStage = RoundStage.ArriveSection;
+
+    }
+
+    //接受小节
+    public void AcceptSection()
+    {
+        //TODO
+
+        roundStage = RoundStage.AcceptSection;
+
+    }
+
+    //回合结束阶段
+    public void RoundEnd()
+    {
+        //TODO
+
+        roundStage = RoundStage.RoundEnd;
+
+
+        roundPlayerIndex++;
+        if(roundPlayerIndex > 4)
+        {
+            roundPlayerIndex = 0;
+        }
+        //RoundStart();
+    }
 }
+
+
 
 public enum RoomState
 {

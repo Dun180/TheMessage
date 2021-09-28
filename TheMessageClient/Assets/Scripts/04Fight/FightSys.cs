@@ -10,21 +10,11 @@ public class FightSys : MonoBehaviour
     public static FightSys Instance;
 
     public MessageWindow messageWindow;
-    public InfoWindow infoWindow;
 
-    public MatchPlayerData[] PlayerData { get; private set; } = null;
-    public MatchPlayerData LeftPlayerData { get; private set; } = null;
-    public MatchPlayerData SelfPlayerData { get; private set; } = null;
-    public MatchPlayerData RightPlayerData { get; private set; } = null;
-    public int LeftPosIndex { get; private set; } = -1;
-    public int SelfPosIndex { get; private set; } = -1;
-    public int RightPosIndex { get; private set; } = -1;
-    public int BaseScore { get; private set; } = 0;
-    public int AddTimes { get; private set; } = 1;
-    public int RobTimes { get; private set; } = 0;
 
     private NetSvc netSvc;
     private LobbySys lobbySys;
+
     private void Awake()
     {
         Instance = this;
@@ -94,5 +84,18 @@ public class FightSys : MonoBehaviour
     public void PushCard(GameMsg msg)
     {
         messageWindow.ShowSelfCard(msg.pushCard.cardList);
+        netSvc.SendMsg(new GameMsg { cmd = CMD.RequestRefreshMessage });
+    }
+
+    public void PushDrawCard(GameMsg msg)
+    {
+        messageWindow.SetMessageInfo(msg.pushDrawCard.index, msg.pushDrawCard.cardList.Count, 0, 0, 0);
+        if (msg.pushDrawCard.index == messageWindow.selfIndex)
+        {
+            for(int i = 0; i < msg.pushDrawCard.cardList.Count; i++)
+            {
+                messageWindow.AddCard(msg.pushDrawCard.cardList[i]);
+            }
+        }
     }
 }

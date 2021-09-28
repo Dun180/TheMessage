@@ -28,12 +28,23 @@ public class RectPosTween : MonoBehaviour
         rectTrans = GetComponent<RectTransform>();
     }
 
-    //运动参数设置
+    //运动参数设置 相对移动
     public void MoveLocalPosInTime(float time, Vector3 offset, Action cb = null)
     {
         startPos = rectTrans.localPosition;
         moveTime = time;
         targetPos = startPos + offset;
+        moveVel = (targetPos - startPos) / moveTime;
+        countTime = 0;
+        callback = cb;
+        isRun = true;
+    }
+    //绝对移动
+    public void MoveTargetPosInTime(float time, Vector3 target, Action cb = null)
+    {
+        startPos = rectTrans.localPosition;
+        moveTime = time;
+        targetPos = target;
         moveVel = (targetPos - startPos) / moveTime;
         countTime = 0;
         callback = cb;

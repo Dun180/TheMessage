@@ -61,9 +61,9 @@
     <Compile Include="Assets\Scripts\01Net\NetSvc.cs" />
     <Compile Include="Assets\Scripts\00Common\TipsWindow.cs" />
     <Compile Include="Assets\Scripts\04Fight\MessageWindow.cs" />
+    <Compile Include="Assets\Scripts\00Common\PEListener.cs" />
     <Compile Include="Assets\Scripts\00Common\Constants.cs" />
     <Compile Include="Assets\Scripts\00Common\PETimer.cs" />
-    <Compile Include="Assets\Scripts\04Fight\InfoWindow.cs" />
     <Compile Include="Assets\Scripts\03Lobby\LobbyWindow.cs" />
     <Compile Include="Assets\Scripts\02Login\LoginWindow.cs" />
     <Compile Include="Assets\Scripts\01Net\ClientToken.cs" />
@@ -71,8 +71,8 @@
     <Compile Include="Assets\Scripts\03Lobby\LobbySys.cs" />
     <Compile Include="Assets\Scripts\02Login\LoginSys.cs" />
     <Compile Include="Assets\Scripts\00Common\WindowRoot.cs" />
-    <Compile Include="Assets\Scripts\04Fight\CardEntity.cs" />
     <Compile Include="Assets\Scripts\00Common\RectPosTween.cs" />
+    <Compile Include="Assets\Scripts\04Fight\CardEntity.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\Shader\SpritesOutline.shader" />
