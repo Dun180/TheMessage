@@ -15,6 +15,7 @@ ScriptsOnlyBuild:
     - UnityEditor.U2D.Animation.BoneGizmo
     Unity.2D.IK.Editor.dll:
     - UnityEditor.U2D.IK.IKEditorManager
+    - UnityEditor.U2D.IK.IKGizmos
     Unity.2D.IK.Runtime.dll:
     - UnityEditor.U2D.IK.IKEditorManagerHelper
     Unity.2D.Tilemap.Editor.dll:
@@ -72,43 +73,43 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 1444}
     - Class: 114
-      Script: {instanceID: 1754}
+      Script: {instanceID: 1750}
     - Class: 114
-      Script: {instanceID: 1764}
+      Script: {instanceID: 1760}
     - Class: 114
-      Script: {instanceID: 1808}
+      Script: {instanceID: 1804}
     - Class: 114
-      Script: {instanceID: 1890}
+      Script: {instanceID: 1886}
     - Class: 114
-      Script: {instanceID: 2094}
+      Script: {instanceID: 2090}
     - Class: 114
-      Script: {instanceID: 2142}
+      Script: {instanceID: 2138}
     - Class: 114
-      Script: {instanceID: 2470}
+      Script: {instanceID: 2466}
     - Class: 114
-      Script: {instanceID: 2616}
+      Script: {instanceID: 2612}
     - Class: 114
-      Script: {instanceID: 2788}
+      Script: {instanceID: 2784}
     - Class: 114
-      Script: {instanceID: 2838}
+      Script: {instanceID: 2834}
     - Class: 114
-      Script: {instanceID: 2840}
+      Script: {instanceID: 2836}
     - Class: 114
-      Script: {instanceID: 3002}
+      Script: {instanceID: 2998}
     - Class: 114
-      Script: {instanceID: 3104}
+      Script: {instanceID: 3100}
     - Class: 114
-      Script: {instanceID: 3188}
+      Script: {instanceID: 3184}
     - Class: 114
-      Script: {instanceID: 3372}
+      Script: {instanceID: 3368}
     - Class: 114
-      Script: {instanceID: 3618}
+      Script: {instanceID: 3614}
     - Class: 114
-      Script: {instanceID: 3808}
+      Script: {instanceID: 3804}
     - Class: 114
-      Script: {instanceID: 3834}
+      Script: {instanceID: 3830}
     - Class: 114
-      Script: {instanceID: 24314}
+      Script: {instanceID: 26918}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -254,7 +255,7 @@ ScriptsOnlyBuild:
     className: Text
   - hash:
       serializedVersion: 2
-      Hash: 9d3823419a5fd9d705b38d3ca828075b
+      Hash: dd057d9daf36eb4bfa55add8ab61a2a3
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MessageWindow

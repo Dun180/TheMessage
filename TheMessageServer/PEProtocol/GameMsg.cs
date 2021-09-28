@@ -212,6 +212,9 @@ namespace PEProtocol
 
         PushCard,//推送手牌
         PushDrawCard,//推送抽卡
+
+        RequestEndPlay,//请求出牌阶段结束
+
         //其他
         OnConnected ,
         OnDisConnected ,

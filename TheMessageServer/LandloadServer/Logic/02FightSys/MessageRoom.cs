@@ -419,7 +419,7 @@ public class MessageRoom
 
         CacheSvc.Instance.SendMsgAll(this, msg);
 
-
+        PlayerStage();
 
     }
 

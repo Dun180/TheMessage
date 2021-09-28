@@ -115,6 +115,9 @@ public class NetSvc
             case CMD.RequestSelectChar:
                 FightSys.Instance.RequestSelectChar(pack);
                 break;
+            case CMD.RequestEndPlay:
+                FightSys.Instance.RequestEndPlay(pack);
+                break;
             case CMD.None:
                 break;
             default:

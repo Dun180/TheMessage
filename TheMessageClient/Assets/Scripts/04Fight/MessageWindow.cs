@@ -8,8 +8,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum MessageStage
+{
+    None,
+    SelectChar,
+    RoundStart,//回合开始阶段
+    DrawPhase,//抽牌阶段
+    PlayStage,//出牌阶段
+    MessageTransfer,//情报传递阶段
+    TransferSection,//传递小节
+    ArriveSection,//到达小节
+    AcceptSection,//接受小节
+    RoundEnd //回合结束阶段
+}
+
 public class MessageWindow : WindowRoot
 {
+
+    MessageStage messageStage = MessageStage.None;
 
     public Image[] charImg;
 
@@ -20,6 +36,13 @@ public class MessageWindow : WindowRoot
     public Text[] blueNum;
     public Text[] blackNum;
 
+
+    public Text btn1txt;
+    public Image btn1bg;
+    public Text btn2txt;
+    public Image btn2bg;
+
+
     public Text selfIdentity;
 
     public Image selectionBox;
@@ -28,7 +51,7 @@ public class MessageWindow : WindowRoot
     public Image char_3;
 
     public Transform selfCardTrans;
-
+    public Transform btnGroupTrans;
 
     public Material outLineMaterial;
 
@@ -45,6 +68,8 @@ public class MessageWindow : WindowRoot
     private List<CardEntity> selfCardEntityList = new List<CardEntity>();
     private CardEntity prepareEntity = null;
     private GameObject cardObj = null;
+
+    public bool isMyTurn = false;
 
     private int handCardNum;
 
@@ -118,6 +143,70 @@ public class MessageWindow : WindowRoot
         }
     }
 
+    public void SetMessageStage(MessageStage state)
+    {
+        messageStage = state;
+        SetActive(btnGroupTrans);
+        switch (messageStage)
+        {
+            case MessageStage.SelectChar:
+                SetActive(btn1bg.transform, false);
+                SetActive(btn2bg.transform, false);
+                break;
+            case MessageStage.PlayStage:
+                if (isMyTurn)
+                {
+                    SetActive(btn1bg.transform);
+                    SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-175, -50));
+
+
+                    SetActive(btn2bg.transform);
+                    SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(150, -50));
+
+
+                    btnGroupTrans.localPosition = new Vector3(0, -75, 0);
+                }
+                else
+                {
+                    SetActive(btn1bg.transform, false);
+                    SetActive(btn2bg.transform, false);
+                }
+                SetClockCallBack(Constants.playStageCounter, ClickBtn2);
+                break;
+            case MessageStage.MessageTransfer:
+                if (isMyTurn)
+                {
+                    SetActive(btn1bg.transform);
+                    SetBtnInfo(btn1bg, btn1txt, "传递情报", 1, new Vector2(-175, -50));
+
+                    SetActive(btn2bg.transform, false);
+                }
+                else
+                {
+                    SetActive(btn1bg.transform, false);
+                    SetActive(btn2bg.transform, false);
+                }
+
+                SetClockCallBack(Constants.messageTransferCounter, ClickBtn1);
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    void SetBtnInfo(Image img, Text txt, string info, int index, Vector2 pos)
+    {
+        if (!img.IsActive())
+        {
+            SetActive(img.transform);
+        }
+        img.transform.localPosition = pos;
+        SetSprite(img, "ResImages/Common/btnBG" + index);
+        Vector2 size = img.rectTransform.sizeDelta;
+        img.rectTransform.sizeDelta = new Vector2(info.Length * 45 + 60, size.y);
+        SetText(txt, info);
+    }
 
     public void ClickChar1Btn()
     {
@@ -176,6 +265,39 @@ public class MessageWindow : WindowRoot
 
     }
 
+    public void ClickBtn1()
+    {
+        switch (messageStage)
+        {
+            case MessageStage.SelectChar:
+                break;
+            case MessageStage.PlayStage:
+                break;
+            default:
+                break;
+        }
+    }
+    public void ClickBtn2()
+    {
+        switch (messageStage)
+        {
+            case MessageStage.SelectChar:
+                break;
+            case MessageStage.PlayStage:
+                if (isMyTurn)
+                {
+                    GameMsg msg = new GameMsg
+                    {
+                        cmd = CMD.RequestEndPlay
+                    };
+                    netSvc.SendMsg(msg);
+                }
+                SetMessageStage(MessageStage.MessageTransfer);
+                break;
+            default:
+                break;
+        }
+    }
     public void ClickConfirmCharBtn()
     {
         audioSvc.PlayUIAudio(Constants.NormalClick);
@@ -404,6 +526,11 @@ public class MessageWindow : WindowRoot
         CardEntity ce = selfCardEntityList[index];
         if(ce.mState == CardState.Normal)
         {
+            if (prepareEntity != null)
+            {
+                prepareEntity.SetCardEntityState(CardState.Normal);
+                prepareEntity = null;
+            }
             ce.SetCardEntityState(CardState.Prepare);
             prepareEntity = ce;
         }

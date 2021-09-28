@@ -7,8 +7,10 @@ public class Constants {
     public const float upDistance = 30;
 
 
+    
     public const int selectCharCounter = 30;
-
+    public const int playStageCounter = 15;
+    public const int messageTransferCounter = 15;
 
 
 

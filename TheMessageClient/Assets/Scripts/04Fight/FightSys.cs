@@ -47,6 +47,7 @@ public class FightSys : MonoBehaviour
     public void PushChar(GameMsg msg)
     {
         messageWindow.SelectChar(msg.pushChar);
+        messageWindow.SetMessageStage(MessageStage.SelectChar);
     }
 
     public void PushSelectChar(GameMsg msg)
@@ -92,10 +93,12 @@ public class FightSys : MonoBehaviour
         messageWindow.SetMessageInfo(msg.pushDrawCard.index, msg.pushDrawCard.cardList.Count, 0, 0, 0);
         if (msg.pushDrawCard.index == messageWindow.selfIndex)
         {
+            messageWindow.isMyTurn = true;
             for(int i = 0; i < msg.pushDrawCard.cardList.Count; i++)
             {
                 messageWindow.AddCard(msg.pushDrawCard.cardList[i]);
             }
         }
+        messageWindow.SetMessageStage(MessageStage.PlayStage);
     }
 }

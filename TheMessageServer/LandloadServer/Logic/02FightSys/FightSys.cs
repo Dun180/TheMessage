@@ -154,6 +154,11 @@ public class FightSys
         messageRoom.RoundStart();//回合开始
     }
 
+    public void RequestEndPlay(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        messageRoom.MessageTransfer();
 
+    }
 }
 
