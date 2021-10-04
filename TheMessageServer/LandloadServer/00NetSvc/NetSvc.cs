@@ -118,6 +118,12 @@ public class NetSvc
             case CMD.RequestEndPlay:
                 FightSys.Instance.RequestEndPlay(pack);
                 break;
+            case CMD.RequestMessageTransfer:
+                FightSys.Instance.RequestMessageTransfer(pack);
+                break;
+            case CMD.RequestAcceptMessage:
+                FightSys.Instance.RequestAcceptMessage(pack);
+                break;
             case CMD.None:
                 break;
             default:

@@ -92,8 +92,23 @@ public class NetSvc : MonoBehaviour
             case CMD.PushCard:
                 FightSys.Instance.PushCard(msg);
                 break;
+            case CMD.PushRoundStart:
+                FightSys.Instance.PushRoundStart(msg);
+                break;
             case CMD.PushDrawCard:
                 FightSys.Instance.PushDrawCard(msg);
+                break;
+            case CMD.PushEndPlay:
+                FightSys.Instance.PushEndPlay(msg);
+                break;
+            case CMD.PushMessageTransfer:
+                FightSys.Instance.PushMessageTransfer(msg);
+                break;
+            case CMD.PushAcceptSection:
+                FightSys.Instance.PushAcceptSection(msg);
+                break;
+            case CMD.PushMessageTransfering:
+                FightSys.Instance.PushMessageTransfering(msg);
                 break;
             case CMD.None:
                 break;

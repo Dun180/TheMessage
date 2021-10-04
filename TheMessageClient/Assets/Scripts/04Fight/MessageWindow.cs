@@ -50,8 +50,12 @@ public class MessageWindow : WindowRoot
     public Image char_2;
     public Image char_3;
 
-    public Transform selfCardTrans;
-    public Transform btnGroupTrans;
+    public Image turnIdentification;
+
+    public Transform selfCardTrans;//手牌
+    public Transform btnGroupTrans;//按钮组
+    public Transform messageTrans;//情报传播区
+    public Transform ExhibitioAreaTrans;//卡牌展示区
 
     public Material outLineMaterial;
 
@@ -66,10 +70,12 @@ public class MessageWindow : WindowRoot
     private int[] charList;
 
     private List<CardEntity> selfCardEntityList = new List<CardEntity>();
-    private CardEntity prepareEntity = null;
+    private CardEntity prepareEntity = null;//准备使用的卡牌实体
     private GameObject cardObj = null;
 
+    private CardEntity transEntity = null;//传递中的情报实体
     public bool isMyTurn = false;
+    private bool isTransMsg = false;
 
     private int handCardNum;
 
@@ -80,7 +86,7 @@ public class MessageWindow : WindowRoot
         netSvc = NetSvc.Instance;
 
         SetActive(selectionBox, false);
-
+        SetActive(turnIdentification, false);
         handCardNum = 0;
         selfIndex = -1;
         charIndex = -1;
@@ -157,11 +163,11 @@ public class MessageWindow : WindowRoot
                 if (isMyTurn)
                 {
                     SetActive(btn1bg.transform);
-                    SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-175, -50));
+                    SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-275, -50));
 
 
                     SetActive(btn2bg.transform);
-                    SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(150, -50));
+                    SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(50, -50));
 
 
                     btnGroupTrans.localPosition = new Vector3(0, -75, 0);
@@ -171,9 +177,10 @@ public class MessageWindow : WindowRoot
                     SetActive(btn1bg.transform, false);
                     SetActive(btn2bg.transform, false);
                 }
-                SetClockCallBack(Constants.playStageCounter, ClickBtn2);
+                //SetClockCallBack(Constants.playStageCounter, ClickBtn2);
                 break;
             case MessageStage.MessageTransfer:
+                isTransMsg = false;
                 if (isMyTurn)
                 {
                     SetActive(btn1bg.transform);
@@ -187,7 +194,15 @@ public class MessageWindow : WindowRoot
                     SetActive(btn2bg.transform, false);
                 }
 
-                SetClockCallBack(Constants.messageTransferCounter, ClickBtn1);
+                //SetClockCallBack(Constants.messageTransferCounter, ClickBtn1);
+                break;
+            case MessageStage.AcceptSection:
+                TipsWindow.AddTips("请选择是否接收情报");
+                SetActive(btn1bg.transform);
+                SetBtnInfo(btn1bg, btn1txt, "要", 1, new Vector2(-275, -50));
+
+                SetActive(btn2bg.transform);
+                SetBtnInfo(btn2bg, btn2txt, "不要", 2, new Vector2(50, -50));
                 break;
             default:
                 break;
@@ -272,7 +287,63 @@ public class MessageWindow : WindowRoot
             case MessageStage.SelectChar:
                 break;
             case MessageStage.PlayStage:
+
+                if (PECommon.PlayStageUsability(prepareEntity.cardData))
+                {
+                    GameMsg outCardMsg = new GameMsg
+                    {
+                        cmd = CMD.RequestOutCard,
+                        requestOutCard = new RequestOutCard { card = prepareEntity.cardData }
+                    };
+                    netSvc.SendMsg(outCardMsg);
+
+                    SetActive(btnGroupTrans, false);
+                    OutCardAni();
+                }
+                else
+                {
+                    TipsWindow.AddTips("暂时无法使用该牌");
+                }
+
+
                 break;
+            case MessageStage.MessageTransfer:
+                if (prepareEntity != null)
+                {
+                    if (prepareEntity.cardData.type == CardType.RestrictedMessage || prepareEntity.cardData.type == CardType.TextMessage)
+                    {
+                        if (!isTransMsg)
+                        {
+                            GameMsg transMsg = new GameMsg
+                            {
+                                cmd = CMD.RequestMessageTransfer,
+                                requestMessageTransfer = new RequestMessageTransfer { message = prepareEntity.cardData }
+                            };
+                            netSvc.SendMsg(transMsg);
+                            isTransMsg = true;
+                            SetActive(btnGroupTrans, false);
+                            OutCardAni();
+
+                        }
+
+                    }
+                    
+                }
+                break;
+            case MessageStage.AcceptSection:
+                GameMsg acceptMsg = new GameMsg
+                {
+                    cmd = CMD.RequestAcceptMessage,
+                    requestAcceptMessage = new RequestAcceptMessage
+                    {
+                        isAccept = true
+                    }
+                };
+                netSvc.SendMsg(acceptMsg);
+                SetActive(btnGroupTrans, false);
+
+                break;
+
             default:
                 break;
         }
@@ -292,7 +363,19 @@ public class MessageWindow : WindowRoot
                     };
                     netSvc.SendMsg(msg);
                 }
-                SetMessageStage(MessageStage.MessageTransfer);
+                break;
+            case MessageStage.AcceptSection:
+                GameMsg acceptMsg = new GameMsg
+                {
+                    cmd = CMD.RequestAcceptMessage,
+                    requestAcceptMessage = new RequestAcceptMessage
+                    {
+                        isAccept = false
+                    }
+                };
+                netSvc.SendMsg(acceptMsg);
+                SetActive(btnGroupTrans, false);
+
                 break;
             default:
                 break;
@@ -316,7 +399,32 @@ public class MessageWindow : WindowRoot
                 requestSelectChar = new RequestSelectChar { charIndex = this.charIndex }
             };
             netSvc.SendMsg(msg);
+            TipsWindow.AddTips("请等待其他玩家选择");
         }
+    }
+
+    private Vector3[] turnIdTransPos = new Vector3[5]
+{
+        new Vector3(-776,-211,0),
+        new Vector3(564,195,0),
+        new Vector3(121,490,0),
+        new Vector3(-331,490,0),
+        new Vector3(-780,305,0)
+};
+
+    public void SetTurnIdentification(int index)
+    {
+        int flag = 0 - (selfIndex - index);
+        if (flag >= 5)
+        {
+            flag -= 5;
+        }
+        else if (flag < 0)
+        {
+            flag += 5;
+        }
+        SetActive(turnIdentification, true);
+        turnIdentification.transform.localPosition = turnIdTransPos[flag];
     }
 
     public void RefreshMessage(int index, MatchPlayerData[] matchplayer)
@@ -428,6 +536,80 @@ public class MessageWindow : WindowRoot
         SetText(blackNum[flag], int.Parse(blackNum[flag].text) + addBlackNum);
 
     }
+
+    public void endPlay()
+    {
+        StopClock(txtTimer.gameObject);
+        SetMessageStage(MessageStage.MessageTransfer);
+    }
+
+    //密电情报传递动画
+    public void MessageTransferAni(Card message,int posIndex)
+    {
+        GameObject go = Instantiate(cardObj);
+        RectTransform rectTrans = go.GetComponent<RectTransform>();
+        rectTrans.SetParent(messageTrans);
+        rectTrans.sizeDelta = new Vector2(170, 240);
+        rectTrans.localScale = Vector3.one;
+        go.name = "transMsg";
+
+
+
+
+        CardEntity cardEntity = new CardEntity(rectTrans, -1);
+        cardEntity.SetEntityData(message);
+        cardEntity.SetRectPos(new Vector3(0, 0, 0));
+
+        transEntity = cardEntity; 
+
+        int actualPos = 0 - (selfIndex - posIndex);
+        if (actualPos >= 5)
+        {
+            actualPos -= 5;
+        }
+        else if (actualPos < 0)
+        {
+            actualPos += 5;
+        }
+        int targetPos = actualPos + 1;
+        if (targetPos >= 5)
+        {
+            targetPos -= 5;
+        }
+        else if (targetPos < 0)
+        {
+            targetPos += 5;
+        }
+
+        StartCoroutine(MessageTransferAni(transEntity, actualPos,targetPos));
+
+
+    }
+    //密电情报传递中动画
+    public void MessageTransferingAni(int posIndex)
+    {
+        int targetPos = 0 - (selfIndex - posIndex);
+        if (targetPos >= 5)
+        {
+            targetPos -= 5;
+        }
+        else if (targetPos < 0)
+        {
+            targetPos += 5;
+        }
+        int sendPos = targetPos - 1;
+        if (sendPos >= 5)
+        {
+            sendPos -= 5;
+        }
+        else if (sendPos < 0)
+        {
+            sendPos += 5;
+        }
+        StartCoroutine(MessageTransferAni(transEntity, sendPos, targetPos));
+
+    }
+
     //展示手牌
     public void ShowSelfCard(List<Card> cardList)
     {
@@ -503,6 +685,62 @@ public class MessageWindow : WindowRoot
         }
 
 
+
+
+    }
+    //出牌动画
+    public void OutCardAni()
+    {
+        int flag = -1;
+        for (int i = 0; i < selfCardEntityList.Count; i++)
+        {
+            if (flag >= 0)
+            {
+                selfCardEntityList[i].MoveLocalPosInTime(Constants.outCardMoveTime, new Vector3(-Constants.cardDistance,0,0));
+            }
+
+            if (selfCardEntityList[i].mState == CardState.Prepare)
+            {
+                selfCardEntityList[i].MoveLocalPosInTime(Constants.outCardMoveTime, new Vector3(0, Constants.upDistance,0));
+
+                flag = i;
+            }
+
+        }
+
+        if (flag >= 0)
+        {
+            selfCardEntityList.RemoveAt(flag);
+
+        }
+
+        for(int i = 0; i < selfCardEntityList.Count; i++)
+        {
+            selfCardEntityList[i].mRectTrans.name = "msg_" + i;
+            selfCardEntityList[i].index = i;
+        }
+
+        Destroy(prepareEntity.mRectTrans.gameObject);
+        prepareEntity = null;
+
+    }
+    private Vector3[] messageTransPos = new Vector3[5]
+{
+        new Vector3(-567,-178,0),
+        new Vector3(277,14,0),
+        new Vector3(55,34,0),
+        new Vector3(-400,34,0),
+        new Vector3(-633,209,0)
+};
+
+    //情报传递动画
+    IEnumerator MessageTransferAni(CardEntity cardEntity,int actualPos,int targetPos)
+    {
+
+        cardEntity.SetRectPos(messageTransPos[actualPos]);
+        cardEntity.MoveTargetPosInTime(Constants.messageMoveTime, messageTransPos[targetPos]);
+
+        yield return new WaitForSeconds(Constants.messageMoveTime);
 
 
     }

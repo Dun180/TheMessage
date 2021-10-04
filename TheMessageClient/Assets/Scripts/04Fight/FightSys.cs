@@ -53,7 +53,6 @@ public class FightSys : MonoBehaviour
     public void PushSelectChar(GameMsg msg)
     {
         messageWindow.RefreshMessage(messageWindow.selfIndex, msg.pushSelectChar.playerArr);
-
     }
 
     public void PushIdentityInfo(GameMsg msg)
@@ -88,6 +87,12 @@ public class FightSys : MonoBehaviour
         netSvc.SendMsg(new GameMsg { cmd = CMD.RequestRefreshMessage });
     }
 
+    public void PushRoundStart(GameMsg msg)
+    {
+        messageWindow.SetTurnIdentification(msg.pushRoundStart.index);
+    }
+
+
     public void PushDrawCard(GameMsg msg)
     {
         messageWindow.SetMessageInfo(msg.pushDrawCard.index, msg.pushDrawCard.cardList.Count, 0, 0, 0);
@@ -100,5 +105,43 @@ public class FightSys : MonoBehaviour
             }
         }
         messageWindow.SetMessageStage(MessageStage.PlayStage);
+    }
+
+    public void PushEndPlay(GameMsg msg)
+    {
+        messageWindow.endPlay();
+    }
+
+    public void PushMessageTransfer(GameMsg msg)
+    {
+        messageWindow.MessageTransferAni(msg.pushMessageTransfer.message, msg.pushMessageTransfer.transferIndex);
+        
+        
+        
+
+    }
+
+    public void PushAcceptSection(GameMsg msg)
+    {
+        messageWindow.SetMessageStage(MessageStage.AcceptSection);
+    }
+
+    public void PushMessageTransfering(GameMsg msg)
+    {
+        messageWindow.MessageTransferingAni(msg.pushMessageTransfering.transferIndex);
+
+        int targetPos = msg.pushMessageTransfering.transferIndex + 1;
+        if (targetPos >= 5)
+        {
+            targetPos -= 5;
+        }
+        else if (targetPos < 0)
+        {
+            targetPos += 5;
+        }
+        if (msg.pushMessageTransfering.transferIndex == messageWindow.selfIndex)//如果目标的人是自己
+        {
+            messageWindow.SetMessageStage(MessageStage.AcceptSection);
+        }
     }
 }

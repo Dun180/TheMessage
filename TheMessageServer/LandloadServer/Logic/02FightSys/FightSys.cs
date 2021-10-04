@@ -159,6 +159,70 @@ public class FightSys
         MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
         messageRoom.MessageTransfer();
 
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushEndPlay
+        };
+        CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+
+    }
+
+    public void RequestMessageTransfer(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
+
+        if (pack.msg.requestMessageTransfer.message.type == CardType.RestrictedMessage)
+        {
+
+            int index = messageRoom.GetIndexById(playerData.id);
+            messageRoom.SetTransferMessage(index+1, pack.msg.requestMessageTransfer.message);
+            
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushMessageTransfer,
+                pushMessageTransfer = new PushMessageTransfer
+                {
+                    message = pack.msg.requestMessageTransfer.message,
+                    transferIndex = index
+                }
+            };
+            CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+
+            //Test 直接进入接收小节
+            messageRoom.AcceptSection();
+        }
+
+
+
+    }
+
+    //处理是否接收情报的请求
+    public void RequestAcceptMessage(MsgPack pack)
+    {
+        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
+
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+
+        if (pack.msg.requestAcceptMessage.isAccept)
+        {
+            //TODO
+        }
+        else
+        {
+            messageRoom.SetTransferMessage(messageRoom.transferingMessageIndex + 1);
+            int index = messageRoom.GetIndexById(playerData.id);
+
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushMessageTransfering,
+                pushMessageTransfering = new PushMessageTransfering
+                {
+                    transferIndex = messageRoom.transferingMessageIndex
+                }
+            };
+            CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+        }
     }
 }
 

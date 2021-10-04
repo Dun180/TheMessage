@@ -108,8 +108,6 @@ ScriptsOnlyBuild:
       Script: {instanceID: 3804}
     - Class: 114
       Script: {instanceID: 3830}
-    - Class: 114
-      Script: {instanceID: 26918}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -231,7 +229,7 @@ ScriptsOnlyBuild:
     className: NetSvc
   - hash:
       serializedVersion: 2
-      Hash: 0991464c094549e3b752be089f84157c
+      Hash: 8ab95aa7b16ea1140c9935e37063fdd3
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: TipsWindow
@@ -255,7 +253,7 @@ ScriptsOnlyBuild:
     className: Text
   - hash:
       serializedVersion: 2
-      Hash: dd057d9daf36eb4bfa55add8ab61a2a3
+      Hash: 000403115ffb12aa6f97dd0f466a6da7
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MessageWindow
@@ -730,4 +728,4 @@ ScriptsOnlyBuild:
   platform: 19
   scenePathNames:
   - Assets/Scenes/GameRoot.unity
-  playerPath: C:/Users/D/Desktop/messagebuild/LandlordClient.exe
+  playerPath: C:/Users/D/Desktop/messagebuild/TheMessageClient.exe

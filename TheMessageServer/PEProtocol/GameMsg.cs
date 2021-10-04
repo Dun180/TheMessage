@@ -26,7 +26,14 @@ namespace PEProtocol
         public PushSelectChar pushSelectChar;
         public PushIdentityInfo pushIdentityInfo;
         public PushCard pushCard;
+        public PushRoundStart pushRoundStart;
         public PushDrawCard pushDrawCard;
+        public RequestMessageTransfer requestMessageTransfer;
+        public PushMessageTransfer pushMessageTransfer;
+        public RequestOutCard requestOutCard;
+        public RequestAcceptMessage requestAcceptMessage;
+        public PushMessageTransfering pushMessageTransfering;
+
     }
     [Serializable]
     public class ReqLogin
@@ -149,10 +156,41 @@ namespace PEProtocol
         public List<Card> cardList;
     }
     [Serializable]
+    public class PushRoundStart
+    {
+        public int index;
+    }
+    [Serializable]
     public class PushDrawCard
     {
         public List<Card> cardList;
         public int index;
+    }
+    [Serializable]
+    public class RequestOutCard
+    {
+        public Card card;
+    }
+    [Serializable]
+    public class RequestMessageTransfer
+    {
+        public Card message;
+    }
+    [Serializable]
+    public class PushMessageTransfer
+    {
+        public Card message;
+        public int transferIndex;
+    }
+    [Serializable]
+    public class RequestAcceptMessage
+    {
+        public bool isAccept;
+    }
+    [Serializable]
+    public class PushMessageTransfering
+    {
+        public int transferIndex;
     }
     public enum ErrorCode
     {
@@ -211,12 +249,26 @@ namespace PEProtocol
         PushIdentityInfo,//推送玩家身份信息
 
         PushCard,//推送手牌
+
+        PushRoundStart,//推送回合开始
+
         PushDrawCard,//推送抽卡
 
+        RequestOutCard,//请求出牌
+
         RequestEndPlay,//请求出牌阶段结束
+        PushEndPlay,//推送出牌阶段结束
+
+        RequestMessageTransfer,//请求情报传递
+        PushMessageTransfer,//推送情报传递信息
+
+        PushAcceptSection,//推送接受小节信息
+        RequestAcceptMessage,//请求接收情报信息
+
+        PushMessageTransfering,//推送后续传递的情报信息
 
         //其他
-        OnConnected ,
+        OnConnected,
         OnDisConnected ,
     }
 }

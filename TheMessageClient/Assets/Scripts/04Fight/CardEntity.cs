@@ -34,7 +34,6 @@ public class CardEntity
         cardData = card;
         Image img = mRectTrans.GetComponent<Image>();
         string spName = Enum.GetName(typeof(CardColor), card.color) + Enum.GetName(typeof(CardType), card.type) + Enum.GetName(typeof(CardFunction), card.function);
-        this.Log("spName:{0}", spName);
         Sprite sp = GetRes<Sprite>("ResImages/Message/" + spName);
         img.sprite = sp;
     }

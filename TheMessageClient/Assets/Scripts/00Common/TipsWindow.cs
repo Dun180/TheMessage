@@ -5,11 +5,16 @@ using System.Collections.Generic;
 
 public class TipsWindow : WindowRoot
 {
+
+
+
+
     public Transform tipsRoot;
     public Transform tipsBg;
     public Animator ani;
     public Text txtTips;
-    
+    public Text bannerTips;
+
     private bool isTipsShow = false;
     private static Queue<string> tipsQue = new Queue<string>();
 
@@ -24,6 +29,8 @@ public class TipsWindow : WindowRoot
             tipsQue.Enqueue(tips);
         }
     }
+
+
 
     private void Update(){
         if(tipsQue.Count > 0 && isTipsShow == false){

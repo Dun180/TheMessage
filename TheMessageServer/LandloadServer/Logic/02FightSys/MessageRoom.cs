@@ -25,6 +25,8 @@ public class MessageRoom
 
     private int roundPlayerIndex;//正在进行回合的玩家索引
 
+    private Card transferingMessage = null;//传递中的情报
+    public int transferingMessageIndex { private set; get; } = -1;//当前面前有情报的人的索引
 
     public MessageRoom(int roomID,string roomOwner,int roomOwnerID)
     {
@@ -152,6 +154,21 @@ public class MessageRoom
             return false;
         }
     }
+
+    //根据玩家信息获取索引
+    public int GetIndexById(int id)
+    {
+        int posIndex = -1;
+        for(int i = 0; i < playerArr.Length; i++)
+        {
+            if(playerArr[i].id == id)
+            {
+                posIndex = i;
+            }
+        }
+        return posIndex;
+    }
+
 
     //游戏开始房间初始化
     public void GameStart()
@@ -391,6 +408,13 @@ public class MessageRoom
 
         roundStage = RoundStage.RoundStart;
 
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushRoundStart,
+            pushRoundStart = new PushRoundStart { index = roundPlayerIndex }
+        };
+        CacheSvc.Instance.SendMsgAll(this,msg);
+
         DrawPhase();
 
     }
@@ -466,6 +490,9 @@ public class MessageRoom
 
         roundStage = RoundStage.AcceptSection;
 
+        GameMsg msg = new GameMsg { cmd = CMD.PushAcceptSection };
+        playerArr[transferingMessageIndex].token.SendMsg(msg);
+
     }
 
     //回合结束阶段
@@ -482,6 +509,20 @@ public class MessageRoom
             roundPlayerIndex = 0;
         }
         //RoundStart();
+    }
+
+    public void SetTransferMessage(int index, Card card = null)
+    {
+        if(card != null)
+        {
+            transferingMessage = card;
+
+        }
+        if(index > 4)
+        {
+            index -= 5;
+        }
+        transferingMessageIndex = index;
     }
 }
 
