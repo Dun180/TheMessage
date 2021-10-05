@@ -206,7 +206,7 @@ public class FightSys
 
         if (pack.msg.requestAcceptMessage.isAccept)
         {
-            //TODO
+            messageRoom.AcceptMessage();
         }
         else
         {

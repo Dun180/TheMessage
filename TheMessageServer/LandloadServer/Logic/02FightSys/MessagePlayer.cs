@@ -21,7 +21,7 @@ public class MessagePlayer
     public List<Card> cardList = new List<Card>();//手牌
 
 
-    public List<Card> messages = new List<Card>();//所持情报
+    public List<Card> messageList = new List<Card>();//所持情报
 
     public int redNum;//红情报数
     public int blueNum;//蓝情报数
@@ -41,7 +41,7 @@ public class MessagePlayer
         charIndex = 0;
         charName = null;
         cardList.Clear();
-        messages.Clear();
+        messageList.Clear();
         playerState = PlayerState.None;
         playerIdentity = PlayerIdentity.None;
     }
@@ -51,6 +51,31 @@ public class MessagePlayer
         cardList.Add(card);
     }
 
+    public void AddMessage(Card message)
+    {
+        switch (message.color){
+            case CardColor.Red:
+                redNum++;
+                break;
+            case CardColor.Blue:
+                blueNum++;
+                break;
+            case CardColor.Black:
+                blackNum++;
+                break;
+            case CardColor.RedBlack:
+                redNum++;
+                blackNum++;
+                break;
+            case CardColor.BlueBlack:
+                blueNum++;
+                blackNum++;
+                break;
+            default:
+                break;
+        }
+        messageList.Add(message);
+    }
 
     public void SetIdentity(int index)
     {

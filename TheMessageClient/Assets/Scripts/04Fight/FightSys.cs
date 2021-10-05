@@ -95,7 +95,7 @@ public class FightSys : MonoBehaviour
 
     public void PushDrawCard(GameMsg msg)
     {
-        messageWindow.SetMessageInfo(msg.pushDrawCard.index, msg.pushDrawCard.cardList.Count, 0, 0, 0);
+        messageWindow.SetAddMessageInfo(msg.pushDrawCard.index, msg.pushDrawCard.cardList.Count, 0, 0, 0);
         if (msg.pushDrawCard.index == messageWindow.selfIndex)
         {
             messageWindow.isMyTurn = true;
@@ -143,5 +143,22 @@ public class FightSys : MonoBehaviour
         {
             messageWindow.SetMessageStage(MessageStage.AcceptSection);
         }
+    }
+
+    public void PushSinglePlayerMessageUpdate(GameMsg msg)
+    {
+        messageWindow.SetMessageInfo(
+            msg.pushSinglePlayerMessageUpdate.posIndex, 
+            msg.pushSinglePlayerMessageUpdate.cards, 
+            msg.pushSinglePlayerMessageUpdate.redNum, 
+            msg.pushSinglePlayerMessageUpdate.blueNum, 
+            msg.pushSinglePlayerMessageUpdate.blackNum);
+
+        messageWindow.SetCardLibrary(msg.pushSinglePlayerMessageUpdate.cardLibraryCount);
+    }
+
+    public void PushConfirmAcceptMessage(GameMsg msg)
+    {
+        messageWindow.ConfirmAcceptMessage();
     }
 }

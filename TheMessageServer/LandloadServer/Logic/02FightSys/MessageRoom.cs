@@ -16,7 +16,7 @@ public class MessageRoom
     public int roomOwnerID;
     public MatchPlayerData[] matchPlayerArr = null;
 
-    List<Card> cardList = new List<Card>();
+    List<Card> cardList = new List<Card>();//牌库
     List<Card> tempCardList = new List<Card>();//创建一个临时牌库用来存放打乱前的牌
     public int roomNumber { private set; get; }
 
@@ -524,6 +524,40 @@ public class MessageRoom
         }
         transferingMessageIndex = index;
     }
+
+    public void AcceptMessage()
+    {
+        playerArr[transferingMessageIndex].AddMessage(transferingMessage);
+
+
+        GameMsg updateMsg = new GameMsg
+        {
+            cmd = CMD.PushSinglePlayerMessageUpdate,
+            pushSinglePlayerMessageUpdate = new PushSinglePlayerMessageUpdate
+            {
+                posIndex = transferingMessageIndex,
+                cards = playerArr[transferingMessageIndex].cardList.Count,
+                redNum = playerArr[transferingMessageIndex].redNum,
+                blueNum = playerArr[transferingMessageIndex].blueNum,
+                blackNum = playerArr[transferingMessageIndex].blackNum,
+                cardLibraryCount = cardList.Count
+            }
+        };
+
+        CacheSvc.Instance.SendMsgAll(this, updateMsg);
+        transferingMessageIndex = -1;
+        transferingMessage = null;
+
+
+        GameMsg confirmMsg = new GameMsg
+        {
+            cmd = CMD.PushConfirmAcceptMessage
+        };
+        CacheSvc.Instance.SendMsgAll(this, confirmMsg);
+
+    }
+
+
 }
 
 

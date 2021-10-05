@@ -403,6 +403,11 @@ public class MessageWindow : WindowRoot
         }
     }
 
+    public void SetCardLibrary(int count)
+    {
+        SetText(cardLibrary, count);
+    }
+
     private Vector3[] turnIdTransPos = new Vector3[5]
 {
         new Vector3(-776,-211,0),
@@ -520,7 +525,7 @@ public class MessageWindow : WindowRoot
 
     }
 
-    public void SetMessageInfo(int posIndex,int addCards,int addRedNum,int addBlueNum,int addBlackNum)
+    public void SetAddMessageInfo(int posIndex,int addCards,int addRedNum,int addBlueNum,int addBlackNum)
     {
         int flag =0-(selfIndex - posIndex);
         if (flag >= 5)
@@ -535,6 +540,30 @@ public class MessageWindow : WindowRoot
         SetText(blueNum[flag], int.Parse(blueNum[flag].text) + addBlueNum);
         SetText(blackNum[flag], int.Parse(blackNum[flag].text) + addBlackNum);
 
+    }
+
+    public void SetMessageInfo(int posIndex, int cards, int redNum, int blueNum, int blackNum)
+    {
+        int flag = 0 - (selfIndex - posIndex);
+        if (flag >= 5)
+        {
+            flag -= 5;
+        }
+        else if (flag < 0)
+        {
+            flag += 5;
+        }
+        SetText(this.cards[flag], cards);
+        SetText(this.redNum[flag], redNum);
+        SetText(this.blueNum[flag], blueNum);
+        SetText(this.blackNum[flag], blackNum);
+
+    }
+
+    public void ConfirmAcceptMessage()
+    {
+        Destroy(transEntity.mRectTrans.gameObject);
+        transEntity = null;
     }
 
     public void endPlay()
@@ -557,7 +586,7 @@ public class MessageWindow : WindowRoot
 
 
         CardEntity cardEntity = new CardEntity(rectTrans, -1);
-        cardEntity.SetEntityData(message);
+        cardEntity.SetEntityData(message,true);
         cardEntity.SetRectPos(new Vector3(0, 0, 0));
 
         transEntity = cardEntity; 

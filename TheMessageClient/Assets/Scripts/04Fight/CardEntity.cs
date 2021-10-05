@@ -29,13 +29,23 @@ public class CardEntity
         mRectTrans.localPosition = pos;
     }
 
-    public void SetEntityData(Card card)
+    public void SetEntityData(Card card,bool isMessage = false)
     {
         cardData = card;
         Image img = mRectTrans.GetComponent<Image>();
-        string spName = Enum.GetName(typeof(CardColor), card.color) + Enum.GetName(typeof(CardType), card.type) + Enum.GetName(typeof(CardFunction), card.function);
-        Sprite sp = GetRes<Sprite>("ResImages/Message/" + spName);
-        img.sprite = sp;
+        if (isMessage&&(card.type == CardType.RestrictedMessage||card.type == CardType.NonstopMessage))
+        {
+            string spName = Enum.GetName(typeof(CardType), card.type);
+            Sprite sp = GetRes<Sprite>("ResImages/Message/" + spName);
+            img.sprite = sp;
+        }
+        else
+        {
+            string spName = Enum.GetName(typeof(CardColor), card.color) + Enum.GetName(typeof(CardType), card.type) + Enum.GetName(typeof(CardFunction), card.function);
+            Sprite sp = GetRes<Sprite>("ResImages/Message/" + spName);
+            img.sprite = sp;
+        }
+
     }
 
     protected T GetRes<T>(string path) where T : UnityEngine.Object

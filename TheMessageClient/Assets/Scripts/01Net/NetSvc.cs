@@ -110,6 +110,12 @@ public class NetSvc : MonoBehaviour
             case CMD.PushMessageTransfering:
                 FightSys.Instance.PushMessageTransfering(msg);
                 break;
+            case CMD.PushSinglePlayerMessageUpdate:
+                FightSys.Instance.PushSinglePlayerMessageUpdate(msg);
+                break;
+            case CMD.PushConfirmAcceptMessage:
+                FightSys.Instance.PushConfirmAcceptMessage(msg);
+                break;
             case CMD.None:
                 break;
             default:

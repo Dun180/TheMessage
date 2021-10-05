@@ -33,7 +33,7 @@ namespace PEProtocol
         public RequestOutCard requestOutCard;
         public RequestAcceptMessage requestAcceptMessage;
         public PushMessageTransfering pushMessageTransfering;
-
+        public PushSinglePlayerMessageUpdate pushSinglePlayerMessageUpdate;
     }
     [Serializable]
     public class ReqLogin
@@ -192,6 +192,20 @@ namespace PEProtocol
     {
         public int transferIndex;
     }
+    [Serializable]
+    public class PushSinglePlayerMessageUpdate
+    {
+        public int posIndex;//位置索引
+
+
+
+        public int cards;//手牌数
+        public int redNum;//红情报数
+        public int blueNum;//蓝情报数
+        public int blackNum;//黑情报数
+
+        public int cardLibraryCount;//牌库总数
+    }
     public enum ErrorCode
     {
         None,
@@ -266,7 +280,9 @@ namespace PEProtocol
         RequestAcceptMessage,//请求接收情报信息
 
         PushMessageTransfering,//推送后续传递的情报信息
+        PushConfirmAcceptMessage,//推送确认接收情报信息
 
+        PushSinglePlayerMessageUpdate,//推送单个玩家信息更新
         //其他
         OnConnected,
         OnDisConnected ,
