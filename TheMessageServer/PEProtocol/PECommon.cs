@@ -39,7 +39,6 @@ public class PECommon
         if (card.function == CardFunction.TigerMountain) flag = true;
         if (card.function == CardFunction.Swap) flag = true;
         if (card.function == CardFunction.Intercept) flag = true;
-        if (card.function == CardFunction.Penetrate) flag = true;
         if (card.function == CardFunction.Burn) flag = true;
 
 
@@ -54,7 +53,6 @@ public class PECommon
 
         if (card.function == CardFunction.Decipher) flag = true;
         if (card.function == CardFunction.Transfer) flag = true;
-        if (card.function == CardFunction.Penetrate) flag = true;
         if (card.function == CardFunction.Burn) flag = true;
 
 

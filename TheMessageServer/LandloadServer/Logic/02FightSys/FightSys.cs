@@ -154,6 +154,11 @@ public class FightSys
         messageRoom.RoundStart();//回合开始
     }
 
+    public void RequestOutCard(MsgPack pack)
+    {
+
+    }
+
     public void RequestEndPlay(MsgPack pack)
     {
         MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
@@ -172,12 +177,12 @@ public class FightSys
         MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
         PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
 
-        if (pack.msg.requestMessageTransfer.message.type == CardType.RestrictedMessage)
+        if (pack.msg.requestMessageTransfer.message.type == CardType.RestrictedMessage || pack.msg.requestMessageTransfer.message.type == CardType.TextMessage)
         {
 
             int index = messageRoom.GetIndexById(playerData.id);
             messageRoom.SetTransferMessage(index+1, pack.msg.requestMessageTransfer.message);
-            
+            messageRoom.RemoveCard(index, pack.msg.requestMessageTransfer.message);
             GameMsg msg = new GameMsg
             {
                 cmd = CMD.PushMessageTransfer,
@@ -192,6 +197,30 @@ public class FightSys
             //Test 直接进入接收小节
             messageRoom.AcceptSection();
         }
+        else
+        {
+            int index = messageRoom.GetIndexById(playerData.id);
+            messageRoom.SetTransferMessage(pack.msg.requestMessageTransfer.targetIndex, pack.msg.requestMessageTransfer.message);
+
+            messageRoom.RemoveCard(index, pack.msg.requestMessageTransfer.message);
+
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushMessageTransfer,
+                pushMessageTransfer = new PushMessageTransfer
+                {
+                    message = pack.msg.requestMessageTransfer.message,
+                    transferIndex = index,
+                    targetIndex = pack.msg.requestMessageTransfer.targetIndex
+                }
+            };
+            CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+
+
+            //Test 直接进入接收小节
+            messageRoom.AcceptSection();
+
+        }
 
 
 
@@ -201,7 +230,6 @@ public class FightSys
     public void RequestAcceptMessage(MsgPack pack)
     {
         PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
-
         MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
 
         if (pack.msg.requestAcceptMessage.isAccept)
@@ -210,18 +238,64 @@ public class FightSys
         }
         else
         {
-            messageRoom.SetTransferMessage(messageRoom.transferingMessageIndex + 1);
-            int index = messageRoom.GetIndexById(playerData.id);
-
-            GameMsg msg = new GameMsg
+            if(messageRoom.transferingMessage.type == CardType.NonstopMessage)
             {
-                cmd = CMD.PushMessageTransfering,
-                pushMessageTransfering = new PushMessageTransfering
+                //TODO
+                int index = messageRoom.GetIndexById(playerData.id);
+
+                int transIndex = -1;
+                int tgIndex = -1;
+
+                if(index == messageRoom.transferingMessageIndex)
                 {
-                    transferIndex = messageRoom.transferingMessageIndex
+                    transIndex = messageRoom.transferingMessageIndex;
+                    tgIndex = messageRoom.roundPlayerIndex;
+                    messageRoom.SetTransferMessage(tgIndex);
+
                 }
-            };
-            CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+
+
+                if (tgIndex >= 0)
+                {
+                    GameMsg msg = new GameMsg
+                    {
+                        cmd = CMD.PushMessageTransfering,
+                        pushMessageTransfering = new PushMessageTransfering
+                        {
+                            message = messageRoom.transferingMessage,
+                            transferIndex = transIndex,
+                            targetIndex = tgIndex
+
+                        }
+                    };
+                    CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+                }
+                else
+                {
+                    //TODO
+                    this.Log("1111111111");
+                }
+
+            }
+            else
+            {
+                this.Log("2222222");
+                messageRoom.SetTransferMessage(messageRoom.transferingMessageIndex + 1);
+                int index = messageRoom.GetIndexById(playerData.id);
+
+                GameMsg msg = new GameMsg
+                {
+                    cmd = CMD.PushMessageTransfering,
+                    pushMessageTransfering = new PushMessageTransfering
+                    {
+                        message = messageRoom.transferingMessage,
+                        targetIndex = messageRoom.transferingMessageIndex
+                    }
+                };
+                CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+            }
+            
+
         }
     }
 }

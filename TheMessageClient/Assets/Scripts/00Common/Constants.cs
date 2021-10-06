@@ -10,8 +10,10 @@ public class Constants {
     public const float cardDistance = 170;
     public const float upDistance = 30;
 
+    public const float acceptMessageSize = 0.3f;
+    public const float acceptMessageTime = 1;
 
-    
+
     public const int selectCharCounter = 30;
     public const int playStageCounter = 15;
     public const int messageTransferCounter = 15;

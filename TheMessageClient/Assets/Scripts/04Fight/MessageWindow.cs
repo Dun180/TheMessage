@@ -27,6 +27,8 @@ public class MessageWindow : WindowRoot
 
     MessageStage messageStage = MessageStage.None;
 
+    public RectTransform[] player;
+
     public Image[] charImg;
 
     public Text[] charName;
@@ -163,11 +165,11 @@ public class MessageWindow : WindowRoot
                 if (isMyTurn)
                 {
                     SetActive(btn1bg.transform);
-                    SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-275, -50));
+                    SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-175, -50));
 
 
                     SetActive(btn2bg.transform);
-                    SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(50, -50));
+                    SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(200, -50));
 
 
                     btnGroupTrans.localPosition = new Vector3(0, -75, 0);
@@ -177,14 +179,14 @@ public class MessageWindow : WindowRoot
                     SetActive(btn1bg.transform, false);
                     SetActive(btn2bg.transform, false);
                 }
-                //SetClockCallBack(Constants.playStageCounter, ClickBtn2);
+                SetClockCallBack(Constants.playStageCounter, ClickBtn2);
                 break;
             case MessageStage.MessageTransfer:
                 isTransMsg = false;
                 if (isMyTurn)
                 {
                     SetActive(btn1bg.transform);
-                    SetBtnInfo(btn1bg, btn1txt, "传递情报", 1, new Vector2(-175, -50));
+                    SetBtnInfo(btn1bg, btn1txt, "传递情报", 1, new Vector2(-50, -50));
 
                     SetActive(btn2bg.transform, false);
                 }
@@ -199,10 +201,10 @@ public class MessageWindow : WindowRoot
             case MessageStage.AcceptSection:
                 TipsWindow.AddTips("请选择是否接收情报");
                 SetActive(btn1bg.transform);
-                SetBtnInfo(btn1bg, btn1txt, "要", 1, new Vector2(-275, -50));
+                SetBtnInfo(btn1bg, btn1txt, "要", 1, new Vector2(-175, -50));
 
                 SetActive(btn2bg.transform);
-                SetBtnInfo(btn2bg, btn2txt, "不要", 2, new Vector2(50, -50));
+                SetBtnInfo(btn2bg, btn2txt, "不要", 2, new Vector2(200, -50));
                 break;
             default:
                 break;
@@ -327,6 +329,21 @@ public class MessageWindow : WindowRoot
                         }
 
                     }
+                    else
+                    {
+                        if (!isTransMsg)
+                        {
+                            isTransMsg = true;
+
+                            TipsWindow.AddTips("请点击人物头像以选择目标");
+
+                            AddPlayerClickEvent();
+
+
+                            SetActive(btnGroupTrans, false);
+
+                        }
+                    }
                     
                 }
                 break;
@@ -411,9 +428,9 @@ public class MessageWindow : WindowRoot
     private Vector3[] turnIdTransPos = new Vector3[5]
 {
         new Vector3(-776,-211,0),
-        new Vector3(564,195,0),
-        new Vector3(121,490,0),
-        new Vector3(-331,490,0),
+        new Vector3(909,148,0),
+        new Vector3(377,490,0),
+        new Vector3(-216,490,0),
         new Vector3(-780,305,0)
 };
 
@@ -560,8 +577,44 @@ public class MessageWindow : WindowRoot
 
     }
 
-    public void ConfirmAcceptMessage()
+
+    private Vector3[] acceptPos = new Vector3[5]
+{
+        new Vector3(-845,-340,0),
+        new Vector3(837,42,0),
+        new Vector3(309,394,0),
+        new Vector3(-284,394,0),
+        new Vector3(-847,183,0)
+};
+
+    public void ConfirmAcceptMessage(int index)
     {
+
+        int targetPos = 0 - (selfIndex - index);
+        if (targetPos >= 5)
+        {
+            targetPos -= 5;
+        }
+        else if (targetPos < 0)
+        {
+            targetPos += 5;
+        }
+
+        transEntity.turnOver();
+
+
+
+        StartCoroutine(ConfirmAcceptMessageAni(targetPos));
+
+
+    }
+
+    IEnumerator ConfirmAcceptMessageAni(int index)
+    {
+        yield return new WaitForSeconds(Constants.acceptMessageTime);
+        transEntity.MoveTargetPosInTime(Constants.messageMoveTime, acceptPos[index], null, Constants.acceptMessageSize);
+        yield return new WaitForSeconds(Constants.messageMoveTime);
+
         Destroy(transEntity.mRectTrans.gameObject);
         transEntity = null;
     }
@@ -573,7 +626,7 @@ public class MessageWindow : WindowRoot
     }
 
     //密电情报传递动画
-    public void MessageTransferAni(Card message,int posIndex)
+    public void MessageTransferAni(Card message,int posIndex,int targetIndex = -1)
     {
         GameObject go = Instantiate(cardObj);
         RectTransform rectTrans = go.GetComponent<RectTransform>();
@@ -600,21 +653,39 @@ public class MessageWindow : WindowRoot
         {
             actualPos += 5;
         }
-        int targetPos = actualPos + 1;
-        if (targetPos >= 5)
+
+        int targetPos;
+        if (targetIndex < 0)
         {
-            targetPos -= 5;
+            targetPos = actualPos + 1;
+            if (targetPos >= 5)
+            {
+                targetPos -= 5;
+            }
+            else if (targetPos < 0)
+            {
+                targetPos += 5;
+            }
         }
-        else if (targetPos < 0)
+        else
         {
-            targetPos += 5;
+            targetPos = 0 - (selfIndex - targetIndex);
+            if (targetPos >= 5)
+            {
+                targetPos -= 5;
+            }
+            else if (targetPos < 0)
+            {
+                targetPos += 5;
+            }
         }
+
 
         StartCoroutine(MessageTransferAni(transEntity, actualPos,targetPos));
 
 
     }
-    //密电情报传递中动画
+    //密电文本情报传递中动画
     public void MessageTransferingAni(int posIndex)
     {
         int targetPos = 0 - (selfIndex - posIndex);
@@ -637,6 +708,29 @@ public class MessageWindow : WindowRoot
         }
         StartCoroutine(MessageTransferAni(transEntity, sendPos, targetPos));
 
+    }
+    //直达情报传递中动画
+    public void NonstopMessageTransAni(int sendIndex,int targetIndex)
+    {
+        int targetPos = 0 - (selfIndex - targetIndex);
+        if (targetPos >= 5)
+        {
+            targetPos -= 5;
+        }
+        else if (targetPos < 0)
+        {
+            targetPos += 5;
+        }
+        int sendPos = 0 - (selfIndex - sendIndex);
+        if (sendPos >= 5)
+        {
+            sendPos -= 5;
+        }
+        else if (sendPos < 0)
+        {
+            sendPos += 5;
+        }
+        StartCoroutine(MessageTransferAni(transEntity, sendPos, targetPos));
     }
 
     //展示手牌
@@ -720,6 +814,7 @@ public class MessageWindow : WindowRoot
     //出牌动画
     public void OutCardAni()
     {
+        handCardNum--;
         int flag = -1;
         for (int i = 0; i < selfCardEntityList.Count; i++)
         {
@@ -756,9 +851,9 @@ public class MessageWindow : WindowRoot
     private Vector3[] messageTransPos = new Vector3[5]
 {
         new Vector3(-567,-178,0),
-        new Vector3(277,14,0),
-        new Vector3(55,34,0),
-        new Vector3(-400,34,0),
+        new Vector3(636,0,0),
+        new Vector3(514,396,0),
+        new Vector3(-79,396,0),
         new Vector3(-633,209,0)
 };
 
@@ -805,6 +900,64 @@ public class MessageWindow : WindowRoot
         {
             ce.SetCardEntityState(CardState.Normal);
             prepareEntity = null;
+        }
+    }
+
+    //给人物挂载点击事件
+    public void AddPlayerClickEvent()
+    {
+        for(int i = 0; i < charImg.Length; i++)
+        {
+            OnClickUp(player[i].gameObject,OnPlayerSelected);
+
+        }
+    }
+
+    //人物被选中时的函数
+    public void OnPlayerSelected(GameObject go)
+    {
+        this.Log("click!!!!!!!!!!!");
+        int index = -1;
+        string numstr = go.name.Substring(6, go.name.Length - 6);
+        int.TryParse(numstr, out index);
+        if (index != -1)
+        {
+            int targetPos = selfIndex + index;
+
+            if (targetPos >= 5)
+            {
+                targetPos -= 5;
+            }
+            else if (targetPos < 0)
+            {
+                targetPos += 5;
+            }
+
+
+            GameMsg transMsg = new GameMsg
+            {
+                cmd = CMD.RequestMessageTransfer,
+                requestMessageTransfer = new RequestMessageTransfer 
+                { 
+                    message = prepareEntity.cardData,
+                    targetIndex = targetPos
+                }
+            };
+            netSvc.SendMsg(transMsg);
+            DestroyPlayerClickEvent();
+            OutCardAni();
+
+
+        }
+    }
+
+    //销毁人物点击事件
+    public void DestroyPlayerClickEvent()
+    {
+        for (int i = 0; i < charImg.Length; i++)
+        {
+            PEListener listener = (PEListener)GetOrAddComponent<PEListener>(charImg[i].gameObject);
+            Destroy(listener,0);
         }
     }
 

@@ -11,6 +11,10 @@ namespace PEProtocol
         public CardType type;
         public CardFunction function;
 
+        public bool Equals(Card card)
+        {
+            return card.color.Equals(color) && card.type.Equals(type) && card.function.Equals(function);
+        }
     }
 
     public enum CardColor

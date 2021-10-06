@@ -116,6 +116,9 @@ public class NetSvc : MonoBehaviour
             case CMD.PushConfirmAcceptMessage:
                 FightSys.Instance.PushConfirmAcceptMessage(msg);
                 break;
+            case CMD.PushRoundEnd:
+                FightSys.Instance.PushRoundEnd(msg);
+                break;
             case CMD.None:
                 break;
             default:

@@ -48,23 +48,32 @@ public class CardEntity
 
     }
 
+    public void turnOver()
+    {
+        Image img = mRectTrans.GetComponent<Image>();
+        string spName = Enum.GetName(typeof(CardColor), cardData.color) + Enum.GetName(typeof(CardType), cardData.type) + Enum.GetName(typeof(CardFunction), cardData.function);
+        Sprite sp = GetRes<Sprite>("ResImages/Message/" + spName);
+        img.sprite = sp;
+
+    }
+
     protected T GetRes<T>(string path) where T : UnityEngine.Object
     {
         return Resources.Load(path, typeof(T)) as T;
     }
 
     //相对移动动画
-    public void MoveLocalPosInTime(float time, Vector3 offset, Action cb = null)
+    public void MoveLocalPosInTime(float time, Vector3 offset, Action cb = null, float size = 1)
     {
         RectPosTween rpt = (RectPosTween)GetOrAddComponent<RectPosTween>(mRectTrans.gameObject);
-        rpt.MoveLocalPosInTime(time, offset, cb);
+        rpt.MoveLocalPosInTime(time, offset, cb,size);
     }
 
     //绝对移动动画
-    public void MoveTargetPosInTime(float time, Vector3 target, Action cb = null)
+    public void MoveTargetPosInTime(float time, Vector3 target, Action cb = null,float size = 1)
     {
         RectPosTween rpt = (RectPosTween)GetOrAddComponent<RectPosTween>(mRectTrans.gameObject);
-        rpt.MoveTargetPosInTime(time, target, cb);
+        rpt.MoveTargetPosInTime(time, target, cb,size);
     }
 
     //状态变化

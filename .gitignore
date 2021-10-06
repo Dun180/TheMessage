@@ -1,2 +1,5 @@
 /TheMessageClient/
 !/TheMessageClient/Asserts/
+!/TheMessageClient/Packages/
+!/TheMessageClient/.vsconfig
+!/TheMessageClient/ProjectSettings/

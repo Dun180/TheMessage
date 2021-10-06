@@ -7368,7 +7368,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9055612784031081554}
   m_Layer: 0
-  m_Name: SelfPlayer
+  m_Name: Player0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7460,6 +7460,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a6f3a57c558c494b83b07a80c3540f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player:
+  - {fileID: 9055612784031081554}
+  - {fileID: 1389361753}
+  - {fileID: 564552252}
+  - {fileID: 586712931}
+  - {fileID: 373057851}
   charImg:
   - {fileID: 980863180}
   - {fileID: 470817286}
@@ -7511,7 +7517,7 @@ MonoBehaviour:
   char_1: {fileID: 154020259297889558}
   char_2: {fileID: 2141066224751909869}
   char_3: {fileID: 9157512114454509444}
-  turnIdentification: {fileID: 0}
+  turnIdentification: {fileID: 4376104412553499110}
   selfCardTrans: {fileID: 7346789695354267409}
   btnGroupTrans: {fileID: 52645403}
   messageTrans: {fileID: 4366528075083015323}

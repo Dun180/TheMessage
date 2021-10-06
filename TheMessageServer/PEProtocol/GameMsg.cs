@@ -34,6 +34,7 @@ namespace PEProtocol
         public RequestAcceptMessage requestAcceptMessage;
         public PushMessageTransfering pushMessageTransfering;
         public PushSinglePlayerMessageUpdate pushSinglePlayerMessageUpdate;
+        public PushConfirmAcceptMessage pushConfirmAcceptMessage;
     }
     [Serializable]
     public class ReqLogin
@@ -165,6 +166,8 @@ namespace PEProtocol
     {
         public List<Card> cardList;
         public int index;
+
+        public int cardLibraryCount;
     }
     [Serializable]
     public class RequestOutCard
@@ -175,12 +178,15 @@ namespace PEProtocol
     public class RequestMessageTransfer
     {
         public Card message;
+        public int targetIndex;//目标人索引
     }
     [Serializable]
     public class PushMessageTransfer
     {
         public Card message;
-        public int transferIndex;
+        public int transferIndex;//发送人索引
+        public int targetIndex;//目标人索引
+
     }
     [Serializable]
     public class RequestAcceptMessage
@@ -190,7 +196,9 @@ namespace PEProtocol
     [Serializable]
     public class PushMessageTransfering
     {
-        public int transferIndex;
+        public Card message;
+        public int transferIndex;//发送人索引
+        public int targetIndex;//目标人索引
     }
     [Serializable]
     public class PushSinglePlayerMessageUpdate
@@ -205,6 +213,11 @@ namespace PEProtocol
         public int blackNum;//黑情报数
 
         public int cardLibraryCount;//牌库总数
+    }
+    [Serializable]
+    public class PushConfirmAcceptMessage
+    {
+        public int index;
     }
     public enum ErrorCode
     {
@@ -283,6 +296,9 @@ namespace PEProtocol
         PushConfirmAcceptMessage,//推送确认接收情报信息
 
         PushSinglePlayerMessageUpdate,//推送单个玩家信息更新
+        
+        PushRoundEnd,//推送回合结束信息
+        
         //其他
         OnConnected,
         OnDisConnected ,

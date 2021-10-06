@@ -23,9 +23,9 @@ public class MessageRoom
     private int readyNumber;//准备的人数
     private int charCount;//已选择角色的人数
 
-    private int roundPlayerIndex;//正在进行回合的玩家索引
+    public int roundPlayerIndex { private set; get; }//正在进行回合的玩家索引
 
-    private Card transferingMessage = null;//传递中的情报
+    public Card transferingMessage { private set; get; } = null;//传递中的情报
     public int transferingMessageIndex { private set; get; } = -1;//当前面前有情报的人的索引
 
     public MessageRoom(int roomID,string roomOwner,int roomOwnerID)
@@ -400,6 +400,34 @@ public class MessageRoom
 
     }
 
+    public void RemoveCard(int index,Card card)
+    {
+
+        for (int i = 0; i < playerArr[index].cardList.Count; i++)
+        {
+            if (playerArr[index].cardList[i].Equals(card))
+            {
+                playerArr[index].cardList.RemoveAt(i);
+                break;
+            }
+        }
+        GameMsg updateMsg = new GameMsg
+        {
+            cmd = CMD.PushSinglePlayerMessageUpdate,
+            pushSinglePlayerMessageUpdate = new PushSinglePlayerMessageUpdate
+            {
+                posIndex = index,
+                cards = playerArr[index].cardList.Count,
+                redNum = playerArr[index].redNum,
+                blueNum = playerArr[index].blueNum,
+                blackNum = playerArr[index].blackNum,
+                cardLibraryCount = cardList.Count
+            }
+        };
+
+        CacheSvc.Instance.SendMsgAll(this, updateMsg);
+    }
+
 
     //回合开始阶段
     public void RoundStart()
@@ -437,7 +465,8 @@ public class MessageRoom
             pushDrawCard = new PushDrawCard
             {
                 cardList = tempCardList,
-                index = roundPlayerIndex
+                index = roundPlayerIndex,
+                cardLibraryCount = cardList.Count
             }
         };
 
@@ -503,12 +532,19 @@ public class MessageRoom
         roundStage = RoundStage.RoundEnd;
 
 
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushRoundEnd
+        };
+
+        CacheSvc.Instance.SendMsgAll(this,msg);
+
         roundPlayerIndex++;
         if(roundPlayerIndex > 4)
         {
             roundPlayerIndex = 0;
         }
-        //RoundStart();
+        RoundStart();
     }
 
     public void SetTransferMessage(int index, Card card = null)
@@ -545,15 +581,22 @@ public class MessageRoom
         };
 
         CacheSvc.Instance.SendMsgAll(this, updateMsg);
-        transferingMessageIndex = -1;
-        transferingMessage = null;
+
 
 
         GameMsg confirmMsg = new GameMsg
         {
-            cmd = CMD.PushConfirmAcceptMessage
+            cmd = CMD.PushConfirmAcceptMessage,
+            pushConfirmAcceptMessage = new PushConfirmAcceptMessage
+            {
+                index = transferingMessageIndex
+            }
         };
         CacheSvc.Instance.SendMsgAll(this, confirmMsg);
+
+        transferingMessageIndex = -1;
+        transferingMessage = null;
+        RoundEnd();
 
     }
 
