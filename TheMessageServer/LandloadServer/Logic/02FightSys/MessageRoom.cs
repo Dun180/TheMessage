@@ -27,6 +27,9 @@ public class MessageRoom
 
     public Card transferingMessage { private set; get; } = null;//传递中的情报
     public int transferingMessageIndex { private set; get; } = -1;//当前面前有情报的人的索引
+    private Card waitSettlementCard = null;//等待结算的卡牌
+    private bool settlementCardAvailability = false;//结算卡牌的有效性
+    private int settlementCardTarget = -1;//结算卡牌的目标
 
     public MessageRoom(int roomID,string roomOwner,int roomOwnerID)
     {
@@ -428,6 +431,31 @@ public class MessageRoom
         CacheSvc.Instance.SendMsgAll(this, updateMsg);
     }
 
+    //抽卡
+    public void DrawCard(int drawIndex,int drawCardCount)
+    {
+        List<Card> tempCardList = new List<Card>();
+        for (int i = 0; i < drawCardCount; i++)
+        {
+            playerArr[drawIndex].AddCard(cardList[0]);
+            tempCardList.Add(cardList[0]);
+            cardList.RemoveAt(0);
+        }
+
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushDrawCard,
+            pushDrawCard = new PushDrawCard
+            {
+                cardList = tempCardList,
+                index = drawIndex,
+                cardLibraryCount = cardList.Count
+            }
+        };
+
+        CacheSvc.Instance.SendMsgAll(this, msg);
+    }
+
 
     //回合开始阶段
     public void RoundStart()
@@ -450,27 +478,7 @@ public class MessageRoom
     //抽牌阶段
     public void DrawPhase()
     {
-        List<Card> tempCardList = new List<Card>();
-        int drawCardCount = 2;
-        for(int i = 0; i < drawCardCount; i++)
-        {
-            playerArr[roundPlayerIndex].AddCard(cardList[0]);
-            tempCardList.Add(cardList[0]);
-            cardList.RemoveAt(0);
-        }
-
-        GameMsg msg = new GameMsg
-        {
-            cmd = CMD.PushDrawCard,
-            pushDrawCard = new PushDrawCard
-            {
-                cardList = tempCardList,
-                index = roundPlayerIndex,
-                cardLibraryCount = cardList.Count
-            }
-        };
-
-        CacheSvc.Instance.SendMsgAll(this, msg);
+        DrawCard(roundPlayerIndex, 2);
 
         PlayerStage();
 
@@ -480,6 +488,13 @@ public class MessageRoom
     public void PlayerStage()
     {
         //TODO
+
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushPlayStage
+        };
+        CacheSvc.Instance.SendMsgAll(this, msg);
+
 
         roundStage = RoundStage.PlayStage;
 
@@ -600,7 +615,101 @@ public class MessageRoom
 
     }
 
+    //设置等待结算的卡牌
+    public void SetWaitSettlementCard(Card card,int targetIndex = -1)
+    {
+        waitSettlementCard = card;
+        settlementCardAvailability = true;
+        settlementCardTarget = targetIndex;
+    }
 
+    //识破
+    public void Penetrate()
+    {
+        if (settlementCardAvailability)
+        {
+            settlementCardAvailability = false;
+        }
+        else
+        {
+            settlementCardAvailability = true;
+        }
+    }
+
+    public void Gambling(int targetIndex)
+    {
+        Card gamblingCard = cardList[0];
+        cardList.RemoveAt(0);
+        playerArr[targetIndex].AddMessage(gamblingCard);
+
+
+
+
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushGamblingCard,
+            pushGamblingCard = new PushGamblingCard
+            {
+                card = gamblingCard,
+                index = targetIndex
+            }
+        };
+
+        CacheSvc.Instance.SendMsgAll(this, msg);
+
+
+        GameMsg updateMsg = new GameMsg
+        {
+            cmd = CMD.PushSinglePlayerMessageUpdate,
+            pushSinglePlayerMessageUpdate = new PushSinglePlayerMessageUpdate
+            {
+                posIndex = targetIndex,
+                cards = playerArr[targetIndex].cardList.Count,
+                redNum = playerArr[targetIndex].redNum,
+                blueNum = playerArr[targetIndex].blueNum,
+                blackNum = playerArr[targetIndex].blackNum,
+                cardLibraryCount = cardList.Count
+            }
+        };
+
+        CacheSvc.Instance.SendMsgAll(this, updateMsg);
+    }
+
+    //卡牌结算
+    public void CardSettlement()
+    {
+        if (settlementCardAvailability)
+        {
+            //结算卡牌
+
+
+            switch (waitSettlementCard.function)
+            {
+                case CardFunction.Locking:
+
+                    break;
+                case CardFunction.Reinforce:
+                    int drawCardCount = 1;
+                    drawCardCount += playerArr[roundPlayerIndex].blackNum;
+                    DrawCard(roundPlayerIndex, drawCardCount);
+                    break;
+                case CardFunction.Gambling:
+                    Gambling(settlementCardTarget);
+                    break;
+                case CardFunction.Balance:
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            //无事发生
+        }
+        waitSettlementCard = null;
+        settlementCardAvailability = false;
+        settlementCardTarget = -1;
+}
 }
 
 

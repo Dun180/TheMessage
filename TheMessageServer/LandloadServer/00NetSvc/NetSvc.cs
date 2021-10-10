@@ -118,6 +118,9 @@ public class NetSvc
             case CMD.RequestOutCard:
                 FightSys.Instance.RequestOutCard(pack);
                 break;
+            case CMD.RequestEndResponseStage:
+                FightSys.Instance.RequestEndResponseStage(pack);
+                break;
             case CMD.RequestEndPlay:
                 FightSys.Instance.RequestEndPlay(pack);
                 break;

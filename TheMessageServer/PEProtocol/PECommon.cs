@@ -31,6 +31,13 @@ public class PECommon
         return flag;
     }
 
+    public static bool ResponseStageUsability(Card card)
+    {
+        bool flag = false;
+        if (card.function == CardFunction.Penetrate) flag = true;
+        return flag;
+    }
+
     public static bool TransferSectionUsability(Card card)
     {
         bool flag = false;

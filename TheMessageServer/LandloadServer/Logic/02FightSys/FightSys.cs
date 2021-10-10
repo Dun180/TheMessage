@@ -154,11 +154,91 @@ public class FightSys
         messageRoom.RoundStart();//回合开始
     }
 
+    //处理出牌请求
     public void RequestOutCard(MsgPack pack)
     {
+        //TODO
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
+        int selfindex = messageRoom.GetIndexById(playerData.id);
+        messageRoom.RemoveCard(selfindex, pack.msg.requestOutCard.card);
+
+        if (pack.msg.requestOutCard.card.function == CardFunction.Penetrate)
+        {
+            messageRoom.Penetrate();
+
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushOutCard,
+                pushOutCard = new PushOutCard
+                {
+                    card = pack.msg.requestOutCard.card,
+                    sendIndex = selfindex
+                }
+            };
+
+            CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+        }
+        else
+        {
+
+            if (pack.msg.requestOutCard.hasTarget)
+            {
+                messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card, pack.msg.requestOutCard.targetIndex);
+
+                GameMsg msg = new GameMsg
+                {
+                    cmd = CMD.PushOutCard,
+                    pushOutCard = new PushOutCard
+                    {
+                        card = pack.msg.requestOutCard.card,
+                        sendIndex = selfindex,
+                        targetIndex = pack.msg.requestOutCard.targetIndex,
+                        hasTarget = true
+                    }
+                };
+
+                CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+            }
+            else
+            {
+                messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card);
+
+                GameMsg msg = new GameMsg
+                {
+                    cmd = CMD.PushOutCard,
+                    pushOutCard = new PushOutCard
+                    {
+                        card = pack.msg.requestOutCard.card,
+                        sendIndex = selfindex
+                    }
+                };
+
+                CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+            }
+
+
+        }
+
+
+
 
     }
 
+    public void RequestEndResponseStage(MsgPack pack)
+    {
+        //卡牌结算
+        //TODO
+
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+
+        messageRoom.CardSettlement();
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushPlayStage
+        };
+        CacheSvc.Instance.SendMsgAll(messageRoom,msg);
+    }
     public void RequestEndPlay(MsgPack pack)
     {
         MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);

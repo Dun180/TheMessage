@@ -1,6 +1,7 @@
 //战斗界面
 
 
+using DG.Tweening;
 using PEProtocol;
 using System;
 using System.Collections;
@@ -15,6 +16,8 @@ public enum MessageStage
     RoundStart,//回合开始阶段
     DrawPhase,//抽牌阶段
     PlayStage,//出牌阶段
+    ResponseStage,//响应阶段
+    ResponseWaitStage,//响应等待阶段
     MessageTransfer,//情报传递阶段
     TransferSection,//传递小节
     ArriveSection,//到达小节
@@ -72,6 +75,9 @@ public class MessageWindow : WindowRoot
     private int[] charList;
 
     private List<CardEntity> selfCardEntityList = new List<CardEntity>();
+
+    private List<CardEntity> outCardEntityList = new List<CardEntity>();
+
     private CardEntity prepareEntity = null;//准备使用的卡牌实体
     private GameObject cardObj = null;
 
@@ -80,6 +86,8 @@ public class MessageWindow : WindowRoot
     private bool isTransMsg = false;
 
     private int handCardNum;
+
+    public RectTransform trail;
 
     public override void InitWindow()
     {
@@ -155,6 +163,7 @@ public class MessageWindow : WindowRoot
     {
         messageStage = state;
         SetActive(btnGroupTrans);
+        StopClock(txtTimer.gameObject);
         switch (messageStage)
         {
             case MessageStage.SelectChar:
@@ -165,11 +174,11 @@ public class MessageWindow : WindowRoot
                 if (isMyTurn)
                 {
                     SetActive(btn1bg.transform);
-                    SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-175, -50));
+                    SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-175, -100));
 
 
                     SetActive(btn2bg.transform);
-                    SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(200, -50));
+                    SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(200, -100));
 
 
                     btnGroupTrans.localPosition = new Vector3(0, -75, 0);
@@ -181,12 +190,34 @@ public class MessageWindow : WindowRoot
                 }
                 SetClockCallBack(Constants.playStageCounter, ClickBtn2);
                 break;
+            case MessageStage.ResponseStage:
+
+                SetActive(btn1bg.transform);
+                SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-175, -100));
+
+                SetActive(btn2bg.transform);
+                SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(200, -100));
+
+                btnGroupTrans.localPosition = new Vector3(0, -75, 0);
+
+                SetClockCallBack(Constants.responseStageCounter, ClickBtn2);
+
+
+                break;
+            case MessageStage.ResponseWaitStage:
+
+                SetActive(btnGroupTrans,false);
+
+                SetClockCallBack(Constants.responseStageCounter, ClickBtn1);
+
+                break;
+
             case MessageStage.MessageTransfer:
                 isTransMsg = false;
                 if (isMyTurn)
                 {
                     SetActive(btn1bg.transform);
-                    SetBtnInfo(btn1bg, btn1txt, "传递情报", 1, new Vector2(-50, -50));
+                    SetBtnInfo(btn1bg, btn1txt, "传递情报", 1, new Vector2(-50, -100));
 
                     SetActive(btn2bg.transform, false);
                 }
@@ -201,10 +232,10 @@ public class MessageWindow : WindowRoot
             case MessageStage.AcceptSection:
                 TipsWindow.AddTips("请选择是否接收情报");
                 SetActive(btn1bg.transform);
-                SetBtnInfo(btn1bg, btn1txt, "要", 1, new Vector2(-175, -50));
+                SetBtnInfo(btn1bg, btn1txt, "要", 1, new Vector2(-175, -100));
 
                 SetActive(btn2bg.transform);
-                SetBtnInfo(btn2bg, btn2txt, "不要", 2, new Vector2(200, -50));
+                SetBtnInfo(btn2bg, btn2txt, "不要", 2, new Vector2(200, -100));
                 break;
             default:
                 break;
@@ -292,15 +323,40 @@ public class MessageWindow : WindowRoot
 
                 if (PECommon.PlayStageUsability(prepareEntity.cardData))
                 {
-                    GameMsg outCardMsg = new GameMsg
+
+                    switch (prepareEntity.cardData.function)
                     {
-                        cmd = CMD.RequestOutCard,
-                        requestOutCard = new RequestOutCard { card = prepareEntity.cardData }
-                    };
-                    netSvc.SendMsg(outCardMsg);
+                        case CardFunction.Locking:
+                        case CardFunction.ProbingLurker_0:
+                        case CardFunction.ProbingLurker_1:
+                        case CardFunction.ProbingMilitary_0:
+                        case CardFunction.ProbingMilitary_1:
+                        case CardFunction.ProbingSoySauce_0:
+                        case CardFunction.ProbingSoySauce_1:
+                        case CardFunction.Gambling:
+                            TipsWindow.AddTips("请点击人物头像以选择目标");
+                            AddPlayerClickEvent();
+                            break;
+                        case CardFunction.Burn:
+                            //TODO
+                            break;
+                        default:
+
+                            GameMsg outCardMsg = new GameMsg
+                            {
+                                cmd = CMD.RequestOutCard,
+                                requestOutCard = new RequestOutCard { card = prepareEntity.cardData }
+                            };
+                            netSvc.SendMsg(outCardMsg);
+                            OutCardAni();
+                            break;
+                    }
+
+
+
+
 
                     SetActive(btnGroupTrans, false);
-                    OutCardAni();
                 }
                 else
                 {
@@ -308,6 +364,31 @@ public class MessageWindow : WindowRoot
                 }
 
 
+                break;
+            case MessageStage.ResponseStage:
+                if (PECommon.ResponseStageUsability(prepareEntity.cardData))
+                {
+                    GameMsg outCardMsg = new GameMsg
+                    {
+                        cmd = CMD.RequestOutCard,
+                        requestOutCard = new RequestOutCard { card = prepareEntity.cardData }
+                    };
+                    netSvc.SendMsg(outCardMsg);
+                    SetActive(btnGroupTrans, false);
+                    OutCardAni();
+                }
+                else
+                {
+                    TipsWindow.AddTips("暂时无法使用该牌");
+                }
+                break;
+            case MessageStage.ResponseWaitStage:
+                //发送响应阶段结束的信息
+                GameMsg endResMsg = new GameMsg
+                {
+                    cmd = CMD.RequestEndResponseStage
+                };
+                netSvc.SendMsg(endResMsg);
                 break;
             case MessageStage.MessageTransfer:
                 if (prepareEntity != null)
@@ -380,6 +461,11 @@ public class MessageWindow : WindowRoot
                     };
                     netSvc.SendMsg(msg);
                 }
+                break;
+            case MessageStage.ResponseStage:
+
+                SetActive(btnGroupTrans, false);
+
                 break;
             case MessageStage.AcceptSection:
                 GameMsg acceptMsg = new GameMsg
@@ -577,7 +663,6 @@ public class MessageWindow : WindowRoot
 
     }
 
-
     private Vector3[] acceptPos = new Vector3[5]
 {
         new Vector3(-845,-340,0),
@@ -618,6 +703,8 @@ public class MessageWindow : WindowRoot
         Destroy(transEntity.mRectTrans.gameObject);
         transEntity = null;
     }
+
+
 
     public void endPlay()
     {
@@ -773,7 +860,7 @@ public class MessageWindow : WindowRoot
     {
 
         PETimer pt = (PETimer)GetOrAddComponent<PETimer>(gameObject);
-        pt.isRun = false;
+        pt.OnDisable();
         SetText(txtTimer, "0");
 
     }
@@ -848,6 +935,65 @@ public class MessageWindow : WindowRoot
         prepareEntity = null;
 
     }
+
+    public void UseCard(Card card, int index)
+    {
+        //创建卡牌实体
+        GameObject go = Instantiate(cardObj);
+        RectTransform rectTrans = go.GetComponent<RectTransform>();
+        rectTrans.SetParent(ExhibitioAreaTrans);
+        rectTrans.sizeDelta = new Vector2(170, 240);
+        rectTrans.localScale = Vector3.one;
+        go.name = "outCard";
+
+        CardEntity cardEntity = new CardEntity(rectTrans, -1);
+        cardEntity.SetEntityData(card);
+        cardEntity.SetRectPos(new Vector3(0, 0, 0));
+
+        outCardEntityList.Add(cardEntity);
+
+        int sendPos = 0 - (selfIndex - index);
+        if (sendPos >= 5)
+        {
+            sendPos -= 5;
+        }
+        else if (sendPos < 0)
+        {
+            sendPos += 5;
+        }
+
+        StartCoroutine(UseCardAni(cardEntity, sendPos));
+
+
+    }
+
+    //卡牌使用动画
+    IEnumerator UseCardAni(CardEntity cardEntity, int sendPos)
+    {
+        cardEntity.SetRectPos(acceptPos[sendPos]);
+
+
+        if (outCardEntityList.Count > 4)
+        {
+            cardEntity.MoveTargetPosInTime(Constants.messageMoveTime / 2, new Vector3(Constants.cardDistance*(outCardEntityList.Count-4), 0, 0));
+        }
+        else
+        {
+            cardEntity.MoveTargetPosInTime(Constants.messageMoveTime / 2, new Vector3(0, 0, 0));
+
+            for (int i = 0; i < outCardEntityList.Count - 1; i++)
+            {
+                outCardEntityList[i].MoveLocalPosInTime(Constants.messageMoveTime / 2, new Vector3(-Constants.cardDistance, 0, 0));
+            }
+        }
+
+
+
+        yield return new WaitForSeconds(Constants.messageMoveTime);
+
+
+    }
+
     private Vector3[] messageTransPos = new Vector3[5]
 {
         new Vector3(-567,-178,0),
@@ -908,7 +1054,7 @@ public class MessageWindow : WindowRoot
     {
         for(int i = 0; i < charImg.Length; i++)
         {
-            OnClickUp(player[i].gameObject,OnPlayerSelected);
+            OnClickUp(charImg[i].gameObject,OnPlayerSelected);
 
         }
     }
@@ -916,9 +1062,8 @@ public class MessageWindow : WindowRoot
     //人物被选中时的函数
     public void OnPlayerSelected(GameObject go)
     {
-        this.Log("click!!!!!!!!!!!");
         int index = -1;
-        string numstr = go.name.Substring(6, go.name.Length - 6);
+        string numstr = go.name.Substring(7, go.name.Length - 7);
         int.TryParse(numstr, out index);
         if (index != -1)
         {
@@ -933,17 +1078,37 @@ public class MessageWindow : WindowRoot
                 targetPos += 5;
             }
 
-
-            GameMsg transMsg = new GameMsg
+            switch (messageStage)
             {
-                cmd = CMD.RequestMessageTransfer,
-                requestMessageTransfer = new RequestMessageTransfer 
-                { 
-                    message = prepareEntity.cardData,
-                    targetIndex = targetPos
-                }
-            };
-            netSvc.SendMsg(transMsg);
+                case MessageStage.PlayStage:
+                    GameMsg outCardMsg = new GameMsg
+                    {
+                        cmd = CMD.RequestOutCard,
+                        requestOutCard = new RequestOutCard
+                        {
+                            card = prepareEntity.cardData,
+                            targetIndex = targetPos,
+                            hasTarget = true
+                        }
+                    };
+                    netSvc.SendMsg(outCardMsg);
+                    break;
+                case MessageStage.MessageTransfer:
+                    GameMsg transMsg = new GameMsg
+                    {
+                        cmd = CMD.RequestMessageTransfer,
+                        requestMessageTransfer = new RequestMessageTransfer
+                        {
+                            message = prepareEntity.cardData,
+                            targetIndex = targetPos
+                        }
+                    };
+                    netSvc.SendMsg(transMsg);
+                    break;
+                default:
+                    break;
+            }
+
             DestroyPlayerClickEvent();
             OutCardAni();
 
@@ -956,20 +1121,158 @@ public class MessageWindow : WindowRoot
     {
         for (int i = 0; i < charImg.Length; i++)
         {
-            PEListener listener = (PEListener)GetOrAddComponent<PEListener>(charImg[i].gameObject);
-            Destroy(listener,0);
+            PEListener listener = charImg[i].gameObject.GetComponent<PEListener>();
+            
+            Destroy(listener);
         }
     }
 
-    // Start is called before the first frame update
-    void Start()
+
+    public void DestroyOutCard()
     {
-        
+        for(int i = 0; i < outCardEntityList.Count; i++)
+        {
+            Destroy(outCardEntityList[i].mRectTrans.gameObject);
+        }
+        outCardEntityList.Clear();
+
     }
 
-    // Update is called once per frame
-    void Update()
+    private Vector3[] lineTargetPos = new Vector3[5]
+{
+        new Vector3(-647,-178,-1),
+        new Vector3(694,114,-1),
+        new Vector3(306,138,-1),
+        new Vector3(-285,138,-1),
+        new Vector3(-708,84,-1)
+};
+
+    //指定目标
+    public void SpecifyTarget(int curIndex, int targetIndex)
     {
+        this.Log("curIndex:{0}", curIndex);
+        this.Log("targetIndex:{0}", targetIndex);
+
+        int sendPos = GetLocalIndex(curIndex);
+
+        int targetPos = GetLocalIndex(targetIndex);
+
+        this.Log("sendPos:{0}", sendPos);
+        this.Log("targetPos:{0}", targetPos);
+
+        //StartCoroutine(SetTrail(sendPos, targetPos));
+        SetTrail(sendPos, targetPos);
+    }
+
+
+    //设置线条
+    public void SetTrail(int curIndex, int targetIndex)
+    {
+
+
+
+
+        Vector3 targetPos = lineTargetPos[targetIndex];//目标位置
+        Vector3 curPos = lineTargetPos[curIndex];//起始位置
+
+        trail.localPosition = curPos;
+
+        SetActive(trail);
+
+
+        trail.DOLocalMove(targetPos, 1);
+
+
+
+
+        Invoke("SetTrailFalse", 2);
+
+    }
+
+    public void SetTrailFalse()
+    {
+        SetActive(trail, false);
+
+    }
+
+    /*
+        //设置线条
+        IEnumerator SetLine(int curIndex,int targetIndex)
+        {
+
+            SetActive(Line);
+            SetActive(pos);
+
+
+            Vector3 targetPos = lineTargetPos[targetIndex];//目标位置
+            Vector3 curPos = lineTargetPos[curIndex];//起始位置
+
+            pos.rectTransform.localPosition = targetPos;
+
+            Line.rectTransform.localPosition = curPos;
+            Line.rectTransform.sizeDelta = new Vector2(8, Vector3.Distance(targetPos, curPos));
+
+                    //设置角度
+            double angle = Math.Atan2(targetPos.y - curPos.y, targetPos.x - curPos.x) * 180 / Math.PI;
+            Line.rectTransform.rotation = Quaternion.Euler(0, 0, (float)angle + 270);
+
+            yield return new WaitForSeconds(Constants.lineWaitTime);
+
+            SetActive(Line, false);
+            SetActive(pos, false);
+
+        }*/
+
+
+    #region Card Function
+    public void Gambling(int index,Card card)
+    {
+        GameObject go = Instantiate(cardObj);
+        RectTransform rectTrans = go.GetComponent<RectTransform>();
+        rectTrans.SetParent(ExhibitioAreaTrans);
+        rectTrans.sizeDelta = new Vector2(170, 240);
+        rectTrans.localScale = Vector3.one;
+        rectTrans.localPosition = new Vector3(874, 418, 0);
+        go.name = "balanceCard";
+
+        CardEntity cardEntity = new CardEntity(rectTrans, -1);
+
+        int targetIndex = GetLocalIndex(index);
         
+        StartCoroutine(GamblingAni(targetIndex, cardEntity));
+
+
+
+    }
+
+    IEnumerator GamblingAni(int index, CardEntity card)
+    {
+
+        card.MoveTargetPosInTime(Constants.messageMoveTime, messageTransPos[index]);
+        yield return new WaitForSeconds(Constants.acceptMessageTime + Constants.messageMoveTime);
+
+        card.MoveTargetPosInTime(Constants.messageMoveTime, acceptPos[index], null, Constants.acceptMessageSize);
+        yield return new WaitForSeconds(Constants.messageMoveTime);
+
+        Destroy(card.mRectTrans.gameObject);
+
+    }
+    #endregion
+
+
+    //TOOL
+
+    public int GetLocalIndex(int serverIndex)
+    {
+        int localIndex = 0 - (selfIndex - serverIndex);
+        if (localIndex >= 5)
+        {
+            localIndex -= 5;
+        }
+        else if (localIndex < 0)
+        {
+            localIndex += 5;
+        }
+        return localIndex;
     }
 }

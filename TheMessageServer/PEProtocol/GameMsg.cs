@@ -31,6 +31,8 @@ namespace PEProtocol
         public RequestMessageTransfer requestMessageTransfer;
         public PushMessageTransfer pushMessageTransfer;
         public RequestOutCard requestOutCard;
+        public PushOutCard pushOutCard;
+        public PushGamblingCard pushGamblingCard;
         public RequestAcceptMessage requestAcceptMessage;
         public PushMessageTransfering pushMessageTransfering;
         public PushSinglePlayerMessageUpdate pushSinglePlayerMessageUpdate;
@@ -173,6 +175,22 @@ namespace PEProtocol
     public class RequestOutCard
     {
         public Card card;
+        public int targetIndex;//目标索引
+        public bool hasTarget = false;
+    }
+    [Serializable]
+    public class PushOutCard
+    {
+        public Card card;
+        public int sendIndex;//出牌人索引
+        public int targetIndex;//目标索引
+        public bool hasTarget = false;
+    }
+    [Serializable]
+    public class PushGamblingCard
+    {
+        public Card card;
+        public int index;
     }
     [Serializable]
     public class RequestMessageTransfer
@@ -281,7 +299,14 @@ namespace PEProtocol
 
         PushDrawCard,//推送抽卡
 
+        PushPlayStage,//推送进行出牌阶段
+
         RequestOutCard,//请求出牌
+        PushOutCard,//推送出牌信息
+
+        PushGamblingCard,//推送博弈信息
+
+        RequestEndResponseStage,//请求结束响应阶段
 
         RequestEndPlay,//请求出牌阶段结束
         PushEndPlay,//推送出牌阶段结束

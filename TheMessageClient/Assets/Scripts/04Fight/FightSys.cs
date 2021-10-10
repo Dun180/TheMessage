@@ -105,6 +105,35 @@ public class FightSys : MonoBehaviour
             }
         }
         messageWindow.SetCardLibrary(msg.pushDrawCard.cardLibraryCount);
+        
+    }
+
+    public void PushOutCard(GameMsg msg)
+    {
+        messageWindow.UseCard(msg.pushOutCard.card, msg.pushOutCard.sendIndex);
+        if (msg.pushOutCard.hasTarget)
+        {
+            messageWindow.SpecifyTarget(msg.pushOutCard.sendIndex, msg.pushOutCard.targetIndex);
+        }
+
+        if (messageWindow.selfIndex == msg.pushOutCard.sendIndex)
+        {
+            messageWindow.SetMessageStage(MessageStage.ResponseWaitStage);
+        }
+        else
+        {
+            messageWindow.SetMessageStage(MessageStage.ResponseStage);
+        }
+        //TODO
+    }
+
+    public void PushGamblingCard(GameMsg msg)
+    {
+        messageWindow.Gambling(msg.pushGamblingCard.index, msg.pushGamblingCard.card);
+    }
+    public void PushPlayStage(GameMsg msg)
+    {
+        messageWindow.DestroyOutCard();
         messageWindow.SetMessageStage(MessageStage.PlayStage);
     }
 

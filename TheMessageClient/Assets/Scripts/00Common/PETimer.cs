@@ -113,7 +113,7 @@ public class PETimer : MonoBehaviour
         }
     }
 
-    private void OnDisable()
+    public void OnDisable()
     {
         isRun = false;
         mTask = null;
