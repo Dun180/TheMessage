@@ -87,8 +87,17 @@ public class FightSys : MonoBehaviour
         netSvc.SendMsg(new GameMsg { cmd = CMD.RequestRefreshMessage });
     }
 
+    public void ResponseMessageInfo(GameMsg msg)
+    {
+        messageWindow.ShowMessageInfo(msg.responseMessageInfo.messageList);
+    }
+
     public void PushRoundStart(GameMsg msg)
     {
+        if(msg.pushRoundStart.index == messageWindow.selfIndex)
+        {
+            messageWindow.SetIsMyTurn(true);
+        }
         messageWindow.SetTurnIdentification(msg.pushRoundStart.index);
     }
 
@@ -98,7 +107,6 @@ public class FightSys : MonoBehaviour
         messageWindow.SetAddMessageInfo(msg.pushDrawCard.index, msg.pushDrawCard.cardList.Count, 0, 0, 0);
         if (msg.pushDrawCard.index == messageWindow.selfIndex)
         {
-            messageWindow.isMyTurn = true;
             for(int i = 0; i < msg.pushDrawCard.cardList.Count; i++)
             {
                 messageWindow.AddCard(msg.pushDrawCard.cardList[i]);
@@ -125,6 +133,22 @@ public class FightSys : MonoBehaviour
             messageWindow.SetMessageStage(MessageStage.ResponseStage);
         }
         //TODO
+    }
+
+    public void PushDisCard(GameMsg msg)
+    {
+        if(messageWindow.selfIndex == msg.pushDisCard.targetIndex)
+        {
+            messageWindow.SetIsMyDisCard(true);
+        }
+        messageWindow.SetMessageStage(MessageStage.DisCardStage);
+
+    }
+
+    public void PushProbingInfo(GameMsg msg)
+    {
+        //TODO
+        messageWindow.Probing(msg.pushProbingInfo.targetIndex, msg.pushProbingInfo.responseAction);
     }
 
     public void PushGamblingCard(GameMsg msg)
@@ -171,7 +195,7 @@ public class FightSys : MonoBehaviour
 
         if (msg.pushMessageTransfering.targetIndex == messageWindow.selfIndex)//如果目标的人是自己
         {
-            if (messageWindow.isMyTurn)
+            if (messageWindow.GetIsMyTurn())
             {
                 GameMsg acceptMsg = new GameMsg
                 {
@@ -210,6 +234,6 @@ public class FightSys : MonoBehaviour
 
     public void PushRoundEnd(GameMsg msg)
     {
-        if (messageWindow.isMyTurn) messageWindow.isMyTurn = false;
+        if (messageWindow.GetIsMyTurn()) messageWindow.SetIsMyTurn(false);
     }
 }

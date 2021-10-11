@@ -667,6 +667,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1781984851}
     m_Modifications:
+    - target: {fileID: 1441727329, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4196942906650064725, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -754,10 +758,6 @@ PrefabInstance:
     - target: {fileID: 7538238266894122225, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
       propertyPath: m_Name
       value: MessageWindow
-      objectReference: {fileID: 0}
-    - target: {fileID: 9012492886022942320, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: de83b226435ed3941973b1ad6e2a4a56, type: 3}

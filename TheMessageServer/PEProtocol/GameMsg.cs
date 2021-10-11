@@ -32,6 +32,11 @@ namespace PEProtocol
         public PushMessageTransfer pushMessageTransfer;
         public RequestOutCard requestOutCard;
         public PushOutCard pushOutCard;
+        public PushDisCard pushDisCard;
+        public RequestDisCard requestDisCard;
+        public RequestMessageInfo requestMessageInfo;
+        public ResponseMessageInfo responseMessageInfo;
+        public PushProbingInfo pushProbingInfo;
         public PushGamblingCard pushGamblingCard;
         public RequestAcceptMessage requestAcceptMessage;
         public PushMessageTransfering pushMessageTransfering;
@@ -187,10 +192,41 @@ namespace PEProtocol
         public bool hasTarget = false;
     }
     [Serializable]
+    public class PushDisCard
+    {
+        public int targetIndex;//弃牌人索引
+    }
+    [Serializable]
+    public class RequestDisCard
+    {
+        public Card disCard;//弃牌信息
+    }
+    [Serializable]
+    public class RequestMessageInfo
+    {
+        public int index;
+    }
+    [Serializable]
+    public class ResponseMessageInfo
+    {
+        public List<Card> messageList;
+    }
+    [Serializable]
+    public class PushProbingInfo
+    {
+        public int targetIndex;//目标索引
+        public int responseAction;//回应动作
+    }
+    [Serializable]
     public class PushGamblingCard
     {
         public Card card;
         public int index;
+    }
+    [Serializable]
+    public class PushBurnInfo
+    {
+        //TODO
     }
     [Serializable]
     public class RequestMessageTransfer
@@ -304,7 +340,15 @@ namespace PEProtocol
         RequestOutCard,//请求出牌
         PushOutCard,//推送出牌信息
 
+        PushDisCard,//推送弃牌信息
+        RequestDisCard,//请求推送给服务器弃牌信息
+
+        RequestMessageInfo,//请求获取情报信息
+        ResponseMessageInfo,//回应情报信息
+
+        PushProbingInfo,//推送试探信息
         PushGamblingCard,//推送博弈信息
+        PushBurnInfo,//推送烧毁信息
 
         RequestEndResponseStage,//请求结束响应阶段
 

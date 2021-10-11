@@ -8,6 +8,7 @@ public class Constants {
     public const float messageMoveTime = 0.5f;
     public const float outCardMoveTime = 0.3f;
     public const float lineWaitTime = 1.5f;
+    public const float probingWaitTime = 2f;
 
 
     public const float cardDistance = 170;
@@ -21,8 +22,8 @@ public class Constants {
     public const int playStageCounter = 15;
     public const int responseStageCounter = 8;
     public const int messageTransferCounter = 15;
-    
 
+    public const int fivePersonFieldCount = 5;
 
 
     //UI

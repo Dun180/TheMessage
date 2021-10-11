@@ -18,6 +18,7 @@ public enum MessageStage
     PlayStage,//出牌阶段
     ResponseStage,//响应阶段
     ResponseWaitStage,//响应等待阶段
+    DisCardStage,//弃牌阶段
     MessageTransfer,//情报传递阶段
     TransferSection,//传递小节
     ArriveSection,//到达小节
@@ -41,6 +42,7 @@ public class MessageWindow : WindowRoot
     public Text[] blueNum;
     public Text[] blackNum;
 
+    public RectTransform[] messageClickTrans;//情报点击区域
 
     public Text btn1txt;
     public Image btn1bg;
@@ -61,6 +63,7 @@ public class MessageWindow : WindowRoot
     public Transform btnGroupTrans;//按钮组
     public Transform messageTrans;//情报传播区
     public Transform ExhibitioAreaTrans;//卡牌展示区
+    public RectTransform messageRegionTrans;//情报展示区
 
     public Material outLineMaterial;
 
@@ -78,16 +81,24 @@ public class MessageWindow : WindowRoot
 
     private List<CardEntity> outCardEntityList = new List<CardEntity>();
 
+    private List<CardEntity> showCardEntityList = new List<CardEntity>();
+
+
     private CardEntity prepareEntity = null;//准备使用的卡牌实体
     private GameObject cardObj = null;
 
     private CardEntity transEntity = null;//传递中的情报实体
-    public bool isMyTurn = false;
+    private bool isMyTurn = false;
     private bool isTransMsg = false;
 
     private int handCardNum;
 
     public RectTransform trail;
+
+    public RectTransform probingTrans;
+    public Text probingTxt;
+
+    private bool isMyDisCard = false;
 
     public override void InitWindow()
     {
@@ -157,6 +168,11 @@ public class MessageWindow : WindowRoot
             handCardNum++;
 
         }
+
+        for(int i = 0; i < Constants.fivePersonFieldCount; i++)
+        {
+            OnClickUp(messageClickTrans[i].gameObject, OnMessageClicked);
+        }
     }
 
     public void SetMessageStage(MessageStage state)
@@ -211,7 +227,21 @@ public class MessageWindow : WindowRoot
                 SetClockCallBack(Constants.responseStageCounter, ClickBtn1);
 
                 break;
+            case MessageStage.DisCardStage:
+                if (isMyDisCard)
+                {
+                    TipsWindow.AddTips("请选择一张牌进行丢弃");
+                    SetActive(btn1bg.transform);
+                    SetBtnInfo(btn1bg, btn1txt, "弃牌", 1, new Vector2(-50, -100));
 
+                    SetActive(btn2bg.transform, false);
+                }
+                else
+                {
+                    SetActive(btn1bg.transform, false);
+                    SetActive(btn2bg.transform, false);
+                }
+                break;
             case MessageStage.MessageTransfer:
                 isTransMsg = false;
                 if (isMyTurn)
@@ -390,6 +420,25 @@ public class MessageWindow : WindowRoot
                 };
                 netSvc.SendMsg(endResMsg);
                 break;
+            case MessageStage.DisCardStage:
+                if (prepareEntity != null)
+                {
+                    GameMsg disCardMsg = new GameMsg
+                    {
+                        cmd = CMD.RequestDisCard,
+                        requestDisCard = new RequestDisCard
+                        {
+                            disCard = prepareEntity.cardData
+                        }
+                    };
+                    netSvc.SendMsg(disCardMsg);
+                    SetActive(btnGroupTrans, false);
+                    isMyDisCard = false;
+                    OutCardAni();
+
+                }
+
+                break;
             case MessageStage.MessageTransfer:
                 if (prepareEntity != null)
                 {
@@ -505,6 +554,18 @@ public class MessageWindow : WindowRoot
             TipsWindow.AddTips("请等待其他玩家选择");
         }
     }
+
+    public void ClickCloseMessageRegion()
+    {
+        SetActive(messageRegionTrans,false);
+        for(int i = showCardEntityList.Count - 1; i >= 0; i--)
+        {
+            CardEntity cardEntity = showCardEntityList[i];
+            showCardEntityList.RemoveAt(i);
+            Destroy(cardEntity.mRectTrans.gameObject);
+        }
+    }
+
 
     public void SetCardLibrary(int count)
     {
@@ -950,6 +1011,14 @@ public class MessageWindow : WindowRoot
         cardEntity.SetEntityData(card);
         cardEntity.SetRectPos(new Vector3(0, 0, 0));
 
+        if (PECommon.IsProbing(card)&&!isMyTurn)
+        {
+            Image img = cardEntity.mRectTrans.GetComponent<Image>();
+            string spName = "Probing";
+            Sprite sp = GetRes<Sprite>("ResImages/Message/" + spName);
+            img.sprite = sp;
+        }
+
         outCardEntityList.Add(cardEntity);
 
         int sendPos = 0 - (selfIndex - index);
@@ -1013,6 +1082,28 @@ public class MessageWindow : WindowRoot
         yield return new WaitForSeconds(Constants.messageMoveTime);
 
 
+    }
+
+    void OnMessageClicked(GameObject go)
+    {
+        audioSvc.PlayUIAudio(Constants.SelectCard);
+
+        int index = -1;
+        string numstr = go.name.Substring(7, go.name.Length - 7);
+        int.TryParse(numstr, out index);
+        if (index != -1)
+        {
+            int serverIndex = GetServerIndex(index);
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.RequestMessageInfo,
+                requestMessageInfo = new RequestMessageInfo
+                {
+                    index = serverIndex
+                }
+            };
+            netSvc.SendMsg(msg);
+        }
     }
 
     //手牌被选中时的函数
@@ -1224,7 +1315,67 @@ public class MessageWindow : WindowRoot
         }*/
 
 
+    public void ShowMessageInfo(List<Card> messageList)
+    {
+        SetActive(messageRegionTrans);
+
+        for(int i = 0; i < messageList.Count; i++)
+        {
+            GameObject go = Instantiate(cardObj);
+            RectTransform rectTrans = go.GetComponent<RectTransform>();
+            rectTrans.SetParent(messageRegionTrans);
+            rectTrans.sizeDelta = new Vector2(170, 240);
+            rectTrans.localScale = Vector3.one;
+
+
+
+
+            go.name = "msg_" + i;
+
+
+            CardEntity cardEntity = new CardEntity(rectTrans, -1);
+
+            cardEntity.SetEntityData(messageList[i], false);
+            cardEntity.SetRectPos(new Vector3(-414 + i * Constants.cardDistance, 22, 0));
+
+            showCardEntityList.Add(cardEntity);
+        }
+    }
+
     #region Card Function
+
+    public void Probing(int index,int action)
+    {
+        int targetIndex = GetLocalIndex(index);
+        switch (action)
+        {
+            case 0:
+                StartCoroutine(SetProbingInfo(targetIndex, "弃牌"));
+                break;
+            case 1:
+                StartCoroutine(SetProbingInfo(targetIndex, "抽牌"));
+                break;
+            case 2:
+                StartCoroutine(SetProbingInfo(targetIndex, "我是个好人"));
+                break;
+            default:
+                break;
+        }
+    }
+
+    IEnumerator SetProbingInfo(int index,string info)
+    {
+        probingTrans.localPosition = acceptPos[index];
+        SetText(probingTxt, info);
+
+        SetActive(probingTrans);
+
+        yield return new WaitForSeconds(Constants.probingWaitTime);
+
+        SetActive(probingTrans, false);
+
+    }
+
     public void Gambling(int index,Card card)
     {
         GameObject go = Instantiate(cardObj);
@@ -1259,8 +1410,25 @@ public class MessageWindow : WindowRoot
     }
     #endregion
 
+    #region Set And Get
+    public void SetIsMyDisCard(bool flag)
+    {
+        isMyDisCard = flag;
+    }
 
-    //TOOL
+    public void SetIsMyTurn(bool flag)
+    {
+        isMyTurn = flag;
+    }
+
+    public bool GetIsMyTurn()
+    {
+        return isMyTurn;
+    }
+    #endregion
+
+
+    #region TOOL
 
     public int GetLocalIndex(int serverIndex)
     {
@@ -1275,4 +1443,20 @@ public class MessageWindow : WindowRoot
         }
         return localIndex;
     }
+
+    public int GetServerIndex(int localIndex)
+    {
+        int serverIndex = selfIndex + localIndex;
+        if (serverIndex >= 5)
+        {
+            serverIndex -= 5;
+        }
+        else if (serverIndex < 0)
+        {
+            serverIndex += 5;
+        }
+        return serverIndex;
+    }
+    #endregion
+
 }

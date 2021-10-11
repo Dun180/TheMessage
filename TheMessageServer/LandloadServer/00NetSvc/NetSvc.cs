@@ -112,6 +112,9 @@ public class NetSvc
             case CMD.RequestRefreshMessage:
                 FightSys.Instance.RequestRefreshMessage(pack);
                 break;
+            case CMD.RequestMessageInfo:
+                FightSys.Instance.RequestMessageInfo(pack);
+                break;
             case CMD.RequestSelectChar:
                 FightSys.Instance.RequestSelectChar(pack);
                 break;
@@ -120,6 +123,9 @@ public class NetSvc
                 break;
             case CMD.RequestEndResponseStage:
                 FightSys.Instance.RequestEndResponseStage(pack);
+                break;
+            case CMD.RequestDisCard:
+                FightSys.Instance.RequestDisCard(pack);
                 break;
             case CMD.RequestEndPlay:
                 FightSys.Instance.RequestEndPlay(pack);

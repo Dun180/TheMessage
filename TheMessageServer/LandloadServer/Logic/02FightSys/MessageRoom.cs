@@ -675,30 +675,162 @@ public class MessageRoom
         CacheSvc.Instance.SendMsgAll(this, updateMsg);
     }
 
+    public void SendProbingMsg(int target,int action)
+    {
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushProbingInfo,
+            pushProbingInfo = new PushProbingInfo
+            {
+                targetIndex = target,
+                responseAction = action
+            }
+        };
+        CacheSvc.Instance.SendMsgAll(this,msg);
+    }
+
     //卡牌结算
     public void CardSettlement()
     {
         if (settlementCardAvailability)
         {
             //结算卡牌
-
-
+            GameMsg playMsg = new GameMsg
+            {
+                cmd = CMD.PushPlayStage
+            };
+            
             switch (waitSettlementCard.function)
             {
+                case CardFunction.ProbingLurker_0:
+                    if (playerArr[settlementCardTarget].playerIdentity == PlayerIdentity.Lurker)
+                    {
+                        GameMsg msg = new GameMsg
+                        {
+                            cmd = CMD.PushDisCard,
+                            pushDisCard = new PushDisCard
+                            {
+                                targetIndex = settlementCardTarget
+                            }
+                        };
+                        CacheSvc.Instance.SendMsgAll(this, msg);
+                        SendProbingMsg(settlementCardTarget, 0);
+                    }
+                    else
+                    {
+                        SendProbingMsg(settlementCardTarget, 2);
+                        CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    }
+                    break;
+                case CardFunction.ProbingLurker_1:
+                    if (playerArr[settlementCardTarget].playerIdentity == PlayerIdentity.Lurker)
+                    {
+                        DrawCard(settlementCardTarget, 1);
+                        SendProbingMsg(settlementCardTarget, 1);
+                    }
+                    else
+                    {
+                        SendProbingMsg(settlementCardTarget, 2);
+                    }
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    break;
+                case CardFunction.ProbingMilitary_0:
+                    if (playerArr[settlementCardTarget].playerIdentity == PlayerIdentity.Military)
+                    {
+                        GameMsg msg = new GameMsg
+                        {
+                            cmd = CMD.PushDisCard,
+                            pushDisCard = new PushDisCard
+                            {
+                                targetIndex = settlementCardTarget
+                            }
+                        };
+                        CacheSvc.Instance.SendMsgAll(this, msg);
+                        SendProbingMsg(settlementCardTarget, 0);
+                    }
+                    else
+                    {
+                        SendProbingMsg(settlementCardTarget, 2);
+                        CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    }
+                    break;
+                case CardFunction.ProbingMilitary_1:
+                    if (playerArr[settlementCardTarget].playerIdentity == PlayerIdentity.Military)
+                    {
+                        DrawCard(settlementCardTarget, 1);
+                        SendProbingMsg(settlementCardTarget, 1);
+                    }
+                    else
+                    {
+                        SendProbingMsg(settlementCardTarget, 2);
+                    }
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    break;
+                case CardFunction.ProbingSoySauce_0:
+                    if (playerArr[settlementCardTarget].playerIdentity == PlayerIdentity.SoySauce)
+                    {
+                        GameMsg msg = new GameMsg
+                        {
+                            cmd = CMD.PushDisCard,
+                            pushDisCard = new PushDisCard
+                            {
+                                targetIndex = settlementCardTarget
+                            }
+                        };
+                        CacheSvc.Instance.SendMsgAll(this, msg);
+                        SendProbingMsg(settlementCardTarget, 0);
+                    }
+                    else
+                    {
+                        SendProbingMsg(settlementCardTarget, 2);
+                        CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    }
+                    break;
+                case CardFunction.ProbingSoySauce_1:
+                    if (playerArr[settlementCardTarget].playerIdentity == PlayerIdentity.SoySauce)
+                    {
+                        DrawCard(settlementCardTarget, 1);
+                        SendProbingMsg(settlementCardTarget, 1);
+                    }
+                    else
+                    {
+                        SendProbingMsg(settlementCardTarget, 2);
+                    }
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    break;
                 case CardFunction.Locking:
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
 
                     break;
                 case CardFunction.Reinforce:
                     int drawCardCount = 1;
                     drawCardCount += playerArr[roundPlayerIndex].blackNum;
                     DrawCard(roundPlayerIndex, drawCardCount);
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
                     break;
                 case CardFunction.Gambling:
                     Gambling(settlementCardTarget);
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
                     break;
                 case CardFunction.Balance:
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    break;
+                case CardFunction.Burn:
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
                     break;
                 default:
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
                     break;
             }
         }

@@ -60,6 +60,22 @@ public class FightSys
 
     }
 
+
+    public void RequestMessageInfo(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.ResponseMessageInfo,
+            responseMessageInfo = new ResponseMessageInfo
+            {
+                messageList = messageRoom.playerArr[pack.msg.requestMessageInfo.index].messageList
+            }
+        };
+        pack.token.SendMsg(msg);
+    }
+
+
     //分发角色牌
     public void DistributionRole(MessageRoom messageRoom)
     {
@@ -233,11 +249,7 @@ public class FightSys
         MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
 
         messageRoom.CardSettlement();
-        GameMsg msg = new GameMsg
-        {
-            cmd = CMD.PushPlayStage
-        };
-        CacheSvc.Instance.SendMsgAll(messageRoom,msg);
+
     }
     public void RequestEndPlay(MsgPack pack)
     {
@@ -250,6 +262,22 @@ public class FightSys
         };
         CacheSvc.Instance.SendMsgAll(messageRoom, msg);
 
+    }
+
+
+    public void RequestDisCard(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
+        int index = messageRoom.GetIndexById(playerData.id);
+        messageRoom.RemoveCard(index, pack.msg.requestDisCard.disCard);
+
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushPlayStage
+        };
+
+        CacheSvc.Instance.SendMsgAll(messageRoom, msg);
     }
 
     public void RequestMessageTransfer(MsgPack pack)

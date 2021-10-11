@@ -92,6 +92,9 @@ public class NetSvc : MonoBehaviour
             case CMD.PushCard:
                 FightSys.Instance.PushCard(msg);
                 break;
+            case CMD.ResponseMessageInfo:
+                FightSys.Instance.ResponseMessageInfo(msg);
+                break;
             case CMD.PushRoundStart:
                 FightSys.Instance.PushRoundStart(msg);
                 break;
@@ -100,6 +103,12 @@ public class NetSvc : MonoBehaviour
                 break;
             case CMD.PushOutCard:
                 FightSys.Instance.PushOutCard(msg);
+                break;
+            case CMD.PushDisCard:
+                FightSys.Instance.PushDisCard(msg);
+                break;
+            case CMD.PushProbingInfo:
+                FightSys.Instance.PushProbingInfo(msg);
                 break;
             case CMD.PushGamblingCard:
                 FightSys.Instance.PushGamblingCard(msg);

@@ -11,6 +11,23 @@ public class PECommon
         return 100 * level;
     }
 
+    public static bool IsProbing(Card card)
+    {
+        bool flag = false;
+
+        if (card.function == CardFunction.ProbingLurker_0) flag = true;
+        if (card.function == CardFunction.ProbingLurker_1) flag = true;
+        if (card.function == CardFunction.ProbingMilitary_0) flag = true;
+        if (card.function == CardFunction.ProbingMilitary_1) flag = true;
+        if (card.function == CardFunction.ProbingSoySauce_0) flag = true;
+        if (card.function == CardFunction.ProbingSoySauce_1) flag = true;
+
+
+        return flag;
+
+
+    }
+
     public static bool PlayStageUsability(Card card)
     {
         bool flag = false;
