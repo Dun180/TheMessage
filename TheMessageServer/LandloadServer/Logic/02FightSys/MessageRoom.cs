@@ -30,6 +30,7 @@ public class MessageRoom
     private Card waitSettlementCard = null;//等待结算的卡牌
     private bool settlementCardAvailability = false;//结算卡牌的有效性
     private int settlementCardTarget = -1;//结算卡牌的目标
+    private Card waitBurnCard = null;//等待烧毁的卡牌
 
     public MessageRoom(int roomID,string roomOwner,int roomOwnerID)
     {
@@ -431,6 +432,26 @@ public class MessageRoom
         CacheSvc.Instance.SendMsgAll(this, updateMsg);
     }
 
+    public void RemoveMessage(int index,Card message)
+    {
+        playerArr[index].RemoveMessage(message);
+        GameMsg updateMsg = new GameMsg
+        {
+            cmd = CMD.PushSinglePlayerMessageUpdate,
+            pushSinglePlayerMessageUpdate = new PushSinglePlayerMessageUpdate
+            {
+                posIndex = index,
+                cards = playerArr[index].cardList.Count,
+                redNum = playerArr[index].redNum,
+                blueNum = playerArr[index].blueNum,
+                blackNum = playerArr[index].blackNum,
+                cardLibraryCount = cardList.Count
+            }
+        };
+
+        CacheSvc.Instance.SendMsgAll(this, updateMsg);
+    }
+
     //抽卡
     public void DrawCard(int drawIndex,int drawCardCount)
     {
@@ -621,6 +642,11 @@ public class MessageRoom
         waitSettlementCard = card;
         settlementCardAvailability = true;
         settlementCardTarget = targetIndex;
+    }
+
+    public void SetWaitBurnCard(Card card)
+    {
+        waitBurnCard = card;
     }
 
     //识破
@@ -825,6 +851,10 @@ public class MessageRoom
 
                     break;
                 case CardFunction.Burn:
+
+                    
+                    RemoveMessage(settlementCardTarget, waitBurnCard);
+
                     CacheSvc.Instance.SendMsgAll(this, playMsg);
 
                     break;
@@ -836,6 +866,12 @@ public class MessageRoom
         }
         else
         {
+            GameMsg playMsg = new GameMsg
+            {
+                cmd = CMD.PushPlayStage
+            };
+            CacheSvc.Instance.SendMsgAll(this, playMsg);
+
             //无事发生
         }
         waitSettlementCard = null;

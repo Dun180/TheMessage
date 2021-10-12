@@ -77,6 +77,42 @@ public class MessagePlayer
         messageList.Add(message);
     }
 
+    public void RemoveMessage(Card message)
+    {
+        switch (message.color)
+        {
+            case CardColor.Red:
+                redNum--;
+                break;
+            case CardColor.Blue:
+                blueNum--;
+                break;
+            case CardColor.Black:
+                blackNum--;
+                break;
+            case CardColor.RedBlack:
+                redNum--;
+                blackNum--;
+                break;
+            case CardColor.BlueBlack:
+                blueNum--;
+                blackNum--;
+                break;
+            default:
+                break;
+        }
+
+        for (int i = 0; i < messageList.Count; i++)
+        {
+            if (messageList[i].Equals(message))
+            {
+                messageList.RemoveAt(i);
+                break;
+            }
+        }
+
+    }
+
     public void SetIdentity(int index)
     {
         switch (index)

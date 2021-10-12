@@ -123,7 +123,11 @@ public class FightSys : MonoBehaviour
         {
             messageWindow.SpecifyTarget(msg.pushOutCard.sendIndex, msg.pushOutCard.targetIndex);
         }
+        if(msg.pushOutCard.card.function == CardFunction.Burn)
+        {
+            messageWindow.UseCard(msg.pushOutCard.burnCard, msg.pushOutCard.targetIndex,true);
 
+        }
         if (messageWindow.selfIndex == msg.pushOutCard.sendIndex)
         {
             messageWindow.SetMessageStage(MessageStage.ResponseWaitStage);

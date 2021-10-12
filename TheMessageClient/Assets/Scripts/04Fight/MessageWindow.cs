@@ -88,8 +88,8 @@ public class MessageWindow : WindowRoot
     private GameObject cardObj = null;
 
     private CardEntity transEntity = null;//传递中的情报实体
-    private bool isMyTurn = false;
-    private bool isTransMsg = false;
+    private bool isMyTurn = false;//判断是否是自己的回合
+    private bool isTransMsg = false;//判断是否已经传递过情报
 
     private int handCardNum;
 
@@ -98,7 +98,11 @@ public class MessageWindow : WindowRoot
     public RectTransform probingTrans;
     public Text probingTxt;
 
-    private bool isMyDisCard = false;
+    private bool isMyDisCard = false;//判断是否是自己的弃牌阶段
+
+    private bool isMessageClick = false;//判断是否需要给情报挂载点击事件
+
+    private int showMessageRegionIndex = -1;//当前展示的情报区索引
 
     public override void InitWindow()
     {
@@ -171,7 +175,7 @@ public class MessageWindow : WindowRoot
 
         for(int i = 0; i < Constants.fivePersonFieldCount; i++)
         {
-            OnClickUp(messageClickTrans[i].gameObject, OnMessageClicked);
+            OnClickUp(messageClickTrans[i].gameObject, OnMessageRegionClicked);
         }
     }
 
@@ -201,7 +205,9 @@ public class MessageWindow : WindowRoot
                 }
                 else
                 {
-                    SetActive(btn1bg.transform, false);
+                    SetActive(btn1bg.transform);
+                    SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-50, -100));
+
                     SetActive(btn2bg.transform, false);
                 }
                 SetClockCallBack(Constants.playStageCounter, ClickBtn2);
@@ -350,48 +356,63 @@ public class MessageWindow : WindowRoot
             case MessageStage.SelectChar:
                 break;
             case MessageStage.PlayStage:
-
-                if (PECommon.PlayStageUsability(prepareEntity.cardData))
+                if (isMyTurn)
                 {
-
-                    switch (prepareEntity.cardData.function)
+                    if (PECommon.PlayStageUsability(prepareEntity.cardData))
                     {
-                        case CardFunction.Locking:
-                        case CardFunction.ProbingLurker_0:
-                        case CardFunction.ProbingLurker_1:
-                        case CardFunction.ProbingMilitary_0:
-                        case CardFunction.ProbingMilitary_1:
-                        case CardFunction.ProbingSoySauce_0:
-                        case CardFunction.ProbingSoySauce_1:
-                        case CardFunction.Gambling:
-                            TipsWindow.AddTips("请点击人物头像以选择目标");
-                            AddPlayerClickEvent();
-                            break;
-                        case CardFunction.Burn:
-                            //TODO
-                            break;
-                        default:
 
-                            GameMsg outCardMsg = new GameMsg
-                            {
-                                cmd = CMD.RequestOutCard,
-                                requestOutCard = new RequestOutCard { card = prepareEntity.cardData }
-                            };
-                            netSvc.SendMsg(outCardMsg);
-                            OutCardAni();
-                            break;
+                        switch (prepareEntity.cardData.function)
+                        {
+                            case CardFunction.Locking:
+                            case CardFunction.ProbingLurker_0:
+                            case CardFunction.ProbingLurker_1:
+                            case CardFunction.ProbingMilitary_0:
+                            case CardFunction.ProbingMilitary_1:
+                            case CardFunction.ProbingSoySauce_0:
+                            case CardFunction.ProbingSoySauce_1:
+                            case CardFunction.Gambling:
+                                TipsWindow.AddTips("请点击人物头像以选择目标");
+                                AddPlayerClickEvent();
+                                break;
+                            case CardFunction.Burn:
+                                //TODO
+                                TipsWindow.AddTips("请点击情报以选择目标");
+
+                                AddMessageClickEvent();
+                                break;
+                            default:
+
+                                GameMsg outCardMsg = new GameMsg
+                                {
+                                    cmd = CMD.RequestOutCard,
+                                    requestOutCard = new RequestOutCard { card = prepareEntity.cardData }
+                                };
+                                netSvc.SendMsg(outCardMsg);
+                                OutCardAni();
+                                break;
+                        }
+
+                        SetActive(btnGroupTrans, false);
                     }
-
-
-
-
-
-                    SetActive(btnGroupTrans, false);
+                    else
+                    {
+                        TipsWindow.AddTips("暂时无法使用该牌");
+                    }
                 }
                 else
                 {
-                    TipsWindow.AddTips("暂时无法使用该牌");
+                    if(prepareEntity.cardData.function == CardFunction.Burn)
+                    {
+                        TipsWindow.AddTips("请点击情报以选择目标");
+
+                        AddMessageClickEvent();
+                    }
+                    else
+                    {
+                        TipsWindow.AddTips("暂时无法使用该牌");
+                    }
                 }
+
 
 
                 break;
@@ -557,7 +578,8 @@ public class MessageWindow : WindowRoot
 
     public void ClickCloseMessageRegion()
     {
-        SetActive(messageRegionTrans,false);
+        SetActive(messageRegionTrans, false);
+        showMessageRegionIndex = -1;
         for(int i = showCardEntityList.Count - 1; i >= 0; i--)
         {
             CardEntity cardEntity = showCardEntityList[i];
@@ -997,7 +1019,7 @@ public class MessageWindow : WindowRoot
 
     }
 
-    public void UseCard(Card card, int index)
+    public void UseCard(Card card, int index,bool isBurnCard = false)
     {
         //创建卡牌实体
         GameObject go = Instantiate(cardObj);
@@ -1009,9 +1031,11 @@ public class MessageWindow : WindowRoot
 
         CardEntity cardEntity = new CardEntity(rectTrans, -1);
         cardEntity.SetEntityData(card);
-        cardEntity.SetRectPos(new Vector3(0, 0, 0));
+        //cardEntity.SetRectPos(new Vector3(0, 0, 0));
 
-        if (PECommon.IsProbing(card)&&!isMyTurn)
+        SetActive(cardEntity.mRectTrans.gameObject,false);
+
+        if (PECommon.IsProbing(card)&&!isMyTurn&&!isBurnCard)
         {
             Image img = cardEntity.mRectTrans.GetComponent<Image>();
             string spName = "Probing";
@@ -1031,14 +1055,34 @@ public class MessageWindow : WindowRoot
             sendPos += 5;
         }
 
-        StartCoroutine(UseCardAni(cardEntity, sendPos));
+        if (isBurnCard)
+        {
+            StartCoroutine(WaitAni(cardEntity, sendPos));
 
+        }
+        else
+        {
+            StartCoroutine(UseCardAni(cardEntity, sendPos));
+        }
+
+
+
+
+
+    }
+
+    IEnumerator WaitAni(CardEntity cardEntity, int sendPos)
+    {
+        yield return new WaitForSeconds(1);
+        StartCoroutine(UseCardAni(cardEntity, sendPos));
 
     }
 
     //卡牌使用动画
     IEnumerator UseCardAni(CardEntity cardEntity, int sendPos)
     {
+        SetActive(cardEntity.mRectTrans.gameObject);
+
         cardEntity.SetRectPos(acceptPos[sendPos]);
 
 
@@ -1084,15 +1128,52 @@ public class MessageWindow : WindowRoot
 
     }
 
+    //情报被选中时的函数
     void OnMessageClicked(GameObject go)
     {
-        audioSvc.PlayUIAudio(Constants.SelectCard);
+        int index = -1;
+        string numstr = go.name.Substring(4, go.name.Length - 4);
+        int.TryParse(numstr, out index);
+        if (index != -1)
+        {
+            if(showCardEntityList[index].cardData.color==CardColor.Blue|| showCardEntityList[index].cardData.color == CardColor.Red)
+            {
+                TipsWindow.AddTips("不能烧毁非黑情报，请重新选择");
+            }
+            else
+            {
+                int serverIndex = GetServerIndex(showMessageRegionIndex);
+                GameMsg msg = new GameMsg
+                {
+                    cmd = CMD.RequestOutCard,
+                    requestOutCard = new RequestOutCard
+                    {
+                        card = prepareEntity.cardData,
+                        burnCard = showCardEntityList[index].cardData,
+                        targetIndex = serverIndex,
+                        hasTarget = true
+                    }
+                };
+                netSvc.SendMsg(msg);
+                OutCardAni();
+                isMessageClick = false;
+                ClickCloseMessageRegion();
+            }
+
+        }
+    }
+
+    //情报区域被选中时的函数
+    void OnMessageRegionClicked(GameObject go)
+    {
+        
 
         int index = -1;
         string numstr = go.name.Substring(7, go.name.Length - 7);
         int.TryParse(numstr, out index);
         if (index != -1)
         {
+            showMessageRegionIndex = index;
             int serverIndex = GetServerIndex(index);
             GameMsg msg = new GameMsg
             {
@@ -1148,6 +1229,12 @@ public class MessageWindow : WindowRoot
             OnClickUp(charImg[i].gameObject,OnPlayerSelected);
 
         }
+    }
+
+    //给情报挂载点击事件
+    public void AddMessageClickEvent()
+    {
+        isMessageClick = true;
     }
 
     //人物被选中时的函数
@@ -1327,7 +1414,11 @@ public class MessageWindow : WindowRoot
             rectTrans.sizeDelta = new Vector2(170, 240);
             rectTrans.localScale = Vector3.one;
 
+            if (isMessageClick)
+            {
+                OnClickUp(rectTrans.gameObject, OnMessageClicked);
 
+            }
 
 
             go.name = "msg_" + i;

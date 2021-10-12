@@ -195,6 +195,25 @@ public class FightSys
 
             CacheSvc.Instance.SendMsgAll(messageRoom, msg);
         }
+        else if (pack.msg.requestOutCard.card.function == CardFunction.Burn)
+        {
+            messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card, pack.msg.requestOutCard.targetIndex);
+            messageRoom.SetWaitBurnCard(pack.msg.requestOutCard.burnCard);
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushOutCard,
+                pushOutCard = new PushOutCard
+                {
+                    card = pack.msg.requestOutCard.card,
+                    sendIndex = selfindex,
+                    targetIndex = pack.msg.requestOutCard.targetIndex,
+                    hasTarget = true,
+                    burnCard = pack.msg.requestOutCard.burnCard
+                }
+            };
+
+            CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+        }
         else
         {
 
@@ -240,6 +259,8 @@ public class FightSys
 
 
     }
+
+
 
     public void RequestEndResponseStage(MsgPack pack)
     {
@@ -381,13 +402,13 @@ public class FightSys
                 else
                 {
                     //TODO
-                    this.Log("1111111111");
+
                 }
 
             }
             else
             {
-                this.Log("2222222");
+
                 messageRoom.SetTransferMessage(messageRoom.transferingMessageIndex + 1);
                 int index = messageRoom.GetIndexById(playerData.id);
 

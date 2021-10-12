@@ -182,6 +182,7 @@ namespace PEProtocol
         public Card card;
         public int targetIndex;//目标索引
         public bool hasTarget = false;
+        public Card burnCard;
     }
     [Serializable]
     public class PushOutCard
@@ -190,6 +191,8 @@ namespace PEProtocol
         public int sendIndex;//出牌人索引
         public int targetIndex;//目标索引
         public bool hasTarget = false;
+        public Card burnCard;
+
     }
     [Serializable]
     public class PushDisCard
@@ -222,11 +225,6 @@ namespace PEProtocol
     {
         public Card card;
         public int index;
-    }
-    [Serializable]
-    public class PushBurnInfo
-    {
-        //TODO
     }
     [Serializable]
     public class RequestMessageTransfer
@@ -348,7 +346,6 @@ namespace PEProtocol
 
         PushProbingInfo,//推送试探信息
         PushGamblingCard,//推送博弈信息
-        PushBurnInfo,//推送烧毁信息
 
         RequestEndResponseStage,//请求结束响应阶段
 

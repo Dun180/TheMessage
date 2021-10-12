@@ -56,7 +56,8 @@ namespace PEProtocol
 
         Intercept,//截获
         Transfer,//转移
-        Burn,//烧毁
+
+        Burn,//烧毁（完成）
         Penetrate,//识破（完成）
         Gambling,//博弈（完成）
         Balance //权衡
