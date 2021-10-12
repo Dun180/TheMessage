@@ -159,6 +159,17 @@ public class FightSys : MonoBehaviour
     {
         messageWindow.Gambling(msg.pushGamblingCard.index, msg.pushGamblingCard.card);
     }
+
+    public void PushBalanceInfo(GameMsg msg)
+    {
+        messageWindow.SetMessageStage(MessageStage.BalanceStage);
+    }
+
+    public void PushRealOrFalseInfo(GameMsg msg)
+    {
+        //TODO
+    }
+
     public void PushPlayStage(GameMsg msg)
     {
         messageWindow.DestroyOutCard();

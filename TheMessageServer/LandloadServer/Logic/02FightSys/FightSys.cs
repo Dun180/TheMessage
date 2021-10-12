@@ -301,6 +301,24 @@ public class FightSys
         CacheSvc.Instance.SendMsgAll(messageRoom, msg);
     }
 
+    public void RequestBalanceInfo(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        PlayerData playerData = cacheSvc.GetPlayerDataByToken(pack.token);
+        int index = messageRoom.GetIndexById(playerData.id);
+        for(int i = 0; i < pack.msg.requestBalanceInfo.cardList.Count; i++)
+        {
+            messageRoom.RemoveCard(index, pack.msg.requestBalanceInfo.cardList[i]);
+        }
+        messageRoom.DrawCard(index, pack.msg.requestBalanceInfo.cardList.Count);
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushPlayStage
+        };
+
+        CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+    }
+
     public void RequestMessageTransfer(MsgPack pack)
     {
         MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);

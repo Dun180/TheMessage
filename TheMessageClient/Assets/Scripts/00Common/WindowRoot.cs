@@ -85,4 +85,40 @@ public class WindowRoot : MonoBehaviour
         listener.onClickUp = callback;
     }
 
+    bool isSlideSel = false;
+    protected void OnSlideSelect(GameObject go, Action<GameObject> callback, Action<GameObject> endCB)
+    {
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+        OnClickDown(go, (GameObject clickgo) =>
+        {
+            isSlideSel = true;
+            callback(clickgo);
+        });
+
+        OnEnter(go, (GameObject entergo) =>
+        {
+            if (!Input.GetMouseButton(0))
+            {
+                return;
+            }
+            isSlideSel = true;
+            callback(entergo);
+        });
+#else
+        OnEnter(go, (GameObject entergo) => {
+            isSlideSel = true;
+            callback(entergo);
+        });   
+#endif
+        OnClickUp(go, endCB);
+        OnClickUp(gameObject, (GameObject upgo) =>
+        {
+            if (isSlideSel)
+            {
+                endCB(upgo);
+                isSlideSel = false;
+            }
+        });
+    }
+
 }

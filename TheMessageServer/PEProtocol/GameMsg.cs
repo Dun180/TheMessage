@@ -38,6 +38,8 @@ namespace PEProtocol
         public ResponseMessageInfo responseMessageInfo;
         public PushProbingInfo pushProbingInfo;
         public PushGamblingCard pushGamblingCard;
+        public RequestBalanceInfo requestBalanceInfo;
+        public PushRealOrFalseInfo pushRealOrFalseInfo;
         public RequestAcceptMessage requestAcceptMessage;
         public PushMessageTransfering pushMessageTransfering;
         public PushSinglePlayerMessageUpdate pushSinglePlayerMessageUpdate;
@@ -227,6 +229,16 @@ namespace PEProtocol
         public int index;
     }
     [Serializable]
+    public class RequestBalanceInfo
+    {
+        public List<Card> cardList;
+    }
+    [Serializable]
+    public class PushRealOrFalseInfo
+    {
+        public List<Card> cardList;
+    }
+    [Serializable]
     public class RequestMessageTransfer
     {
         public Card message;
@@ -346,6 +358,9 @@ namespace PEProtocol
 
         PushProbingInfo,//推送试探信息
         PushGamblingCard,//推送博弈信息
+        PushBalanceInfo,//推送权衡信息
+        RequestBalanceInfo,//请求权衡信息
+        PushRealOrFalseInfo,//推送真假莫辨信息
 
         RequestEndResponseStage,//请求结束响应阶段
 

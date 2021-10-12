@@ -113,6 +113,12 @@ public class NetSvc : MonoBehaviour
             case CMD.PushGamblingCard:
                 FightSys.Instance.PushGamblingCard(msg);
                 break;
+            case CMD.PushBalanceInfo:
+                FightSys.Instance.PushBalanceInfo(msg);
+                break;
+            case CMD.PushRealOrFalseInfo:
+                FightSys.Instance.PushRealOrFalseInfo(msg);
+                break;
             case CMD.PushPlayStage:
                 FightSys.Instance.PushPlayStage(msg);
                 break;

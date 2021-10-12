@@ -60,7 +60,7 @@ namespace PEProtocol
         Burn,//烧毁（完成）
         Penetrate,//识破（完成）
         Gambling,//博弈（完成）
-        Balance //权衡
+        Balance //权衡（完成）
 
 
 

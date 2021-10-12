@@ -294,7 +294,7 @@ public class MessageRoom
         CreatCard(CardColor.RedBlack, CardType.RestrictedMessage, CardFunction.Decipher, 1);//1 红黑密电破译
         CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.Decipher, 2);//2 蓝密电破译
         CreatCard(CardColor.BlueBlack, CardType.RestrictedMessage, CardFunction.Decipher, 1);//1 蓝黑密电破译
-        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Balance, 2);//2 黑直达权衡
+        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Balance, 200);//2 黑直达权衡
         CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Burn, 3);//3 黑直达烧毁
         CreatCard(CardColor.Red, CardType.NonstopMessage, CardFunction.Burn, 2);//2 红直达烧毁
         CreatCard(CardColor.Blue, CardType.NonstopMessage, CardFunction.Burn, 2);//2 蓝直达烧毁
@@ -715,6 +715,30 @@ public class MessageRoom
         CacheSvc.Instance.SendMsgAll(this,msg);
     }
 
+    public void RealOrFalse()
+    {
+        List<Card> tempCardList = new List<Card>();
+
+        for (int i = 0; i < playerArr.Length; i++)
+        {
+            playerArr[i].AddMessage(cardList[0]);
+            tempCardList.Add(cardList[0]);
+            cardList.RemoveAt(0);
+        }
+
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushRealOrFalseInfo,
+            pushRealOrFalseInfo = new PushRealOrFalseInfo
+            {
+                cardList = tempCardList
+            }
+        };
+
+        CacheSvc.Instance.SendMsgAll(this, msg);
+
+    }
+
     //卡牌结算
     public void CardSettlement()
     {
@@ -847,7 +871,14 @@ public class MessageRoom
 
                     break;
                 case CardFunction.Balance:
-                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    GameMsg balanceMsg = new GameMsg
+                    {
+                        cmd = CMD.PushBalanceInfo
+                    };
+
+
+                    CacheSvc.Instance.SendMsgAll(this, balanceMsg);
 
                     break;
                 case CardFunction.Burn:
@@ -856,6 +887,10 @@ public class MessageRoom
                     RemoveMessage(settlementCardTarget, waitBurnCard);
 
                     CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    break;
+                case CardFunction.RealOrFalse:
+
 
                     break;
                 default:
