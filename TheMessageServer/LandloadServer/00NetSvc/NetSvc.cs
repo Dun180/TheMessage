@@ -133,8 +133,14 @@ public class NetSvc
             case CMD.RequestBalanceInfo:
                 FightSys.Instance.RequestBalanceInfo(pack);
                 break;
+            case CMD.RequestEndRealOrFalse:
+                FightSys.Instance.RequestEndRealOrFalse(pack);
+                break;
             case CMD.RequestMessageTransfer:
                 FightSys.Instance.RequestMessageTransfer(pack);
+                break;
+            case CMD.RequestEndArriveSection:
+                FightSys.Instance.RequestEndArriveSection(pack);
                 break;
             case CMD.RequestAcceptMessage:
                 FightSys.Instance.RequestAcceptMessage(pack);

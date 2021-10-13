@@ -119,6 +119,18 @@ public class NetSvc : MonoBehaviour
             case CMD.PushRealOrFalseInfo:
                 FightSys.Instance.PushRealOrFalseInfo(msg);
                 break;
+            case CMD.PushLockingInfo:
+                FightSys.Instance.PushLockingInfo(msg);
+                break;
+            case CMD.PushTigerMountainInfo:
+                FightSys.Instance.PushTigerMountainInfo(msg);
+                break;
+            case CMD.PushSwapInfo:
+                FightSys.Instance.PushSwapInfo(msg);
+                break;
+            case CMD.PushDecipherInfo:
+                FightSys.Instance.PushDecipherInfo(msg);
+                break;
             case CMD.PushPlayStage:
                 FightSys.Instance.PushPlayStage(msg);
                 break;
@@ -127,6 +139,9 @@ public class NetSvc : MonoBehaviour
                 break;
             case CMD.PushMessageTransfer:
                 FightSys.Instance.PushMessageTransfer(msg);
+                break;
+            case CMD.PushArriveSection:
+                FightSys.Instance.PushArriveSection(msg);
                 break;
             case CMD.PushAcceptSection:
                 FightSys.Instance.PushAcceptSection(msg);

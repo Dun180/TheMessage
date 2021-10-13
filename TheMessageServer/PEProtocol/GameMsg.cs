@@ -40,6 +40,10 @@ namespace PEProtocol
         public PushGamblingCard pushGamblingCard;
         public RequestBalanceInfo requestBalanceInfo;
         public PushRealOrFalseInfo pushRealOrFalseInfo;
+        public PushLockingInfo pushLockingInfo;
+        public PushTigerMountainInfo pushTigerMountainInfo;
+        public PushSwapInfo pushSwapInfo;
+        public PushDecipherInfo pushDecipherInfo;
         public RequestAcceptMessage requestAcceptMessage;
         public PushMessageTransfering pushMessageTransfering;
         public PushSinglePlayerMessageUpdate pushSinglePlayerMessageUpdate;
@@ -237,6 +241,27 @@ namespace PEProtocol
     public class PushRealOrFalseInfo
     {
         public List<Card> cardList;
+        public int index;
+    }
+    [Serializable]
+    public class PushLockingInfo
+    {
+        public int index;
+    }
+    [Serializable]
+    public class PushTigerMountainInfo
+    {
+        public int index;
+    }
+    [Serializable]
+    public class PushSwapInfo
+    {
+        public Card swapCard;
+    }
+    [Serializable]
+    public class PushDecipherInfo
+    {
+        public int index;
     }
     [Serializable]
     public class RequestMessageTransfer
@@ -262,7 +287,7 @@ namespace PEProtocol
     {
         public Card message;
         public int transferIndex;//发送人索引
-        public int targetIndex;//目标人索引
+        public int targetIndex = -1;//目标人索引
     }
     [Serializable]
     public class PushSinglePlayerMessageUpdate
@@ -360,7 +385,12 @@ namespace PEProtocol
         PushGamblingCard,//推送博弈信息
         PushBalanceInfo,//推送权衡信息
         RequestBalanceInfo,//请求权衡信息
-        PushRealOrFalseInfo,//推送真假莫辨信息
+        PushRealOrFalseInfo,//推送真伪莫辨信息
+        RequestEndRealOrFalse,//请求结束真伪莫辨
+        PushLockingInfo,//推送锁定信息
+        PushTigerMountainInfo,//推送调虎离山信息
+        PushSwapInfo,//推送掉包信息
+        PushDecipherInfo,//推送破译信息
 
         RequestEndResponseStage,//请求结束响应阶段
 
@@ -370,6 +400,10 @@ namespace PEProtocol
         RequestMessageTransfer,//请求情报传递
         PushMessageTransfer,//推送情报传递信息
 
+
+
+        PushArriveSection,//推送到达小节信息
+        RequestEndArriveSection,//请求结束到达小节
         PushAcceptSection,//推送接受小节信息
         RequestAcceptMessage,//请求接收情报信息
 

@@ -38,8 +38,8 @@ namespace PEProtocol
     public enum CardFunction
     {
         None = 0,
-        Locking,//锁定
-        TigerMountain,//调虎离山
+        Locking,//锁定（完成）
+        TigerMountain,//调虎离山（完成）
         Decipher,//破译
 
         ProbingLurker_0,//试探潜伏-1（完成）
@@ -50,12 +50,12 @@ namespace PEProtocol
         ProbingSoySauce_1,//试探酱油+1（完成）
         Reinforce,//增援（完成）
 
-        Swap,//调包
-        RealOrFalse,//真伪莫辨
-        PublicDocument,//公开文档
+        Swap,//调包（完成）
+        RealOrFalse,//真伪莫辨（完成）
+        PublicDocument,//公开文档（完成）
 
-        Intercept,//截获
-        Transfer,//转移
+        Intercept,//截获（完成）
+        Transfer,//转移（完成）
 
         Burn,//烧毁（完成）
         Penetrate,//识破（完成）

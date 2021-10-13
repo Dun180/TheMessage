@@ -75,6 +75,10 @@ public class PECommon
     {
         bool flag = false;
 
+        if (card.function == CardFunction.Locking) flag = true;
+        if (card.function == CardFunction.TigerMountain) flag = true;
+        if (card.function == CardFunction.Swap) flag = true;
+        if (card.function == CardFunction.Intercept) flag = true;
         if (card.function == CardFunction.Decipher) flag = true;
         if (card.function == CardFunction.Transfer) flag = true;
         if (card.function == CardFunction.Burn) flag = true;

@@ -197,7 +197,7 @@ public class FightSys
         }
         else if (pack.msg.requestOutCard.card.function == CardFunction.Burn)
         {
-            messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card, pack.msg.requestOutCard.targetIndex);
+            messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card, selfindex, pack.msg.requestOutCard.targetIndex);
             messageRoom.SetWaitBurnCard(pack.msg.requestOutCard.burnCard);
             GameMsg msg = new GameMsg
             {
@@ -219,7 +219,7 @@ public class FightSys
 
             if (pack.msg.requestOutCard.hasTarget)
             {
-                messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card, pack.msg.requestOutCard.targetIndex);
+                messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card, selfindex, pack.msg.requestOutCard.targetIndex);
 
                 GameMsg msg = new GameMsg
                 {
@@ -237,7 +237,7 @@ public class FightSys
             }
             else
             {
-                messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card);
+                messageRoom.SetWaitSettlementCard(pack.msg.requestOutCard.card, selfindex);
 
                 GameMsg msg = new GameMsg
                 {
@@ -293,10 +293,21 @@ public class FightSys
         int index = messageRoom.GetIndexById(playerData.id);
         messageRoom.RemoveCard(index, pack.msg.requestDisCard.disCard);
 
-        GameMsg msg = new GameMsg
+
+
+        GameMsg msg = new GameMsg();
+
+        switch (messageRoom.roundStage)
         {
-            cmd = CMD.PushPlayStage
-        };
+            case RoundStage.PlayStage:
+                msg.cmd = CMD.PushPlayStage;
+                break;
+            case RoundStage.ArriveSection:
+                msg.cmd = CMD.PushArriveSection;
+                break;
+            default:
+                break;
+        }
 
         CacheSvc.Instance.SendMsgAll(messageRoom, msg);
     }
@@ -311,10 +322,40 @@ public class FightSys
             messageRoom.RemoveCard(index, pack.msg.requestBalanceInfo.cardList[i]);
         }
         messageRoom.DrawCard(index, pack.msg.requestBalanceInfo.cardList.Count);
-        GameMsg msg = new GameMsg
+
+        GameMsg msg = new GameMsg();
+
+        switch (messageRoom.roundStage)
         {
-            cmd = CMD.PushPlayStage
-        };
+            case RoundStage.PlayStage:
+                msg.cmd = CMD.PushPlayStage;
+                break;
+            case RoundStage.ArriveSection:
+                msg.cmd = CMD.PushArriveSection;
+                break;
+            default:
+                break;
+        }
+
+        CacheSvc.Instance.SendMsgAll(messageRoom, msg);
+    }
+
+    public void RequestEndRealOrFalse(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+        GameMsg msg = new GameMsg();
+
+        switch (messageRoom.roundStage)
+        {
+            case RoundStage.PlayStage:
+                msg.cmd = CMD.PushPlayStage;
+                break;
+            case RoundStage.ArriveSection:
+                msg.cmd = CMD.PushArriveSection;
+                break;
+            default:
+                break;
+        }
 
         CacheSvc.Instance.SendMsgAll(messageRoom, msg);
     }
@@ -341,8 +382,9 @@ public class FightSys
             };
             CacheSvc.Instance.SendMsgAll(messageRoom, msg);
 
+            messageRoom.ArriveSection();//进入到达小节
             //Test 直接进入接收小节
-            messageRoom.AcceptSection();
+            //messageRoom.AcceptSection();
         }
         else
         {
@@ -363,13 +405,22 @@ public class FightSys
             };
             CacheSvc.Instance.SendMsgAll(messageRoom, msg);
 
+            messageRoom.ArriveSection();//进入到达小节
 
             //Test 直接进入接收小节
-            messageRoom.AcceptSection();
+            //messageRoom.AcceptSection();
 
         }
 
 
+
+    }
+
+    public void RequestEndArriveSection(MsgPack pack)
+    {
+        MessageRoom messageRoom = cacheSvc.GetMessageRoomByToken(pack.token);
+
+        messageRoom.AcceptSection();
 
     }
 
@@ -390,8 +441,8 @@ public class FightSys
                 //TODO
                 int index = messageRoom.GetIndexById(playerData.id);
 
-                int transIndex = -1;
-                int tgIndex = -1;
+                int transIndex = -1;//发送人索引
+                int tgIndex = -1;//目标人索引
 
                 if(index == messageRoom.transferingMessageIndex)
                 {
@@ -420,6 +471,7 @@ public class FightSys
                 else
                 {
                     //TODO
+                    //错误处理
 
                 }
 

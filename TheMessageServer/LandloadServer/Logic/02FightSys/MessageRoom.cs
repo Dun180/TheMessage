@@ -30,6 +30,7 @@ public class MessageRoom
     private Card waitSettlementCard = null;//等待结算的卡牌
     private bool settlementCardAvailability = false;//结算卡牌的有效性
     private int settlementCardTarget = -1;//结算卡牌的目标
+    private int settlementCardUser = -1;//结算卡牌使用者的索引
     private Card waitBurnCard = null;//等待烧毁的卡牌
 
     public MessageRoom(int roomID,string roomOwner,int roomOwnerID)
@@ -294,7 +295,7 @@ public class MessageRoom
         CreatCard(CardColor.RedBlack, CardType.RestrictedMessage, CardFunction.Decipher, 1);//1 红黑密电破译
         CreatCard(CardColor.Blue, CardType.RestrictedMessage, CardFunction.Decipher, 2);//2 蓝密电破译
         CreatCard(CardColor.BlueBlack, CardType.RestrictedMessage, CardFunction.Decipher, 1);//1 蓝黑密电破译
-        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Balance, 200);//2 黑直达权衡
+        CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Balance, 2);//2 黑直达权衡
         CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Burn, 3);//3 黑直达烧毁
         CreatCard(CardColor.Red, CardType.NonstopMessage, CardFunction.Burn, 2);//2 红直达烧毁
         CreatCard(CardColor.Blue, CardType.NonstopMessage, CardFunction.Burn, 2);//2 蓝直达烧毁
@@ -334,7 +335,7 @@ public class MessageRoom
         CreatCard(CardColor.Red, CardType.TextMessage, CardFunction.RealOrFalse, 1);//1 红文本真伪莫辨
         CreatCard(CardColor.Blue, CardType.TextMessage, CardFunction.RealOrFalse, 1);//1 蓝文本真伪莫辨
         CreatCard(CardColor.Black, CardType.NonstopMessage, CardFunction.Transfer, 1);//1 黒直达转移
-        CreatCard(CardColor.Red, CardType.NonstopMessage, CardFunction.Transfer, 2);//2 红直达转移
+        CreatCard(CardColor.Red, CardType.NonstopMessage, CardFunction.Transfer, 200);//2 红直达转移
         CreatCard(CardColor.Blue, CardType.NonstopMessage, CardFunction.Transfer, 2);//2 蓝直达转移
 
         //打乱牌序
@@ -535,6 +536,7 @@ public class MessageRoom
     {
         //TODO
 
+        //暂时废弃
         roundStage = RoundStage.TransferSection;
 
     }
@@ -545,6 +547,10 @@ public class MessageRoom
         //TODO
 
         roundStage = RoundStage.ArriveSection;
+
+        GameMsg msg = new GameMsg { cmd = CMD.PushArriveSection };
+
+        CacheSvc.Instance.SendMsgAll(this, msg);
 
     }
 
@@ -567,6 +573,10 @@ public class MessageRoom
 
         roundStage = RoundStage.RoundEnd;
 
+        for(int i = 0; i < playerArr.Length; i++)
+        {
+            playerArr[i].playerState = PlayerState.None;
+        }
 
         GameMsg msg = new GameMsg
         {
@@ -601,6 +611,36 @@ public class MessageRoom
     {
         playerArr[transferingMessageIndex].AddMessage(transferingMessage);
 
+
+        if(transferingMessage.function == CardFunction.PublicDocument)
+        {
+            switch (transferingMessage.color)
+            {
+                case CardColor.Red:
+                    if(playerArr[transferingMessageIndex].playerIdentity != PlayerIdentity.Lurker)
+                    {
+                        DrawCard(transferingMessageIndex, 1);
+                        SendProbingMsg(transferingMessageIndex, 1);
+                    }
+                    break;
+                case CardColor.Blue:
+                    if (playerArr[transferingMessageIndex].playerIdentity != PlayerIdentity.Military)
+                    {
+                        DrawCard(transferingMessageIndex, 1);
+                        SendProbingMsg(transferingMessageIndex, 1);
+                    }
+                    break;
+                case CardColor.Black:
+                    if (playerArr[transferingMessageIndex].playerIdentity != PlayerIdentity.SoySauce)
+                    {
+                        DrawCard(transferingMessageIndex, 1);
+                        SendProbingMsg(transferingMessageIndex, 1);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
 
         GameMsg updateMsg = new GameMsg
         {
@@ -637,11 +677,12 @@ public class MessageRoom
     }
 
     //设置等待结算的卡牌
-    public void SetWaitSettlementCard(Card card,int targetIndex = -1)
+    public void SetWaitSettlementCard(Card card,int userIndex = -1,int targetIndex = -1)
     {
         waitSettlementCard = card;
         settlementCardAvailability = true;
         settlementCardTarget = targetIndex;
+        settlementCardUser = userIndex;
     }
 
     public void SetWaitBurnCard(Card card)
@@ -731,7 +772,8 @@ public class MessageRoom
             cmd = CMD.PushRealOrFalseInfo,
             pushRealOrFalseInfo = new PushRealOrFalseInfo
             {
-                cardList = tempCardList
+                cardList = tempCardList,
+                index = roundPlayerIndex
             }
         };
 
@@ -739,17 +781,122 @@ public class MessageRoom
 
     }
 
+    public void Locking(int targetIndex)
+    {
+        playerArr[targetIndex].playerState = PlayerState.Locking;
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushLockingInfo,
+            pushLockingInfo = new PushLockingInfo
+            {
+                index = targetIndex
+            }
+        };
+        CacheSvc.Instance.SendMsgAll(this,msg);
+    }
+
+    public void TigerMountain(int targetIndex)
+    {
+        if(playerArr[targetIndex].playerState != PlayerState.Locking)
+        {
+            playerArr[targetIndex].playerState = PlayerState.Transfer;
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.PushTigerMountainInfo,
+                pushTigerMountainInfo = new PushTigerMountainInfo
+                {
+                    index = targetIndex
+                }
+            };
+            CacheSvc.Instance.SendMsgAll(this, msg);
+        }
+
+    }
+
+    public void Swap(Card card)
+    {
+        transferingMessage = card;
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushSwapInfo,
+            pushSwapInfo = new PushSwapInfo
+            {
+                swapCard = card
+            }
+        };
+        CacheSvc.Instance.SendMsgAll(this,msg);
+    }
+
+    public void Intercept()
+    {
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushMessageTransfering,
+            pushMessageTransfering = new PushMessageTransfering
+            {
+                message = transferingMessage,
+                transferIndex = transferingMessageIndex,
+                targetIndex = settlementCardUser
+
+            }
+        };
+        CacheSvc.Instance.SendMsgAll(this, msg);
+
+        transferingMessageIndex = settlementCardUser;
+    }
+
+    public void Transfer()
+    {
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushMessageTransfering,
+            pushMessageTransfering = new PushMessageTransfering
+            {
+                message = transferingMessage,
+                transferIndex = settlementCardUser,
+                targetIndex = settlementCardTarget
+
+            }
+        };
+        CacheSvc.Instance.SendMsgAll(this, msg);
+        Locking(settlementCardTarget);
+        transferingMessageIndex = settlementCardTarget;
+    }
+
+    public void Decipher()
+    {
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.PushDecipherInfo,
+            pushDecipherInfo = new PushDecipherInfo
+            {
+                index = settlementCardUser
+            }
+        };
+        CacheSvc.Instance.SendMsgAll(this, msg);
+
+    }
+
     //卡牌结算
     public void CardSettlement()
     {
+        GameMsg playMsg = new GameMsg();
+
+        switch (roundStage)
+        {
+            case RoundStage.PlayStage:
+                playMsg.cmd = CMD.PushPlayStage;
+                break;
+            case RoundStage.ArriveSection:
+                playMsg.cmd = CMD.PushArriveSection;
+                break;
+            default:
+                break;
+        }
         if (settlementCardAvailability)
         {
             //结算卡牌
-            GameMsg playMsg = new GameMsg
-            {
-                cmd = CMD.PushPlayStage
-            };
-            
+
             switch (waitSettlementCard.function)
             {
                 case CardFunction.ProbingLurker_0:
@@ -855,8 +1002,14 @@ public class MessageRoom
 
                     break;
                 case CardFunction.Locking:
-                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+                    Locking(settlementCardTarget);
 
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+                    break;
+                case CardFunction.TigerMountain:
+                    TigerMountain(settlementCardTarget);
+
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
                     break;
                 case CardFunction.Reinforce:
                     int drawCardCount = 1;
@@ -890,8 +1043,27 @@ public class MessageRoom
 
                     break;
                 case CardFunction.RealOrFalse:
+                    RealOrFalse();
 
+                    break;
+                case CardFunction.Swap:
+                    Swap(waitSettlementCard);
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
 
+                    break;
+                case CardFunction.Intercept:
+
+                    Intercept();
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+
+                    break;
+                case CardFunction.Transfer:
+
+                    Transfer();
+                    CacheSvc.Instance.SendMsgAll(this, playMsg);
+                    break;
+                case CardFunction.Decipher:
+                    Decipher();
                     break;
                 default:
                     CacheSvc.Instance.SendMsgAll(this, playMsg);
@@ -901,10 +1073,7 @@ public class MessageRoom
         }
         else
         {
-            GameMsg playMsg = new GameMsg
-            {
-                cmd = CMD.PushPlayStage
-            };
+
             CacheSvc.Instance.SendMsgAll(this, playMsg);
 
             //无事发生
@@ -912,6 +1081,7 @@ public class MessageRoom
         waitSettlementCard = null;
         settlementCardAvailability = false;
         settlementCardTarget = -1;
+        settlementCardUser = -1;
 }
 }
 

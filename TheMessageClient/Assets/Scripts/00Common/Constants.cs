@@ -20,7 +20,8 @@ public class Constants {
 
     public const int selectCharCounter = 30;
     public const int playStageCounter = 15;
-    public const int responseStageCounter = 8;
+    public const int responseStageCounter = 6;
+    public const int arriveSectionCounter = 6;
     public const int messageTransferCounter = 15;
 
     public const int fivePersonFieldCount = 5;

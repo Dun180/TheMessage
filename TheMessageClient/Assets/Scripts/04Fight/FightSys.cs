@@ -168,6 +168,29 @@ public class FightSys : MonoBehaviour
     public void PushRealOrFalseInfo(GameMsg msg)
     {
         //TODO
+        messageWindow.RealOrFalse(msg.pushRealOrFalseInfo.cardList,msg.pushRealOrFalseInfo.index);
+    }
+
+    public void PushLockingInfo(GameMsg msg)
+    {
+        messageWindow.Locking(msg.pushLockingInfo.index);
+        
+    }
+
+    public void PushTigerMountainInfo(GameMsg msg)
+    {
+        messageWindow.TigerMountain(msg.pushTigerMountainInfo.index);
+
+    }
+
+    public void PushSwapInfo(GameMsg msg)
+    {
+        messageWindow.Swap(msg.pushSwapInfo.swapCard);
+    }
+
+    public void PushDecipherInfo(GameMsg msg)
+    {
+        //TODO
     }
 
     public void PushPlayStage(GameMsg msg)
@@ -184,20 +207,62 @@ public class FightSys : MonoBehaviour
     public void PushMessageTransfer(GameMsg msg)
     {
         if(msg.pushMessageTransfer.message.type == CardType.RestrictedMessage || msg.pushMessageTransfer.message.type == CardType.TextMessage)
-        messageWindow.MessageTransferAni(msg.pushMessageTransfer.message, msg.pushMessageTransfer.transferIndex);
+        {
+            messageWindow.MessageTransferAni(msg.pushMessageTransfer.message, msg.pushMessageTransfer.transferIndex);
+            int targetIndex = msg.pushMessageTransfer.transferIndex + 1;
+            if (targetIndex >= 5)
+            {
+                targetIndex -= 5;
+            }
+            else if (targetIndex < 0)
+            {
+                targetIndex += 5;
+            }
+            messageWindow.SetMessagePositionIndex(targetIndex);
+        }
         else
-        messageWindow.MessageTransferAni(msg.pushMessageTransfer.message, msg.pushMessageTransfer.transferIndex,msg.pushMessageTransfer.targetIndex);
-        
+        {
+            messageWindow.MessageTransferAni(msg.pushMessageTransfer.message, msg.pushMessageTransfer.transferIndex, msg.pushMessageTransfer.targetIndex);
+            messageWindow.SetMessagePositionIndex(msg.pushMessageTransfer.targetIndex);
+        }
+
+    }
+
+    public void PushArriveSection(GameMsg msg)
+    {
+        messageWindow.DestroyOutCard();
+
+        messageWindow.SetMessageStage(MessageStage.ArriveSection);
+
     }
 
     public void PushAcceptSection(GameMsg msg)
     {
-        messageWindow.SetMessageStage(MessageStage.AcceptSection);
+        messageWindow.DestroyOutCard();
+
+        if (messageWindow.GetIsMyTurn())
+        {
+            GameMsg acceptMsg = new GameMsg
+            {
+                cmd = CMD.RequestAcceptMessage,
+                requestAcceptMessage = new RequestAcceptMessage
+                {
+                    isAccept = true
+                }
+            };
+            netSvc.SendMsg(acceptMsg);
+        }
+        else
+        {
+            messageWindow.SetMessageStage(MessageStage.AcceptSection);
+
+        }
     }
 
     public void PushMessageTransfering(GameMsg msg)
     {
-        if(msg.pushMessageTransfering.message.type == CardType.NonstopMessage)
+        messageWindow.SetMessagePositionIndex(msg.pushMessageTransfering.targetIndex);
+        if (msg.pushMessageTransfering.message.type == CardType.NonstopMessage|| msg.pushMessageTransfering.targetIndex!=-1)
         {
             messageWindow.NonstopMessageTransAni(msg.pushMessageTransfering.transferIndex, msg.pushMessageTransfering.targetIndex);
         }
@@ -207,26 +272,28 @@ public class FightSys : MonoBehaviour
 
         }
 
+        messageWindow.SetMessageStage(MessageStage.ArriveSection);
 
-        if (msg.pushMessageTransfering.targetIndex == messageWindow.selfIndex)//如果目标的人是自己
-        {
-            if (messageWindow.GetIsMyTurn())
-            {
-                GameMsg acceptMsg = new GameMsg
+        /*
+                if (msg.pushMessageTransfering.targetIndex == messageWindow.selfIndex)//如果目标的人是自己
                 {
-                    cmd = CMD.RequestAcceptMessage,
-                    requestAcceptMessage = new RequestAcceptMessage
+                    if (messageWindow.GetIsMyTurn())
                     {
-                        isAccept = true
+                        GameMsg acceptMsg = new GameMsg
+                        {
+                            cmd = CMD.RequestAcceptMessage,
+                            requestAcceptMessage = new RequestAcceptMessage
+                            {
+                                isAccept = true
+                            }
+                        };
+                        netSvc.SendMsg(acceptMsg);
                     }
-                };
-                netSvc.SendMsg(acceptMsg);
-            }
-            else
-            {
-                messageWindow.SetMessageStage(MessageStage.AcceptSection);
-            }
-        }
+                    else
+                    {
+                        messageWindow.SetMessageStage(MessageStage.AcceptSection);
+                    }
+                }*/
     }
 
     public void PushSinglePlayerMessageUpdate(GameMsg msg)
@@ -249,6 +316,6 @@ public class FightSys : MonoBehaviour
 
     public void PushRoundEnd(GameMsg msg)
     {
-        if (messageWindow.GetIsMyTurn()) messageWindow.SetIsMyTurn(false);
+        messageWindow.RoundEnd();
     }
 }

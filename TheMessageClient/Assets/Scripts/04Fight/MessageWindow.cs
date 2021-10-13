@@ -42,6 +42,7 @@ public class MessageWindow : WindowRoot
     public Text[] redNum;
     public Text[] blueNum;
     public Text[] blackNum;
+    public Text[] playerState;
 
     public RectTransform[] messageClickTrans;//情报点击区域
 
@@ -107,6 +108,12 @@ public class MessageWindow : WindowRoot
 
     private int showMessageRegionIndex = -1;//当前展示的情报区索引
 
+    private bool isLocking = false;//是否被锁定
+
+    private bool isTigerMountain = false;//是否被调虎离山
+
+    private int messagePositionIndex = -1;
+
     public override void InitWindow()
     {
         base.InitWindow();
@@ -121,12 +128,13 @@ public class MessageWindow : WindowRoot
         charList = new int[3];
         SetText(selfIdentity, "");
         //重置数据
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < Constants.fivePersonFieldCount; i++)
         {
             SetText(cards[i], "4");
             SetText(redNum[i], "0");
             SetText(blueNum[i], "0");
             SetText(blackNum[i], "0");
+            SetActive(playerState[i],false);
         }
 
         SetText(cardLibrary, "93");
@@ -194,6 +202,8 @@ public class MessageWindow : WindowRoot
                 SetActive(btn2bg.transform, false);
                 break;
             case MessageStage.PlayStage:
+                TipsWindow.AddTips("出牌阶段");
+
                 if (isMyTurn)
                 {
                     SetActive(btn1bg.transform);
@@ -216,6 +226,7 @@ public class MessageWindow : WindowRoot
                 SetClockCallBack(Constants.playStageCounter, ClickBtn2);
                 break;
             case MessageStage.ResponseStage:
+                TipsWindow.AddTips("响应阶段");
 
                 SetActive(btn1bg.transform);
                 SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-175, -100));
@@ -230,6 +241,7 @@ public class MessageWindow : WindowRoot
 
                 break;
             case MessageStage.ResponseWaitStage:
+                TipsWindow.AddTips("响应阶段");
 
                 SetActive(btnGroupTrans, false);
 
@@ -247,6 +259,8 @@ public class MessageWindow : WindowRoot
                 }
                 else
                 {
+                    TipsWindow.AddTips("请等待玩家弃牌");
+
                     SetActive(btn1bg.transform, false);
                     SetActive(btn2bg.transform, false);
                 }
@@ -264,11 +278,15 @@ public class MessageWindow : WindowRoot
                 }
                 else
                 {
+                    TipsWindow.AddTips("请等待玩家权衡");
+
                     SetActive(btn1bg.transform, false);
                     SetActive(btn2bg.transform, false);
                 }
                 break;
             case MessageStage.MessageTransfer:
+                TipsWindow.AddTips("情报传递阶段");
+
                 isTransMsg = false;
                 if (isMyTurn)
                 {
@@ -285,13 +303,48 @@ public class MessageWindow : WindowRoot
 
                 //SetClockCallBack(Constants.messageTransferCounter, ClickBtn1);
                 break;
-            case MessageStage.AcceptSection:
-                TipsWindow.AddTips("请选择是否接收情报");
+            case MessageStage.ArriveSection:
+                TipsWindow.AddTips("情报到达阶段");
+
                 SetActive(btn1bg.transform);
-                SetBtnInfo(btn1bg, btn1txt, "要", 1, new Vector2(-175, -100));
+                SetBtnInfo(btn1bg, btn1txt, "使用", 1, new Vector2(-175, -100));
 
                 SetActive(btn2bg.transform);
-                SetBtnInfo(btn2bg, btn2txt, "不要", 2, new Vector2(200, -100));
+                SetBtnInfo(btn2bg, btn2txt, "跳过", 2, new Vector2(200, -100));
+
+                btnGroupTrans.localPosition = new Vector3(0, -75, 0);
+
+                if (isMyTurn)
+                {
+                    SetClockCallBack(Constants.arriveSectionCounter, EndArriveSection);
+
+                }
+                else
+                {
+                    SetClockCallBack(Constants.arriveSectionCounter, ClickBtn2);
+
+                }
+                break;
+            case MessageStage.AcceptSection:
+                TipsWindow.AddTips("情报接收阶段");
+
+                if (isLocking)
+                {
+                    ClickBtn1();
+                }else if (isTigerMountain)
+                {
+                    ClickBtn2();
+                }
+                else
+                {
+                    TipsWindow.AddTips("请选择是否接收情报");
+                    SetActive(btn1bg.transform);
+                    SetBtnInfo(btn1bg, btn1txt, "要", 1, new Vector2(-175, -100));
+
+                    SetActive(btn2bg.transform);
+                    SetBtnInfo(btn2bg, btn2txt, "不要", 2, new Vector2(200, -100));
+                }
+
                 break;
             default:
                 break;
@@ -541,6 +594,70 @@ public class MessageWindow : WindowRoot
 
                 }
                 break;
+            case MessageStage.ArriveSection:
+                if (prepareEntity != null)
+                {
+                    this.Log("messagePositionIndex:{0}", messagePositionIndex);
+                    if (prepareEntity.cardData.function == CardFunction.Intercept && isMyTurn)
+                    {
+                        TipsWindow.AddTips("暂时无法使用该牌");
+                    }
+                    else if (prepareEntity.cardData.function == CardFunction.Transfer && selfIndex!=messagePositionIndex)
+                    {
+                        this.Log("messagePositionIndex:{0}", messagePositionIndex);
+                        TipsWindow.AddTips("暂时无法使用该牌");
+                    }
+                    else if (prepareEntity.cardData.function == CardFunction.Decipher && selfIndex != messagePositionIndex)
+                    {
+                        TipsWindow.AddTips("暂时无法使用该牌");
+                    }
+                    else if (PECommon.ArriveSectionUsability(prepareEntity.cardData))
+                    {
+                        switch (prepareEntity.cardData.function)
+                        {
+                            case CardFunction.Locking:
+                            case CardFunction.TigerMountain:
+                            case CardFunction.Transfer:
+                                TipsWindow.AddTips("请点击人物头像以选择目标");
+                                AddPlayerClickEvent();
+                                break;
+                            case CardFunction.Burn:
+                                //TODO
+                                TipsWindow.AddTips("请点击情报以选择目标");
+
+                                AddMessageClickEvent();
+                                break;
+                            case CardFunction.Intercept:
+                                GameMsg interceptMsg = new GameMsg
+                                {
+                                    cmd = CMD.RequestOutCard,
+                                    requestOutCard = new RequestOutCard { card = prepareEntity.cardData }
+                                };
+                                netSvc.SendMsg(interceptMsg);
+                                OutCardAni();
+
+                                break;
+
+                            default:
+
+                                GameMsg outCardMsg = new GameMsg
+                                {
+                                    cmd = CMD.RequestOutCard,
+                                    requestOutCard = new RequestOutCard { card = prepareEntity.cardData }
+                                };
+                                netSvc.SendMsg(outCardMsg);
+                                OutCardAni();
+                                break;
+                        }
+
+                        SetActive(btnGroupTrans, false);
+                    }
+                    else
+                    {
+                        TipsWindow.AddTips("暂时无法使用该牌");
+                    }
+                }
+                break;
             case MessageStage.AcceptSection:
                 GameMsg acceptMsg = new GameMsg
                 {
@@ -576,6 +693,11 @@ public class MessageWindow : WindowRoot
                 }
                 break;
             case MessageStage.ResponseStage:
+
+                SetActive(btnGroupTrans, false);
+
+                break;
+            case MessageStage.ArriveSection:
 
                 SetActive(btnGroupTrans, false);
 
@@ -830,7 +952,14 @@ public class MessageWindow : WindowRoot
         transEntity = null;
     }
 
-
+    public void EndArriveSection()
+    {
+        GameMsg msg = new GameMsg
+        {
+            cmd = CMD.RequestEndArriveSection
+        };
+        netSvc.SendMsg(msg);
+    }
 
     public void endPlay()
     {
@@ -1393,6 +1522,19 @@ public class MessageWindow : WindowRoot
                     };
                     netSvc.SendMsg(transMsg);
                     break;
+                case MessageStage.ArriveSection:
+                    GameMsg arrCardMsg = new GameMsg
+                    {
+                        cmd = CMD.RequestOutCard,
+                        requestOutCard = new RequestOutCard
+                        {
+                            card = prepareEntity.cardData,
+                            targetIndex = targetPos,
+                            hasTarget = true
+                        }
+                    };
+                    netSvc.SendMsg(arrCardMsg);
+                    break;
                 default:
                     break;
             }
@@ -1451,15 +1593,11 @@ public class MessageWindow : WindowRoot
     //指定目标
     public void SpecifyTarget(int curIndex, int targetIndex)
     {
-        this.Log("curIndex:{0}", curIndex);
-        this.Log("targetIndex:{0}", targetIndex);
 
         int sendPos = GetLocalIndex(curIndex);
 
         int targetPos = GetLocalIndex(targetIndex);
 
-        this.Log("sendPos:{0}", sendPos);
-        this.Log("targetPos:{0}", targetPos);
 
         //StartCoroutine(SetTrail(sendPos, targetPos));
         SetTrail(sendPos, targetPos);
@@ -1556,6 +1694,21 @@ public class MessageWindow : WindowRoot
         }
     }
 
+    public void RoundEnd()
+    {
+        isMyTurn = false;
+        isLocking = false;
+        isTransMsg = false;
+        isMyDisCard = false;
+        isMessageClick = false;
+        isTigerMountain = false;
+        for (int i = 0; i < Constants.fivePersonFieldCount; i++)
+        {
+            SetActive(playerState[i], false);
+        }
+        messagePositionIndex = -1;
+    }
+
     #region Card Function
 
     public void Probing(int index,int action)
@@ -1623,9 +1776,88 @@ public class MessageWindow : WindowRoot
         Destroy(card.mRectTrans.gameObject);
 
     }
+
+    public void RealOrFalse(List<Card> cardList, int index)
+    {
+        StartCoroutine(RealOrFalseAni(cardList, index));
+
+    }
+
+    IEnumerator RealOrFalseAni(List<Card> cardList,int index)
+    {
+        int localIndex = GetLocalIndex(index);
+        for(int i = 0; i < Constants.fivePersonFieldCount; i++)
+        {
+            GameObject go = Instantiate(cardObj);
+            RectTransform rectTrans = go.GetComponent<RectTransform>();
+            rectTrans.SetParent(ExhibitioAreaTrans);
+            rectTrans.sizeDelta = new Vector2(170, 240);
+            rectTrans.localScale = Vector3.one;
+            rectTrans.localPosition = new Vector3(874, 418, 0);
+            go.name = "realOrFalseCard";
+
+            CardEntity cardEntity = new CardEntity(rectTrans, -1);
+
+            cardEntity.SetEntityData(cardList[i]);
+            StartCoroutine(GamblingAni(localIndex, cardEntity));
+            yield return new WaitForSeconds(Constants.messageMoveTime*4+Constants.acceptMessageTime);
+
+            localIndex++;
+            if (localIndex > 4)
+            {
+                localIndex -= 5;
+            }
+        }
+        GameMsg refreshMsg = new GameMsg
+        {
+            cmd = CMD.RequestRefreshMessage
+        };
+        netSvc.SendMsg(refreshMsg);
+        if (selfIndex == index)
+        {
+            GameMsg msg = new GameMsg
+            {
+                cmd = CMD.RequestEndRealOrFalse
+            };
+            netSvc.SendMsg(msg);
+        }
+    }
+
+    public void Locking(int index)
+    {
+        if(index == selfIndex)
+        {
+            isLocking = true;
+        }
+        int localIndex = GetLocalIndex(index);
+        SetText(playerState[localIndex], "锁");
+        SetActive(playerState[localIndex]);
+    }
+
+    public void TigerMountain(int index)
+    {
+
+        if (index == selfIndex)
+        {
+            isTigerMountain = true;
+        }
+        int localIndex = GetLocalIndex(index);
+        SetText(playerState[localIndex], "调");
+        SetActive(playerState[localIndex]);
+    }
+
+    public void Swap(Card card)
+    {
+        transEntity.SetEntityData(card);
+    }
     #endregion
 
     #region Set And Get
+    public void SetMessagePositionIndex(int index)
+    {
+        messagePositionIndex = index;
+    }
+
     public void SetIsMyDisCard(bool flag)
     {
         isMyDisCard = flag;
